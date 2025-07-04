@@ -1,6 +1,11 @@
 import moment from 'moment';
-import { GeniePadElementsSettingItem } from '../../../api/pushGenie';
-import { DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS, IGNORE_CONFIG_KEYS } from '../../../constants';
+import { Fragment } from 'react/jsx-runtime';
+import groupBy from 'lodash/groupBy';
+import uniq from 'lodash/uniq';
+import React from 'react';
+
+import { GeniePadElementsSettingItem, LocalTemplateConfig, SectionNameConfig, DFormEntity, DoctorProfile, InjectionsEntity } from './types';
+import { DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS, IGNORE_CONFIG_KEYS, TEETH_TO_NAME } from './defaults';
 import {
     RenderPdfPrescription,
     RenderPdfConfig,
@@ -8,21 +13,13 @@ import {
     ColumnConfig,
     SpacingBetweenSections,
     SeperatorType,
-} from '../../../store/types/RenderPdfPrescription';
-import { LocalTemplateConfig } from '../EditTemplate';
+} from './RenderPdfPrescription';
+import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
+
 import { padElements } from './padElementConfig';
-import { buildFollowUpLabel } from '../../../components/prescriptionPad/rightPanel/workspace/padV2/LabTestsDateSelector';
-import { FOOTER_CONTAINER, HEADER_CONTAINER } from './utils';
-import { TEETH_TO_NAME } from '../../../components/prescriptionPad/leftPanel/DentalChart/constants';
-import { SectionNameConfig } from '../../../store/db';
-import groupBy from 'lodash/groupBy';
-import uniq from 'lodash/uniq';
-import { getColumns, rxKeyToHeadingMap } from '../../opUtils';
-import { InjectionsEntity } from '../../../store/types/prescription';
-import { DoctorProfile } from '../../../api/fetchMyProfile';
-import { Fragment } from 'react/jsx-runtime';
-import React from 'react';
-import { DFormEntity } from '../../../api/fetchDoctorGenieByOID';
+
+export const HEADER_CONTAINER = 'header_container';
+export const FOOTER_CONTAINER = 'footer_container';
 
 const fontSizeAccortingToType = {
     compact: '14px',
@@ -595,7 +592,7 @@ export const getCustomHeaderHtml = (
     return (
         <>
             {render_pdf_config?.header_img === 'no-header' &&
-            render_pdf_config?.floating_patient_details ? (
+                render_pdf_config?.floating_patient_details ? (
                 <div
                     style={{
                         display: 'flex !important',
@@ -707,12 +704,12 @@ export const getCustomFooterHtml = (
                     marginRight: footer_right_margin,
                     border:
                         rxLocalConfig?.footer_border &&
-                        (show_page_number ||
-                            show_prescription_id ||
-                            show_signature ||
-                            show_name_in_signature ||
-                            show_signature_text ||
-                            footer_img)
+                            (show_page_number ||
+                                show_prescription_id ||
+                                show_signature ||
+                                show_name_in_signature ||
+                                show_signature_text ||
+                                footer_img)
                             ? '1px solid black'
                             : '',
                     height:
@@ -825,7 +822,7 @@ export const getHeaderHtml = (
     return (
         <>
             {render_pdf_config?.header_img === 'no-header' &&
-            render_pdf_config?.floating_patient_details ? (
+                render_pdf_config?.floating_patient_details ? (
                 <div
                     style={{
                         display: 'flex !important',
@@ -979,7 +976,7 @@ export const getRepitivePtDetails = (
             <div>
                 <div
                     className="flex items-start justify-between italic text-darwin-neutral-500 text-13"
-                    // style={{ fontSize: '0.68rem' }}
+                // style={{ fontSize: '0.68rem' }}
                 >
                     <div
                         style={
@@ -999,9 +996,9 @@ export const getRepitivePtDetails = (
                             style={
                                 patientDetailsUppercase
                                     ? {
-                                          textTransform: 'uppercase',
-                                          //fontSize: '0.68rem',
-                                      }
+                                        textTransform: 'uppercase',
+                                        //fontSize: '0.68rem',
+                                    }
                                     : undefined
                             }
                         >
@@ -1084,8 +1081,8 @@ export const getRepitivePtDetails = (
                         style={
                             patientDetailsUppercase
                                 ? {
-                                      textTransform: 'uppercase',
-                                  }
+                                    textTransform: 'uppercase',
+                                }
                                 : undefined
                         }
                     >
@@ -1157,7 +1154,7 @@ export const getBodyHtml = (
 
     const doubleColumnConfig =
         config.render_pdf_config?.columns_config &&
-        Object.keys(config.render_pdf_config?.columns_config).length > 0
+            Object.keys(config.render_pdf_config?.columns_config).length > 0
             ? config.render_pdf_config?.columns_config
             : DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS;
 
@@ -1241,18 +1238,18 @@ export const getBodyHtml = (
                             elementsInDoubleColumn,
                             'medicalHistory',
                         ) && (
-                            <>
-                                {getPmhHtml(data, 'pmh', config)}
-                                {getPmhHtml(data, 'fh', config)}
-                                {getPmhHtml(data, 'lh', config)}
-                                {getPmhHtml(data, 'th', config)}
-                                {getPmhHtml(data, 'cm', config)}
-                                {getPmhHtml(data, 'da', config)}
-                                {getPmhHtml(data, 'oa', config)}
-                                {getPmhHtml(data, 'pp', config)}
-                                {getPmhHtml(data, 'omh', config)}
-                            </>
-                        )}
+                                <>
+                                    {getPmhHtml(data, 'pmh', config)}
+                                    {getPmhHtml(data, 'fh', config)}
+                                    {getPmhHtml(data, 'lh', config)}
+                                    {getPmhHtml(data, 'th', config)}
+                                    {getPmhHtml(data, 'cm', config)}
+                                    {getPmhHtml(data, 'da', config)}
+                                    {getPmhHtml(data, 'oa', config)}
+                                    {getPmhHtml(data, 'pp', config)}
+                                    {getPmhHtml(data, 'omh', config)}
+                                </>
+                            )}
                         {isDoubleColumnElementVisible(
                             config,
                             elementsInDoubleColumn,
@@ -1279,19 +1276,19 @@ export const getBodyHtml = (
                             elementsInDoubleColumn,
                             'medications',
                         ) && (
-                            <div>
-                                {(
-                                    medicationFormatToTableMapping?.[
+                                <div>
+                                    {(
+                                        medicationFormatToTableMapping?.[
                                         config.render_pdf_config
                                             ?.medication_table_format as keyof typeof medicationFormatToTableMapping
-                                    ] || getMedications1Html
-                                )(
-                                    data,
-                                    config?.render_pdf_body_config?.medication_config,
-                                    config?.render_pdf_config,
-                                )}
-                            </div>
-                        )}
+                                        ] || getMedications1Html
+                                    )(
+                                        data,
+                                        config?.render_pdf_body_config?.medication_config,
+                                        config?.render_pdf_config,
+                                    )}
+                                </div>
+                            )}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'labTests') &&
                             getLabTestsHtml(data, config, sectionNameConfig?.['labTests'])}
                         {isDoubleColumnElementVisible(
@@ -1315,8 +1312,8 @@ export const getBodyHtml = (
                     <div>
                         {(
                             injectionsFormatToTableMapping?.[
-                                config.render_pdf_config
-                                    ?.injections_table_format as keyof typeof injectionsFormatToTableMapping
+                            config.render_pdf_config
+                                ?.injections_table_format as keyof typeof injectionsFormatToTableMapping
                             ] || (() => getInjectionsLineHtml(data))
                         )(data, config.render_pdf_config as RenderPdfConfig)}
                     </div>
@@ -1436,12 +1433,12 @@ export const doubleColumnsHtml = (
                                 >
                                     {doubleColumnConfig?.left?.[i]
                                         ? padElements(
-                                              data,
-                                              doubleColumnConfig?.left?.[i],
-                                              config,
-                                              sectionNameConfig,
-                                              true,
-                                          )
+                                            data,
+                                            doubleColumnConfig?.left?.[i],
+                                            config,
+                                            sectionNameConfig,
+                                            true,
+                                        )
                                         : null}
                                 </div>
                             </td>
@@ -1461,12 +1458,12 @@ export const doubleColumnsHtml = (
                                 >
                                     {doubleColumnConfig?.right?.[i]
                                         ? padElements(
-                                              data,
-                                              doubleColumnConfig?.right?.[i],
-                                              config,
-                                              sectionNameConfig,
-                                              true,
-                                          )
+                                            data,
+                                            doubleColumnConfig?.right?.[i],
+                                            config,
+                                            sectionNameConfig,
+                                            true,
+                                        )
                                         : null}
                                 </div>
                             </td>
@@ -1495,7 +1492,7 @@ export const getFooterHtml = (
                 style={{
                     marginTop:
                         renderPdfConfig?.footer_top_margin?.trim() &&
-                        !isNaN(parseFloat(renderPdfConfig?.footer_top_margin))
+                            !isNaN(parseFloat(renderPdfConfig?.footer_top_margin))
                             ? parseFloat(renderPdfConfig?.footer_top_margin) + 1 + 'cm'
                             : '1cm',
                     marginBottom: renderPdfConfig?.footer_bottom_margin,
@@ -1504,7 +1501,7 @@ export const getFooterHtml = (
                     border: rxLocalConfig?.footer_border ? '1px solid black' : '',
                     height:
                         renderPdfConfig?.footer_height?.trim() &&
-                        !isNaN(parseFloat(renderPdfConfig?.footer_height))
+                            !isNaN(parseFloat(renderPdfConfig?.footer_height))
                             ? parseFloat(renderPdfConfig?.footer_height) + 1 + 'cm'
                             : renderPdfConfig?.footer_height || 'auto',
                 }}
@@ -1606,11 +1603,10 @@ export const getDoubleColumnMedications = (
                             <div className="bold underline">
                                 {med?.name && (
                                     <span
-                                        className={`${
-                                            render_pdf_config?.medication_name_in_capital
+                                        className={`${render_pdf_config?.medication_name_in_capital
                                                 ? 'uppercase'
                                                 : ''
-                                        }`}
+                                            }`}
                                     >
                                         {med?.name}
                                     </span>
@@ -1633,12 +1629,12 @@ export const getDoubleColumnMedications = (
                                     {[med?.dose?.custom, med?.frequency?.custom]
                                         .filter(Boolean)
                                         .join(', ') && (
-                                        <span className="">
-                                            {[med?.dose?.custom, med?.frequency?.custom]
-                                                .filter(Boolean)
-                                                .join(', ')}{' '}
-                                        </span>
-                                    )}
+                                            <span className="">
+                                                {[med?.dose?.custom, med?.frequency?.custom]
+                                                    .filter(Boolean)
+                                                    .join(', ')}{' '}
+                                            </span>
+                                        )}
                                     {med?.area?.name ? (
                                         <span>[Apply on: {med?.area?.name || ''}]</span>
                                     ) : (
@@ -1757,7 +1753,7 @@ export const getMedications1Html = (
             totalWidthCount +=
                 medTableWidth?.[conf.id] ||
                 medOptions1.allColumnWidthInNumber[
-                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                conf.id as keyof typeof medOptions1.medIdToNameMapping
                 ];
         });
 
@@ -1818,7 +1814,7 @@ export const getMedications1Html = (
                                         >
                                             {
                                                 medOptions1.medIdToNameMapping[
-                                                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                                                conf.id as keyof typeof medOptions1.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -1848,11 +1844,10 @@ export const getMedications1Html = (
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.medication_name_in_capital
+                                                    className={`bold ${render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {med?.name ? `${med?.name} ` : ''}
                                                 </span>
@@ -1877,11 +1872,10 @@ export const getMedications1Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.generic_name}{' '}
                                                     </p>
@@ -1912,14 +1906,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[conf.id] ||
+                                                        width: `${((medTableWidth?.[conf.id] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                                                                conf.id as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -1933,14 +1926,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[conf.id] ||
+                                                        width: `${((medTableWidth?.[conf.id] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                                                                conf.id as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -1960,14 +1952,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[conf.id] ||
+                                                        width: `${((medTableWidth?.[conf.id] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                                                                conf.id as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -1988,14 +1979,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[conf.id] ||
+                                                        width: `${((medTableWidth?.[conf.id] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    conf.id as keyof typeof medOptions1.medIdToNameMapping
+                                                                conf.id as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="break-word whitespace-preline border medication-table-border-color p-4"
                                                 >
@@ -2021,7 +2011,7 @@ export const getMedications1Html = (
             totalWidthCount +=
                 medTableWidth?.[key] ||
                 medOptions1.allColumnWidthInNumber[
-                    key as keyof typeof medOptions1.medIdToNameMapping
+                key as keyof typeof medOptions1.medIdToNameMapping
                 ];
         }
     });
@@ -2082,20 +2072,19 @@ export const getMedications1Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[key] ||
+                                                width: `${((medTableWidth?.[key] ||
                                                         medOptions1.allColumnWidthInNumber[
-                                                            key as keyof typeof medOptions1.medIdToNameMapping
+                                                        key as keyof typeof medOptions1.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 medOptions1.medIdToNameMapping[
-                                                    key as keyof typeof medOptions1.medIdToNameMapping
+                                                key as keyof typeof medOptions1.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -2126,11 +2115,10 @@ export const getMedications1Html = (
                                     ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                         <>
                                             <span
-                                                className={`bold ${
-                                                    render_pdf_config?.medication_name_in_capital
+                                                className={`bold ${render_pdf_config?.medication_name_in_capital
                                                         ? 'uppercase'
                                                         : ''
-                                                }`}
+                                                    }`}
                                             >
                                                 {med?.name ? `${med?.name} ` : ''}
                                             </span>
@@ -2155,11 +2143,10 @@ export const getMedications1Html = (
                                         <>
                                             {med?.generic_name ? (
                                                 <p
-                                                    className={`bold ${
-                                                        render_pdf_config?.medication_name_in_capital
+                                                    className={`bold ${render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {med?.generic_name}{' '}
                                                 </p>
@@ -2195,14 +2182,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[key] ||
+                                                        width: `${((medTableWidth?.[key] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    key as keyof typeof medOptions1.medIdToNameMapping
+                                                                key as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -2215,14 +2201,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[key] ||
+                                                        width: `${((medTableWidth?.[key] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    key as keyof typeof medOptions1.medIdToNameMapping
+                                                                key as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -2242,14 +2227,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[key] ||
+                                                        width: `${((medTableWidth?.[key] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    key as keyof typeof medOptions1.medIdToNameMapping
+                                                                key as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -2270,14 +2254,13 @@ export const getMedications1Html = (
                                                 <td
                                                     style={{
                                                         borderColor: borderColor,
-                                                        width: `${
-                                                            ((medTableWidth?.[key] ||
+                                                        width: `${((medTableWidth?.[key] ||
                                                                 medOptions1.allColumnWidthInNumber[
-                                                                    key as keyof typeof medOptions1.medIdToNameMapping
+                                                                key as keyof typeof medOptions1.medIdToNameMapping
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="break-word whitespace-preline border medication-table-border-color p-4"
                                                 >
@@ -2390,7 +2373,7 @@ export const getMedications2Html = (
             totalWidthCount +=
                 medTableWidth?.[conf.id] ||
                 medOptions2.allColumnWidthInNumber[
-                    conf.id as keyof typeof medOptions2.medIdToNameMapping
+                conf.id as keyof typeof medOptions2.medIdToNameMapping
                 ];
         });
 
@@ -2445,20 +2428,19 @@ export const getMedications2Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[conf.id] ||
+                                                width: `${((medTableWidth?.[conf.id] ||
                                                         medOptions2.allColumnWidthInNumber[
-                                                            conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                        conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 medOptions2.medIdToNameMapping[
-                                                    conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -2489,11 +2471,10 @@ export const getMedications2Html = (
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
                                                     <span
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.name ? `${med?.name} ` : ''}
                                                     </span>
@@ -2515,11 +2496,10 @@ export const getMedications2Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
-                                                                render_pdf_config?.medication_name_in_capital
+                                                            className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {med?.generic_name}{' '}
                                                         </p>
@@ -2544,15 +2524,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2566,15 +2545,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2594,15 +2572,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2623,15 +2600,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions2.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2674,7 +2650,7 @@ export const getMedications2Html = (
             totalWidthCount +=
                 medTableWidth?.[key] ||
                 medOptions2.allColumnWidthInNumber[
-                    key as keyof typeof medOptions2.medIdToNameMapping
+                key as keyof typeof medOptions2.medIdToNameMapping
                 ];
         }
     });
@@ -2734,20 +2710,19 @@ export const getMedications2Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[key] ||
+                                                width: `${((medTableWidth?.[key] ||
                                                         medOptions2.allColumnWidthInNumber[
-                                                            key as keyof typeof medOptions2.medIdToNameMapping
+                                                        key as keyof typeof medOptions2.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 medOptions2.medIdToNameMapping[
-                                                    key as keyof typeof medOptions2.medIdToNameMapping
+                                                key as keyof typeof medOptions2.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -2779,11 +2754,10 @@ export const getMedications2Html = (
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.medication_name_in_capital
+                                                    className={`bold ${render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {med?.name ? `${med?.name} ` : ''}
                                                 </span>
@@ -2803,11 +2777,10 @@ export const getMedications2Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.generic_name}{' '}
                                                     </p>
@@ -2836,15 +2809,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions2.medIdToNameMapping
+                                                                    key as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2857,15 +2829,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions2.medIdToNameMapping
+                                                                    key as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2884,15 +2855,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions2.medIdToNameMapping
+                                                                    key as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -2912,15 +2882,14 @@ export const getMedications2Html = (
                                                     <td
                                                         style={{
                                                             borderColor: borderColor,
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions2
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions2.medIdToNameMapping
+                                                                    key as keyof typeof medOptions2.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="border medication-table-border-color p-4 text-center"
                                                     >
@@ -3051,7 +3020,7 @@ export const getMedications3Html = (
             totalWidthCount +=
                 medTableWidth?.[conf.id] ||
                 medOptions3.allColumnWidthInNumber[
-                    conf.id as keyof typeof medOptions3.medIdToNameMapping
+                conf.id as keyof typeof medOptions3.medIdToNameMapping
                 ];
         });
 
@@ -3103,20 +3072,19 @@ export const getMedications3Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[conf.id] ||
+                                                width: `${((medTableWidth?.[conf.id] ||
                                                         medOptions3.allColumnWidthInNumber[
-                                                            conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                        conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border-b medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 medOptions3.medIdToNameMapping[
-                                                    conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -3130,11 +3098,10 @@ export const getMedications3Html = (
                                 <>
                                     <tr
                                         style={{ borderColor: borderColor }}
-                                        className={`text-11 ${
-                                            med.instruction
+                                        className={`text-11 ${med.instruction
                                                 ? ''
                                                 : 'border-b medication-table-border-color'
-                                        }`}
+                                            }`}
                                     >
                                         <td
                                             style={{ width: `4%` }}
@@ -3151,11 +3118,10 @@ export const getMedications3Html = (
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
                                                     <span
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.name ? `${med?.name} ` : ''}
                                                     </span>
@@ -3177,11 +3143,10 @@ export const getMedications3Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
-                                                                render_pdf_config?.medication_name_in_capital
+                                                            className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {med?.generic_name}{' '}
                                                         </p>
@@ -3205,15 +3170,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -3226,15 +3190,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3253,15 +3216,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3281,15 +3243,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions3.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3328,7 +3289,7 @@ export const getMedications3Html = (
             totalWidthCount +=
                 medTableWidth?.[key] ||
                 medOptions3.allColumnWidthInNumber[
-                    key as keyof typeof medOptions3.medIdToNameMapping
+                key as keyof typeof medOptions3.medIdToNameMapping
                 ];
         }
     });
@@ -3382,7 +3343,7 @@ export const getMedications3Html = (
                                         >
                                             {
                                                 medOptions3.medIdToNameMapping[
-                                                    key as keyof typeof medOptions3.medIdToNameMapping
+                                                key as keyof typeof medOptions3.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -3397,11 +3358,10 @@ export const getMedications3Html = (
                             <>
                                 <tr
                                     style={{ borderColor: borderColor }}
-                                    className={`text-11 ${
-                                        med?.instruction
+                                    className={`text-11 ${med?.instruction
                                             ? ''
                                             : 'border-b medication-table-border-color'
-                                    }`}
+                                        }`}
                                 >
                                     <td style={{ width: `4%` }} className="bold p-4  text-center">
                                         {med?.ind || ''}
@@ -3412,11 +3372,10 @@ export const getMedications3Html = (
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.medication_name_in_capital
+                                                    className={`bold ${render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {med?.name ? `${med?.name} ` : ''}
                                                 </span>
@@ -3436,11 +3395,10 @@ export const getMedications3Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.generic_name}{' '}
                                                     </p>
@@ -3468,15 +3426,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions3.medIdToNameMapping
+                                                                    key as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -3488,15 +3445,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions3.medIdToNameMapping
+                                                                    key as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -3514,15 +3470,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions3.medIdToNameMapping
+                                                                    key as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3541,15 +3496,14 @@ export const getMedications3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions3.medIdToNameMapping
+                                                                    key as keyof typeof medOptions3.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3683,7 +3637,7 @@ export const getMedications4Html = (
             totalWidthCount +=
                 medTableWidth?.[conf.id] ||
                 medOptions4.allColumnWidthInNumber[
-                    conf.id as keyof typeof medOptions4.medIdToNameMapping
+                conf.id as keyof typeof medOptions4.medIdToNameMapping
                 ];
         });
 
@@ -3735,20 +3689,19 @@ export const getMedications4Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[conf.id] ||
+                                                width: `${((medTableWidth?.[conf.id] ||
                                                         medOptions4.allColumnWidthInNumber[
-                                                            conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border-b medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 medOptions4.medIdToNameMapping[
-                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -3762,11 +3715,10 @@ export const getMedications4Html = (
                                 <>
                                     <tr
                                         style={{ borderColor: borderColor }}
-                                        className={`text-11 ${
-                                            med.instruction
+                                        className={`text-11 ${med.instruction
                                                 ? ''
                                                 : 'border-b medication-table-border-color'
-                                        }`}
+                                            }`}
                                     >
                                         <td
                                             style={{ width: `4%` }}
@@ -3783,11 +3735,10 @@ export const getMedications4Html = (
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
                                                     <span
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.name ? `${med?.name} ` : ''}
                                                     </span>
@@ -3809,11 +3760,10 @@ export const getMedications4Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
-                                                                render_pdf_config?.medication_name_in_capital
+                                                            className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {med?.generic_name}{' '}
                                                         </p>
@@ -3837,15 +3787,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -3858,15 +3807,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3885,15 +3833,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3913,15 +3860,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -3934,15 +3880,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[conf.id] ||
+                                                            width: `${((medTableWidth?.[conf.id] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        conf.id as keyof typeof medOptions4.medIdToNameMapping
+                                                                    conf.id as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="break-all whitespace-preline p-4 text-left"
                                                     >
@@ -3973,7 +3918,7 @@ export const getMedications4Html = (
             totalWidthCount +=
                 medTableWidth?.[key] ||
                 medOptions4.allColumnWidthInNumber[
-                    key as keyof typeof medOptions4.medIdToNameMapping
+                key as keyof typeof medOptions4.medIdToNameMapping
                 ];
         }
     });
@@ -4030,20 +3975,19 @@ export const getMedications4Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((medTableWidth?.[key] ||
+                                                width: `${((medTableWidth?.[key] ||
                                                         medOptions4.allColumnWidthInNumber[
-                                                            key as keyof typeof medOptions4.medIdToNameMapping
+                                                        key as keyof typeof medOptions4.medIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border-b medication-table-border-color medication-title-color w-64 text-center p-4"
                                         >
                                             {
                                                 medOptions4.medIdToNameMapping[
-                                                    key as keyof typeof medOptions4.medIdToNameMapping
+                                                key as keyof typeof medOptions4.medIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -4058,11 +4002,10 @@ export const getMedications4Html = (
                             <>
                                 <tr
                                     style={{ borderColor: borderColor }}
-                                    className={`text-11 ${
-                                        med?.instruction
+                                    className={`text-11 ${med?.instruction
                                             ? ''
                                             : 'border-b medication-table-border-color'
-                                    }`}
+                                        }`}
                                 >
                                     <td style={{ width: `4%` }} className="bold p-4  text-center">
                                         {med?.ind || ''}
@@ -4073,11 +4016,10 @@ export const getMedications4Html = (
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.medication_name_in_capital
+                                                    className={`bold ${render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {med?.name ? `${med?.name} ` : ''}
                                                 </span>
@@ -4097,11 +4039,10 @@ export const getMedications4Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
-                                                            render_pdf_config?.medication_name_in_capital
+                                                        className={`bold ${render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {med?.generic_name}{' '}
                                                     </p>
@@ -4129,15 +4070,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions4.medIdToNameMapping
+                                                                    key as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -4149,15 +4089,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions4.medIdToNameMapping
+                                                                    key as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -4175,15 +4114,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions4.medIdToNameMapping
+                                                                    key as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -4202,15 +4140,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions4.medIdToNameMapping
+                                                                    key as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className=" p-4 text-center"
                                                     >
@@ -4223,15 +4160,14 @@ export const getMedications4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((medTableWidth?.[key] ||
+                                                            width: `${((medTableWidth?.[key] ||
                                                                     medOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof medOptions4.medIdToNameMapping
+                                                                    key as keyof typeof medOptions4.medIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="break-all whitespace-preline p-4 text-left"
                                                     >
@@ -4292,11 +4228,10 @@ export const getDyformHtml = (d: RenderPdfPrescription, id: string, config: Temp
                                     <span className="flex items-start space-x-8">
                                         <div className="flex items-center space-x-4">
                                             <span
-                                                className={`dyform-title-color ${
-                                                    config?.render_pdf_config?.dyform_in_unbold
+                                                className={`dyform-title-color ${config?.render_pdf_config?.dyform_in_unbold
                                                         ? ''
                                                         : 'bold'
-                                                }`}
+                                                    }`}
                                             >
                                                 <span
                                                     style={{
@@ -4341,11 +4276,10 @@ export const getDyformHtml = (d: RenderPdfPrescription, id: string, config: Temp
                             <span className="flex items-start space-x-8">
                                 <div className="flex items-center space-x-4">
                                     <span
-                                        className={`dyform-title-color ${
-                                            config?.render_pdf_config?.dyform_in_unbold
+                                        className={`dyform-title-color ${config?.render_pdf_config?.dyform_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        }`}
+                                            }`}
                                     >
                                         <span
                                             style={{
@@ -4425,11 +4359,10 @@ export const getReferredToHtml = (
                                         style={{
                                             color: propertiesColor,
                                         }}
-                                        className={`${
-                                            config?.render_pdf_config?.referred_to_in_unbold
+                                        className={`${config?.render_pdf_config?.referred_to_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        }`}
+                                            }`}
                                     >
                                         {ref?.ref_heading}
                                     </span>
@@ -4474,11 +4407,10 @@ export const getReferredToHtml = (
                                             style={{
                                                 color: propertiesColor,
                                             }}
-                                            className={`${
-                                                config?.render_pdf_config?.referred_to_in_unbold
+                                            className={`${config?.render_pdf_config?.referred_to_in_unbold
                                                     ? ''
                                                     : 'bold'
-                                            }`}
+                                                }`}
                                         >
                                             {ref?.ref_heading}
                                         </span>
@@ -4537,9 +4469,8 @@ export const getFollowupHtml = (
                         <span>
                             Visit on{' '}
                             <span
-                                className={`${
-                                    config.render_pdf_config?.followup_in_unbold ? '' : 'bold'
-                                }`}
+                                className={`${config.render_pdf_config?.followup_in_unbold ? '' : 'bold'
+                                    }`}
                                 style={{
                                     color: followupDateColor,
                                 }}
@@ -4589,9 +4520,8 @@ export const getAdvicesHtml = (
                         return (
                             <>
                                 <div
-                                    className={`whitespace-preline flex flex-col tiny-mce ${
-                                        language === 'mr' || language === 'hi' ? 'text-13' : ''
-                                    }`}
+                                    className={`whitespace-preline flex flex-col tiny-mce ${language === 'mr' || language === 'hi' ? 'text-13' : ''
+                                        }`}
                                     style={{
                                         width: 'fit-content',
                                         color: propertiesColor,
@@ -4629,9 +4559,8 @@ export const getAdvicesHtml = (
                     return (
                         <li>
                             <span
-                                className={`whitespace-preline flex flex-col tiny-mce ${
-                                    language === 'mr' || language === 'hi' ? 'text-13' : ''
-                                }`}
+                                className={`whitespace-preline flex flex-col tiny-mce ${language === 'mr' || language === 'hi' ? 'text-13' : ''
+                                    }`}
                                 dangerouslySetInnerHTML={{
                                     __html: advice?.text || advice?.parsedText || '',
                                 }}
@@ -4717,15 +4646,13 @@ export const getLabTestsHtml = (
                         return (
                             <li className="pl-16">
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.lab_tests_name_in_unbold
+                                    className={`${config.render_pdf_config?.lab_tests_name_in_unbold
                                             ? ''
                                             : 'bold'
-                                    } ${
-                                        config.render_pdf_config?.lab_tests_name_in_capital
+                                        } ${config.render_pdf_config?.lab_tests_name_in_capital
                                             ? 'uppercase'
                                             : ''
-                                    }`}
+                                        }`}
                                     style={{
                                         color: nameColor,
                                     }}
@@ -4742,14 +4669,14 @@ export const getLabTestsHtml = (
                                             (
                                             {labTest?.test_on
                                                 ? `On: ${buildFollowUpLabel(
-                                                      labTest?.test_on || '',
-                                                  )}`
+                                                    labTest?.test_on || '',
+                                                )}`
                                                 : ''}
                                             {labTest?.test_on && labTest?.repeat_on ? ' | ' : ''}
                                             {labTest?.repeat_on
                                                 ? `Repeat: ${buildFollowUpLabel(
-                                                      labTest?.repeat_on || '',
-                                                  )}`
+                                                    labTest?.repeat_on || '',
+                                                )}`
                                                 : ''}
                                             )
                                         </span>
@@ -4778,13 +4705,11 @@ export const getLabTestsHtml = (
                     return (
                         <span>
                             <span
-                                className={`${
-                                    config.render_pdf_config?.lab_tests_name_in_unbold ? '' : 'bold'
-                                } ${
-                                    config.render_pdf_config?.lab_tests_name_in_capital
+                                className={`${config.render_pdf_config?.lab_tests_name_in_unbold ? '' : 'bold'
+                                    } ${config.render_pdf_config?.lab_tests_name_in_capital
                                         ? 'uppercase'
                                         : ''
-                                }`}
+                                    }`}
                                 style={{
                                     color: nameColor,
                                 }}
@@ -4805,8 +4730,8 @@ export const getLabTestsHtml = (
                                         {labTest?.test_on && labTest?.repeat_on ? ' | ' : ''}
                                         {labTest?.repeat_on
                                             ? `Repeat: ${buildFollowUpLabel(
-                                                  labTest?.repeat_on || '',
-                                              )}`
+                                                labTest?.repeat_on || '',
+                                            )}`
                                             : ''}
                                         )
                                     </span>
@@ -4957,15 +4882,13 @@ export const getSymptomsHtml = (
                             return (
                                 <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                     <span
-                                        className={`${
-                                            config.render_pdf_config?.symptoms_name_in_unbold
+                                        className={`${config.render_pdf_config?.symptoms_name_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        } ${
-                                            config.render_pdf_config?.symptoms_name_in_capital
+                                            } ${config.render_pdf_config?.symptoms_name_in_capital
                                                 ? 'uppercase'
                                                 : ''
-                                        }`}
+                                            }`}
                                         style={{
                                             color: nameColor,
                                         }}
@@ -4994,15 +4917,13 @@ export const getSymptomsHtml = (
                         return (
                             <>
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.symptoms_name_in_unbold
+                                    className={`${config.render_pdf_config?.symptoms_name_in_unbold
                                             ? ''
                                             : 'bold'
-                                    } ${
-                                        config.render_pdf_config?.symptoms_name_in_capital
+                                        } ${config.render_pdf_config?.symptoms_name_in_capital
                                             ? 'uppercase'
                                             : ''
-                                    }`}
+                                        }`}
                                     style={{
                                         color: nameColor,
                                     }}
@@ -5077,15 +4998,13 @@ export const getDiagnosisHtml = (
                             return (
                                 <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                     <span
-                                        className={`${
-                                            config.render_pdf_config?.diagnosis_name_in_unbold
+                                        className={`${config.render_pdf_config?.diagnosis_name_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        } ${
-                                            config.render_pdf_config?.diagnosis_name_in_capital
+                                            } ${config.render_pdf_config?.diagnosis_name_in_capital
                                                 ? 'uppercase'
                                                 : ''
-                                        }`}
+                                            }`}
                                         style={{
                                             color: nameColor,
                                         }}
@@ -5113,15 +5032,13 @@ export const getDiagnosisHtml = (
                         return (
                             <>
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.diagnosis_name_in_unbold
+                                    className={`${config.render_pdf_config?.diagnosis_name_in_unbold
                                             ? ''
                                             : 'bold'
-                                    } ${
-                                        config.render_pdf_config?.diagnosis_name_in_capital
+                                        } ${config.render_pdf_config?.diagnosis_name_in_capital
                                             ? 'uppercase'
                                             : ''
-                                    }`}
+                                        }`}
                                     style={{
                                         color: nameColor,
                                     }}
@@ -5226,11 +5143,10 @@ export const getPmhHtml = (
                             return (
                                 <li className="pl-16">
                                     <span
-                                        className={`${
-                                            config.render_pdf_config?.medical_history_name_in_unbold
+                                        className={`${config.render_pdf_config?.medical_history_name_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        }`}
+                                            }`}
                                         style={{
                                             color: sectionNameColor || nameColor,
                                         }}
@@ -5253,11 +5169,10 @@ export const getPmhHtml = (
                         return (
                             <>
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.medical_history_name_in_unbold
+                                    className={`${config.render_pdf_config?.medical_history_name_in_unbold
                                             ? ''
                                             : 'bold'
-                                    }`}
+                                        }`}
                                     style={{
                                         color: sectionNameColor || nameColor,
                                     }}
@@ -5318,12 +5233,11 @@ export const getExaminationFindingsHtml = (
                             return (
                                 <li className="pl-16">
                                     <span
-                                        className={`${
-                                            config.render_pdf_config
+                                        className={`${config.render_pdf_config
                                                 ?.examination_findings_name_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        }`}
+                                            }`}
                                         style={{
                                             color: nameColor,
                                         }}
@@ -5346,12 +5260,11 @@ export const getExaminationFindingsHtml = (
                         return (
                             <>
                                 <span
-                                    className={`${
-                                        config.render_pdf_config
+                                    className={`${config.render_pdf_config
                                             ?.examination_findings_name_in_unbold
                                             ? ''
                                             : 'bold'
-                                    }`}
+                                        }`}
                                     style={{
                                         color: nameColor,
                                     }}
@@ -5475,11 +5388,10 @@ export const getInvestigativeReadingsHtml = (
                                 <li className="pl-16">
                                     {labVital?.name && (
                                         <span
-                                            className={`uppercase ${
-                                                config.render_pdf_config?.lab_vitals_name_in_unbold
+                                            className={`uppercase ${config.render_pdf_config?.lab_vitals_name_in_unbold
                                                     ? ''
                                                     : 'bold'
-                                            }`}
+                                                }`}
                                             style={{
                                                 color: nameColor,
                                             }}
@@ -5504,11 +5416,10 @@ export const getInvestigativeReadingsHtml = (
                             <>
                                 {labVital?.name && (
                                     <span
-                                        className={`uppercase ${
-                                            config.render_pdf_config?.lab_vitals_name_in_unbold
+                                        className={`uppercase ${config.render_pdf_config?.lab_vitals_name_in_unbold
                                                 ? ''
                                                 : 'bold'
-                                        }`}
+                                            }`}
                                         style={{
                                             color: nameColor,
                                         }}
@@ -5571,9 +5482,8 @@ export const getVitalsHtml = (
                             return (
                                 <li className="pl-16">
                                     <span
-                                        className={`uppercase ${
-                                            config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
-                                        }`}
+                                        className={`uppercase ${config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                            }`}
                                         style={{
                                             color: nameColor,
                                         }}
@@ -5643,18 +5553,15 @@ export const getVitalsHtml = (
                                         <td className="p-4 border medication-table-border-color text-center">
                                             {!value.safe
                                                 ? ''
-                                                : `${
-                                                      (value.safe.normal_value
-                                                          ? `${value.safe.normal_value} ${
-                                                                value.unit || ''
-                                                            }`
-                                                          : '') ||
-                                                      (value.safe.low && value.safe.high
-                                                          ? `${value.safe.low} - ${
-                                                                value.safe.high
-                                                            } ${value.unit || ''}`
-                                                          : '')
-                                                  }`}
+                                                : `${(value.safe.normal_value
+                                                    ? `${value.safe.normal_value} ${value.unit || ''
+                                                    }`
+                                                    : '') ||
+                                                (value.safe.low && value.safe.high
+                                                    ? `${value.safe.low} - ${value.safe.high
+                                                    } ${value.unit || ''}`
+                                                    : '')
+                                                }`}
                                         </td>
                                     </tr>
                                 );
@@ -5666,9 +5573,8 @@ export const getVitalsHtml = (
                         return (
                             <>
                                 <span
-                                    className={`uppercase ${
-                                        config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
-                                    }`}
+                                    className={`uppercase ${config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                        }`}
                                     style={{
                                         color: nameColor,
                                     }}
@@ -5779,21 +5685,19 @@ export const getFormDataHtml = (
                             </span>
                             {(commonFormData?.length || 0) - 1 === i ? (
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.patient_form_data_in_unbold
+                                    className={`${config.render_pdf_config?.patient_form_data_in_unbold
                                             ? ''
                                             : 'bold'
-                                    }`}
+                                        }`}
                                 >
                                     .
                                 </span>
                             ) : (
                                 <span
-                                    className={`${
-                                        config.render_pdf_config?.patient_form_data_in_unbold
+                                    className={`${config.render_pdf_config?.patient_form_data_in_unbold
                                             ? ''
                                             : 'bold'
-                                    }`}
+                                        }`}
                                 >
                                     &nbsp; | &nbsp;
                                 </span>
@@ -5818,9 +5722,8 @@ export const getFormDataHtml = (
                 return (
                     <>
                         <span
-                            className={`${
-                                config.render_pdf_config?.patient_form_data_in_unbold ? '' : 'bold'
-                            } break-all`}
+                            className={`${config.render_pdf_config?.patient_form_data_in_unbold ? '' : 'bold'
+                                } break-all`}
                             style={{
                                 color: nameColor,
                             }}
@@ -5838,21 +5741,19 @@ export const getFormDataHtml = (
                         </span>
                         {(commonFormData?.length || 0) - 1 === i ? (
                             <span
-                                className={`${
-                                    config.render_pdf_config?.patient_form_data_in_unbold
+                                className={`${config.render_pdf_config?.patient_form_data_in_unbold
                                         ? ''
                                         : 'bold'
-                                }`}
+                                    }`}
                             >
                                 .
                             </span>
                         ) : (
                             <span
-                                className={`${
-                                    config.render_pdf_config?.patient_form_data_in_unbold
+                                className={`${config.render_pdf_config?.patient_form_data_in_unbold
                                         ? ''
                                         : 'bold'
-                                }`}
+                                    }`}
                             >
                                 ,
                             </span>
@@ -5930,17 +5831,16 @@ export const getPatientDetailsHtml = (
             .filter(Boolean)
             .join(' / ');
 
-        const mobileNumber = `${d?.patient?.profile?.personal?.phone?.c || ''}${
-            d?.patient?.profile?.personal?.phone?.n || ''
-        }`;
+        const mobileNumber = `${d?.patient?.profile?.personal?.phone?.c || ''}${d?.patient?.profile?.personal?.phone?.n || ''
+            }`;
 
         return (
             <div
                 style={
                     patientDetailsUppercase
                         ? {
-                              textTransform: 'uppercase',
-                          }
+                            textTransform: 'uppercase',
+                        }
                         : undefined
                 }
             >
@@ -5976,8 +5876,7 @@ export const getPatientDetailsHtml = (
     const patientDetails = [
         d?.patient?.profile?.personal?.gender,
         d?.patientAge,
-        `${d?.patient?.profile?.personal?.phone?.c || ''}${
-            d?.patient?.profile?.personal?.phone?.n || ''
+        `${d?.patient?.profile?.personal?.phone?.c || ''}${d?.patient?.profile?.personal?.phone?.n || ''
         }`,
     ].filter(Boolean);
 
@@ -5986,8 +5885,8 @@ export const getPatientDetailsHtml = (
             style={
                 patientDetailsUppercase
                     ? {
-                          textTransform: 'uppercase',
-                      }
+                        textTransform: 'uppercase',
+                    }
                     : undefined
             }
         >
@@ -6033,11 +5932,10 @@ export const getDentalExaminationsHtml = (
                 {Object.entries(groupByTooth).map((t) => {
                     const teeth = uniq(
                         t[1].map((i) => {
-                            return `${TEETH_TO_NAME[i.teeth_id || ''] || `T${i.teeth_id}`} ${
-                                i.surfaces &&
+                            return `${TEETH_TO_NAME[i.teeth_id || ''] || `T${i.teeth_id}`} ${i.surfaces &&
                                 i.surfaces.length > 0 &&
                                 `(${i.surfaces?.map((i) => i.name)})`
-                            }`;
+                                }`;
                         }),
                     ).join(', ');
                     const examinations = uniq(
@@ -6257,8 +6155,8 @@ export const getDentalProceduresHtml = (
                                             {remark
                                                 ? remark
                                                 : conducted_by || assisted_by
-                                                ? ''
-                                                : '-'}
+                                                    ? ''
+                                                    : '-'}
                                         </p>
                                         {conducted_by && <p>Conducted By: {conducted_by}</p>}
                                         {assisted_by && <p>Assisted By: {assisted_by}</p>}
@@ -6313,7 +6211,7 @@ export const getOphthalmologyHtml = (
 
     const sortCols = cols.map((col) => col.key);
     const keysArray = [...allKeys];
-    const sortedAllKeys = sortCols.filter((key) => keysArray.includes(key));
+    const sortedAllKeys = sortCols.filter((key) => keysArray.includes(key as string));
     const allKeysArray = [...sortedAllKeys];
 
     return (
@@ -6370,7 +6268,7 @@ export const getOphthalmologyHtml = (
                                             style={{ borderColor: borderColor }}
                                             className="p-4 border text-center medication-table-border-color"
                                         >
-                                            {data?.[key]?.custom}
+                                            {data?.[key as string]?.custom}
                                         </td>
                                     );
                                 })}
@@ -6926,9 +6824,8 @@ export const getProceduresHtmls = (
                         {procedures.map((procedure) => (
                             <li className="pl-16">
                                 <span
-                                    className={`uppercase ${
-                                        config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                                    }`}
+                                    className={`uppercase ${config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                                        }`}
                                     style={{ color: nameColor }}
                                 >
                                     {procedure?.name || ''}
@@ -7006,9 +6903,8 @@ export const getProceduresHtmls = (
                     procedures.map((procedure, i) => (
                         <>
                             <span
-                                className={`uppercase ${
-                                    config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                                }`}
+                                className={`uppercase ${config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                                    }`}
                                 style={{ color: nameColor }}
                             >
                                 {procedure?.name || ''}
@@ -7538,7 +7434,7 @@ export const getInjections1Html = (
             totalWidthCount +=
                 tableWidth?.[key] ||
                 injOptions1.allColumnWidthInNumber[
-                    key as keyof typeof injOptions1.allColumnWidthInNumber
+                key as keyof typeof injOptions1.allColumnWidthInNumber
                 ];
         }
     });
@@ -7587,20 +7483,19 @@ export const getInjections1Html = (
                                                 style={{
                                                     borderColor,
                                                     backgroundColor: titleBgColor,
-                                                    width: `${
-                                                        ((tableWidth?.[key] ||
+                                                    width: `${((tableWidth?.[key] ||
                                                             injOptions1.allColumnWidthInNumber[
-                                                                key as keyof typeof injOptions1.allColumnWidthInNumber
+                                                            key as keyof typeof injOptions1.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color bold text-center p-4"
                                             >
                                                 {
                                                     injOptions1.injIdToNameMapping[
-                                                        key as keyof typeof injOptions1.injIdToNameMapping
+                                                    key as keyof typeof injOptions1.injIdToNameMapping
                                                     ]
                                                 }
                                             </th>
@@ -7626,11 +7521,10 @@ export const getInjections1Html = (
                                         {render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.generic_name
                                                         ? `${inj?.generic_name} `
@@ -7644,11 +7538,10 @@ export const getInjections1Html = (
 
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.generic_name
                                                                 ? ` (${drug.generic_name})`
@@ -7664,11 +7557,10 @@ export const getInjections1Html = (
                                         ) : (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.name}{' '}
                                                 </span>
@@ -7684,11 +7576,10 @@ export const getInjections1Html = (
                                                         {' + '}
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.name ? ` ${drug.name}` : null}
                                                         </span>
@@ -7705,14 +7596,13 @@ export const getInjections1Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['dose'] ||
+                                                width: `${((tableWidth?.['dose'] ||
                                                         injOptions1.allColumnWidthInNumber[
-                                                            'dose' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                        'dose' as keyof typeof injOptions1.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -7742,14 +7632,13 @@ export const getInjections1Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['route'] ||
+                                                width: `${((tableWidth?.['route'] ||
                                                         injOptions1.allColumnWidthInNumber[
-                                                            'route' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                        'route' as keyof typeof injOptions1.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -7781,14 +7670,13 @@ export const getInjections1Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['frequency'] ||
+                                                width: `${((tableWidth?.['frequency'] ||
                                                         injOptions1.allColumnWidthInNumber[
-                                                            'frequency' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                        'frequency' as keyof typeof injOptions1.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -7826,14 +7714,13 @@ export const getInjections1Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['instruction'] ||
+                                                width: `${((tableWidth?.['instruction'] ||
                                                         injOptions1.allColumnWidthInNumber[
-                                                            'instruction' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                        'instruction' as keyof typeof injOptions1.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4"
                                         >
@@ -7858,14 +7745,13 @@ export const getInjections1Html = (
                                             <td
                                                 style={{
                                                     borderColor,
-                                                    width: `${
-                                                        ((tableWidth?.['dose'] ||
+                                                    width: `${((tableWidth?.['dose'] ||
                                                             injOptions1.allColumnWidthInNumber[
-                                                                'dose' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                            'dose' as keyof typeof injOptions1.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color p-4 text-center"
                                             >
@@ -7876,14 +7762,13 @@ export const getInjections1Html = (
                                             <td
                                                 style={{
                                                     borderColor,
-                                                    width: `${
-                                                        ((tableWidth?.['route'] ||
+                                                    width: `${((tableWidth?.['route'] ||
                                                             injOptions1.allColumnWidthInNumber[
-                                                                'route' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                            'route' as keyof typeof injOptions1.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color p-4 text-center"
                                             >
@@ -7922,14 +7807,13 @@ export const getInjections1Html = (
                                             <td
                                                 style={{
                                                     borderColor,
-                                                    width: `${
-                                                        ((tableWidth?.['frequency'] ||
+                                                    width: `${((tableWidth?.['frequency'] ||
                                                             injOptions1.allColumnWidthInNumber[
-                                                                'frequency' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                            'frequency' as keyof typeof injOptions1.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color p-4 text-center"
                                             >
@@ -7979,14 +7863,13 @@ export const getInjections1Html = (
                                             <td
                                                 style={{
                                                     borderColor,
-                                                    width: `${
-                                                        ((tableWidth?.['instruction'] ||
+                                                    width: `${((tableWidth?.['instruction'] ||
                                                             injOptions1.allColumnWidthInNumber[
-                                                                'instruction' as keyof typeof injOptions1.allColumnWidthInNumber
+                                                            'instruction' as keyof typeof injOptions1.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color p-4"
                                             >
@@ -8060,7 +7943,7 @@ export const getInjections2Html = (
             totalWidthCount +=
                 tableWidth?.[key] ||
                 injOptions2.allColumnWidthInNumber[
-                    key as keyof typeof injOptions2.allColumnWidthInNumber
+                key as keyof typeof injOptions2.allColumnWidthInNumber
                 ];
         }
     });
@@ -8113,20 +7996,19 @@ export const getInjections2Html = (
                                                 style={{
                                                     borderColor,
                                                     backgroundColor: titleBgColor,
-                                                    width: `${
-                                                        ((tableWidth?.[key] ||
+                                                    width: `${((tableWidth?.[key] ||
                                                             injOptions2.allColumnWidthInNumber[
-                                                                key as keyof typeof injOptions2.allColumnWidthInNumber
+                                                            key as keyof typeof injOptions2.allColumnWidthInNumber
                                                             ]) /
                                                             totalWidthCount) *
                                                         96
-                                                    }%`,
+                                                        }%`,
                                                 }}
                                                 className="border medication-table-border-color bold text-center p-4"
                                             >
                                                 {
                                                     injOptions2.injIdToNameMapping[
-                                                        key as keyof typeof injOptions2.injIdToNameMapping
+                                                    key as keyof typeof injOptions2.injIdToNameMapping
                                                     ]
                                                 }
                                             </th>
@@ -8153,11 +8035,10 @@ export const getInjections2Html = (
                                         {render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.generic_name
                                                         ? `${inj?.generic_name} `
@@ -8171,11 +8052,10 @@ export const getInjections2Html = (
 
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.generic_name
                                                                 ? ` (${drug.generic_name})`
@@ -8191,11 +8071,10 @@ export const getInjections2Html = (
                                         ) : (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.name}{' '}
                                                 </span>
@@ -8211,11 +8090,10 @@ export const getInjections2Html = (
                                                         {' + '}
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.name ? ` ${drug.name}` : null}
                                                         </span>
@@ -8233,14 +8111,13 @@ export const getInjections2Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['dose'] ||
+                                                width: `${((tableWidth?.['dose'] ||
                                                         injOptions2.allColumnWidthInNumber[
-                                                            'dose' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                        'dose' as keyof typeof injOptions2.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -8264,14 +8141,13 @@ export const getInjections2Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['route'] ||
+                                                width: `${((tableWidth?.['route'] ||
                                                         injOptions2.allColumnWidthInNumber[
-                                                            'route' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                        'route' as keyof typeof injOptions2.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -8304,14 +8180,13 @@ export const getInjections2Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['frequency'] ||
+                                                width: `${((tableWidth?.['frequency'] ||
                                                         injOptions2.allColumnWidthInNumber[
-                                                            'frequency' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                        'frequency' as keyof typeof injOptions2.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -8350,14 +8225,13 @@ export const getInjections2Html = (
                                         <td
                                             style={{
                                                 borderColor,
-                                                width: `${
-                                                    ((tableWidth?.['duration'] ||
+                                                width: `${((tableWidth?.['duration'] ||
                                                         injOptions2.allColumnWidthInNumber[
-                                                            'duration' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                        'duration' as keyof typeof injOptions2.allColumnWidthInNumber
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border medication-table-border-color p-4 text-center"
                                         >
@@ -8404,14 +8278,13 @@ export const getInjections2Html = (
                                                 <td
                                                     style={{
                                                         borderColor,
-                                                        width: `${
-                                                            ((tableWidth?.['dose'] ||
+                                                        width: `${((tableWidth?.['dose'] ||
                                                                 injOptions2.allColumnWidthInNumber[
-                                                                    'dose' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                                'dose' as keyof typeof injOptions2.allColumnWidthInNumber
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -8422,14 +8295,13 @@ export const getInjections2Html = (
                                                 <td
                                                     style={{
                                                         borderColor,
-                                                        width: `${
-                                                            ((tableWidth?.['route'] ||
+                                                        width: `${((tableWidth?.['route'] ||
                                                                 injOptions2.allColumnWidthInNumber[
-                                                                    'route' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                                'route' as keyof typeof injOptions2.allColumnWidthInNumber
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -8469,14 +8341,13 @@ export const getInjections2Html = (
                                                 <td
                                                     style={{
                                                         borderColor,
-                                                        width: `${
-                                                            ((tableWidth?.['frequency'] ||
+                                                        width: `${((tableWidth?.['frequency'] ||
                                                                 injOptions2.allColumnWidthInNumber[
-                                                                    'frequency' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                                'frequency' as keyof typeof injOptions2.allColumnWidthInNumber
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4 text-center"
                                                 >
@@ -8529,14 +8400,13 @@ export const getInjections2Html = (
                                                 <td
                                                     style={{
                                                         borderColor,
-                                                        width: `${
-                                                            ((tableWidth?.['instruction'] ||
+                                                        width: `${((tableWidth?.['instruction'] ||
                                                                 injOptions2.allColumnWidthInNumber[
-                                                                    'instruction' as keyof typeof injOptions2.allColumnWidthInNumber
+                                                                'instruction' as keyof typeof injOptions2.allColumnWidthInNumber
                                                                 ]) /
                                                                 totalWidthCount) *
                                                             96
-                                                        }%`,
+                                                            }%`,
                                                     }}
                                                     className="border medication-table-border-color p-4"
                                                 >
@@ -8633,7 +8503,7 @@ export const getInjections3Html = (
             totalWidthCount +=
                 tableWidth?.[key] ||
                 injOptions3.allColumnWidthInNumber[
-                    key as keyof typeof injOptions3.injIdToNameMapping
+                key as keyof typeof injOptions3.injIdToNameMapping
                 ];
         }
     });
@@ -8690,20 +8560,19 @@ export const getInjections3Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((tableWidth?.[key] ||
+                                                width: `${((tableWidth?.[key] ||
                                                         injOptions3.allColumnWidthInNumber[
-                                                            key as keyof typeof injOptions3.injIdToNameMapping
+                                                        key as keyof typeof injOptions3.injIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border-b medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 injOptions3.injIdToNameMapping[
-                                                    key as keyof typeof injOptions3.injIdToNameMapping
+                                                key as keyof typeof injOptions3.injIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -8718,11 +8587,10 @@ export const getInjections3Html = (
                             <React.Fragment key={`inj-${index}`}>
                                 <tr
                                     style={{ borderColor: borderColor }}
-                                    className={`text-11 ${
-                                        inj?.instructions
+                                    className={`text-11 ${inj?.instructions
                                             ? ''
                                             : 'border-b medication-table-border-color'
-                                    }`}
+                                        }`}
                                 >
                                     <td style={{ width: `4%` }} className="bold p-4 text-center">
                                         {index + 1}
@@ -8731,11 +8599,10 @@ export const getInjections3Html = (
                                         {render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.generic_name
                                                         ? `${inj?.generic_name} `
@@ -8749,11 +8616,10 @@ export const getInjections3Html = (
 
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.generic_name
                                                                 ? ` (${drug.generic_name})`
@@ -8769,11 +8635,10 @@ export const getInjections3Html = (
                                         ) : (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.name}{' '}
                                                 </span>
@@ -8789,11 +8654,10 @@ export const getInjections3Html = (
                                                         {' + '}
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.name ? ` ${drug.name}` : null}
                                                         </span>
@@ -8817,15 +8681,14 @@ export const getInjections3Html = (
                                                     <td
                                                         className="p-4 text-center"
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions3.injIdToNameMapping
+                                                                    key as keyof typeof injOptions3.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                     >
                                                         {/* {inj?.dose?.custom || ''} */}
@@ -8849,15 +8712,14 @@ export const getInjections3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions3.injIdToNameMapping
+                                                                    key as keyof typeof injOptions3.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -8897,15 +8759,14 @@ export const getInjections3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions3.injIdToNameMapping
+                                                                    key as keyof typeof injOptions3.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -8918,7 +8779,7 @@ export const getInjections3Html = (
                                                             ) : null}
                                                             {inj?.frequency?.time_split &&
                                                                 inj?.frequency.time_split.length >
-                                                                    0 && <br />}
+                                                                0 && <br />}
                                                             {inj?.frequency?.time_split?.map(
                                                                 (time, timeIdx, array) => (
                                                                     <span key={`time-${timeIdx}`}>
@@ -8932,11 +8793,11 @@ export const getInjections3Html = (
                                                                             ? ` - ${time?.custom}`
                                                                             : null}
                                                                         {timeIdx !==
-                                                                        array.length - 1
+                                                                            array.length - 1
                                                                             ? ','
                                                                             : ''}
                                                                         {timeIdx ===
-                                                                        array.length - 1
+                                                                            array.length - 1
                                                                             ? ']'
                                                                             : ''}
                                                                     </span>
@@ -8952,15 +8813,14 @@ export const getInjections3Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions3
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions3.injIdToNameMapping
+                                                                    key as keyof typeof injOptions3.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -8989,11 +8849,10 @@ export const getInjections3Html = (
                                         {' '}
                                         <tr
                                             style={{ borderColor: borderColor }}
-                                            className={`text-11 ${
-                                                taper?.instructions
+                                            className={`text-11 ${taper?.instructions
                                                     ? ''
                                                     : 'border-b medication-table-border-color'
-                                            }`}
+                                                }`}
                                         >
                                             <td style={{ width: `4%` }} className="p-4 text-center">
                                                 {''}
@@ -9010,15 +8869,14 @@ export const getInjections3Html = (
                                                         return (
                                                             <td
                                                                 style={{
-                                                                    width: `${
-                                                                        ((tableWidth?.[key] ||
+                                                                    width: `${((tableWidth?.[key] ||
                                                                             injOptions3
                                                                                 .allColumnWidthInNumber[
-                                                                                key as keyof typeof injOptions3.injIdToNameMapping
+                                                                            key as keyof typeof injOptions3.injIdToNameMapping
                                                                             ]) /
                                                                             totalWidthCount) *
                                                                         96
-                                                                    }%`,
+                                                                        }%`,
                                                                 }}
                                                                 className="p-4 text-center"
                                                             >
@@ -9046,15 +8904,14 @@ export const getInjections3Html = (
                                                         return (
                                                             <td
                                                                 style={{
-                                                                    width: `${
-                                                                        ((tableWidth?.[key] ||
+                                                                    width: `${((tableWidth?.[key] ||
                                                                             injOptions3
                                                                                 .allColumnWidthInNumber[
-                                                                                key as keyof typeof injOptions3.injIdToNameMapping
+                                                                            key as keyof typeof injOptions3.injIdToNameMapping
                                                                             ]) /
                                                                             totalWidthCount) *
                                                                         96
-                                                                    }%`,
+                                                                        }%`,
                                                                 }}
                                                                 className="p-4 text-center"
                                                             >
@@ -9098,15 +8955,14 @@ export const getInjections3Html = (
                                                         return (
                                                             <td
                                                                 style={{
-                                                                    width: `${
-                                                                        ((tableWidth?.[key] ||
+                                                                    width: `${((tableWidth?.[key] ||
                                                                             injOptions3
                                                                                 .allColumnWidthInNumber[
-                                                                                key as keyof typeof injOptions3.injIdToNameMapping
+                                                                            key as keyof typeof injOptions3.injIdToNameMapping
                                                                             ]) /
                                                                             totalWidthCount) *
                                                                         96
-                                                                    }%`,
+                                                                        }%`,
                                                                 }}
                                                                 className="p-4 text-center"
                                                             >
@@ -9140,11 +8996,11 @@ export const getInjections3Html = (
                                                                                     ? ` - ${time?.custom}`
                                                                                     : null}
                                                                                 {timeIdx !==
-                                                                                array.length - 1
+                                                                                    array.length - 1
                                                                                     ? ','
                                                                                     : ''}
                                                                                 {timeIdx ===
-                                                                                array.length - 1
+                                                                                    array.length - 1
                                                                                     ? ']'
                                                                                     : ''}
                                                                             </span>
@@ -9162,15 +9018,14 @@ export const getInjections3Html = (
                                                         return (
                                                             <td
                                                                 style={{
-                                                                    width: `${
-                                                                        ((tableWidth?.[key] ||
+                                                                    width: `${((tableWidth?.[key] ||
                                                                             injOptions3
                                                                                 .allColumnWidthInNumber[
-                                                                                key as keyof typeof injOptions3.injIdToNameMapping
+                                                                            key as keyof typeof injOptions3.injIdToNameMapping
                                                                             ]) /
                                                                             totalWidthCount) *
                                                                         96
-                                                                    }%`,
+                                                                        }%`,
                                                                 }}
                                                                 className="p-4 text-center"
                                                             >
@@ -9267,7 +9122,7 @@ export const getInjections4Html = (
             totalWidthCount +=
                 tableWidth?.[key] ||
                 injOptions4.allColumnWidthInNumber[
-                    key as keyof typeof injOptions4.injIdToNameMapping
+                key as keyof typeof injOptions4.injIdToNameMapping
                 ];
         }
     });
@@ -9324,20 +9179,19 @@ export const getInjections4Html = (
                                             style={{
                                                 borderColor: borderColor,
                                                 backgroundColor: titleBgColor,
-                                                width: `${
-                                                    ((tableWidth?.[key] ||
+                                                width: `${((tableWidth?.[key] ||
                                                         injOptions4.allColumnWidthInNumber[
-                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                         ]) /
                                                         totalWidthCount) *
                                                     96
-                                                }%`,
+                                                    }%`,
                                             }}
                                             className="border-b medication-table-border-color medication-title-color bold text-center p-4"
                                         >
                                             {
                                                 injOptions4.injIdToNameMapping[
-                                                    key as keyof typeof injOptions4.injIdToNameMapping
+                                                key as keyof typeof injOptions4.injIdToNameMapping
                                                 ]
                                             }
                                         </th>
@@ -9361,11 +9215,10 @@ export const getInjections4Html = (
                                         {render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.generic_name
                                                         ? `${inj?.generic_name} `
@@ -9379,11 +9232,10 @@ export const getInjections4Html = (
 
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.generic_name
                                                                 ? ` (${drug.generic_name})`
@@ -9399,11 +9251,10 @@ export const getInjections4Html = (
                                         ) : (
                                             <>
                                                 <span
-                                                    className={`bold ${
-                                                        render_pdf_config?.injections_name_in_capital
+                                                    className={`bold ${render_pdf_config?.injections_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {inj?.name}{' '}
                                                 </span>
@@ -9419,11 +9270,10 @@ export const getInjections4Html = (
                                                         {' + '}
                                                         <br />
                                                         <span
-                                                            className={`bold ${
-                                                                render_pdf_config?.injections_name_in_capital
+                                                            className={`bold ${render_pdf_config?.injections_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
-                                                            }`}
+                                                                }`}
                                                         >
                                                             {drug.name ? ` ${drug.name}` : null}
                                                         </span>
@@ -9446,15 +9296,14 @@ export const getInjections4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions4.injIdToNameMapping
+                                                                    key as keyof typeof injOptions4.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -9482,15 +9331,14 @@ export const getInjections4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions4.injIdToNameMapping
+                                                                    key as keyof typeof injOptions4.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -9530,15 +9378,14 @@ export const getInjections4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions4.injIdToNameMapping
+                                                                    key as keyof typeof injOptions4.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -9551,7 +9398,7 @@ export const getInjections4Html = (
                                                             ) : null}
                                                             {inj?.frequency?.time_split &&
                                                                 inj?.frequency.time_split.length >
-                                                                    0 && <br />}
+                                                                0 && <br />}
                                                             {inj?.frequency?.time_split?.map(
                                                                 (time, timeIdx, array) => (
                                                                     <span key={`time-${timeIdx}`}>
@@ -9565,11 +9412,11 @@ export const getInjections4Html = (
                                                                             ? ` - ${time?.custom}`
                                                                             : null}
                                                                         {timeIdx !==
-                                                                        array.length - 1
+                                                                            array.length - 1
                                                                             ? ','
                                                                             : ''}
                                                                         {timeIdx ===
-                                                                        array.length - 1
+                                                                            array.length - 1
                                                                             ? ']'
                                                                             : ''}
                                                                     </span>
@@ -9585,15 +9432,14 @@ export const getInjections4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions4.injIdToNameMapping
+                                                                    key as keyof typeof injOptions4.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="p-4 text-center"
                                                     >
@@ -9605,15 +9451,14 @@ export const getInjections4Html = (
                                                 return (
                                                     <td
                                                         style={{
-                                                            width: `${
-                                                                ((tableWidth?.[key] ||
+                                                            width: `${((tableWidth?.[key] ||
                                                                     injOptions4
                                                                         .allColumnWidthInNumber[
-                                                                        key as keyof typeof injOptions4.injIdToNameMapping
+                                                                    key as keyof typeof injOptions4.injIdToNameMapping
                                                                     ]) /
                                                                     totalWidthCount) *
                                                                 96
-                                                            }%`,
+                                                                }%`,
                                                         }}
                                                         className="break-all whitespace-preline p-4 text-left"
                                                     >
@@ -9652,15 +9497,14 @@ export const getInjections4Html = (
                                                     return (
                                                         <td
                                                             style={{
-                                                                width: `${
-                                                                    ((tableWidth?.[key] ||
+                                                                width: `${((tableWidth?.[key] ||
                                                                         injOptions4
                                                                             .allColumnWidthInNumber[
-                                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                                         ]) /
                                                                         totalWidthCount) *
                                                                     96
-                                                                }%`,
+                                                                    }%`,
                                                             }}
                                                             className="p-4 text-center"
                                                         >
@@ -9692,15 +9536,14 @@ export const getInjections4Html = (
                                                     return (
                                                         <td
                                                             style={{
-                                                                width: `${
-                                                                    ((tableWidth?.[key] ||
+                                                                width: `${((tableWidth?.[key] ||
                                                                         injOptions4
                                                                             .allColumnWidthInNumber[
-                                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                                         ]) /
                                                                         totalWidthCount) *
                                                                     96
-                                                                }%`,
+                                                                    }%`,
                                                             }}
                                                             className="p-4 text-center"
                                                         >
@@ -9744,15 +9587,14 @@ export const getInjections4Html = (
                                                     return (
                                                         <td
                                                             style={{
-                                                                width: `${
-                                                                    ((tableWidth?.[key] ||
+                                                                width: `${((tableWidth?.[key] ||
                                                                         injOptions4
                                                                             .allColumnWidthInNumber[
-                                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                                         ]) /
                                                                         totalWidthCount) *
                                                                     96
-                                                                }%`,
+                                                                    }%`,
                                                             }}
                                                             className="p-4 text-center"
                                                         >
@@ -9783,11 +9625,11 @@ export const getInjections4Html = (
                                                                                 ? ` - ${time?.custom}`
                                                                                 : null}
                                                                             {timeIdx !==
-                                                                            array.length - 1
+                                                                                array.length - 1
                                                                                 ? ','
                                                                                 : ''}
                                                                             {timeIdx ===
-                                                                            array.length - 1
+                                                                                array.length - 1
                                                                                 ? ']'
                                                                                 : ''}
                                                                         </span>
@@ -9805,15 +9647,14 @@ export const getInjections4Html = (
                                                     return (
                                                         <td
                                                             style={{
-                                                                width: `${
-                                                                    ((tableWidth?.[key] ||
+                                                                width: `${((tableWidth?.[key] ||
                                                                         injOptions4
                                                                             .allColumnWidthInNumber[
-                                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                                         ]) /
                                                                         totalWidthCount) *
                                                                     96
-                                                                }%`,
+                                                                    }%`,
                                                             }}
                                                             className="p-4 text-center"
                                                         >
@@ -9825,15 +9666,14 @@ export const getInjections4Html = (
                                                     return (
                                                         <td
                                                             style={{
-                                                                width: `${
-                                                                    ((tableWidth?.[key] ||
+                                                                width: `${((tableWidth?.[key] ||
                                                                         injOptions4
                                                                             .allColumnWidthInNumber[
-                                                                            key as keyof typeof injOptions4.injIdToNameMapping
+                                                                        key as keyof typeof injOptions4.injIdToNameMapping
                                                                         ]) /
                                                                         totalWidthCount) *
                                                                     96
-                                                                }%`,
+                                                                    }%`,
                                                             }}
                                                             className="break-all whitespace-preline p-4 text-left"
                                                         >
