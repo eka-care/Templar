@@ -1,4 +1,4 @@
-import { SectionNameConfig } from '../store/db';
+import { SectionNameConfig } from './types';
 import { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
 import {
     getAdvicesHtml,
@@ -28,7 +28,7 @@ import {
     getVitalsHtml,
     injectionsFormatToTableMapping,
     medicationFormatToTableMapping,
-} from "./templateUtils";
+} from './templateUtils';
 
 export const IGNORE_CONFIG_KEYS = new Set(['sym-dia', 'prescribe', 'followup', 'advices']);
 
