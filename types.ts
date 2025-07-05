@@ -1,5 +1,7 @@
 import { TemplateConfig } from './RenderPdfPrescription';
 
+export type Flavour = 'dw' | 'mw' | 'ip' | 'io' | 'an';
+
 export const isRXMT1 = 'isRXMT1';
 export const isRXMT2 = 'isRXMT2';
 export const isRXMT3 = 'isRXMT3';

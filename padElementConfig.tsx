@@ -28,9 +28,7 @@ import {
     getVitalsHtml,
     injectionsFormatToTableMapping,
     medicationFormatToTableMapping,
-} from './templateUtils';
-
-export const IGNORE_CONFIG_KEYS = new Set(['sym-dia', 'prescribe', 'followup', 'advices']);
+} from "../Templar/templateUtils";
 
 export const padElements = (
     data: RenderPdfPrescription,

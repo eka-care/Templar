@@ -5,6 +5,8 @@ import {
     DentalProcedure,
     InjectionsEntity,
     Procedure,
+    DoctorProfile,
+    RenderPdfConfig,
 } from './types';
 
 export interface RenderPdfPrescription {
@@ -14,7 +16,7 @@ export interface RenderPdfPrescription {
     selectedClinic: string;
     selectedClinicData?: any;
     visitId: string;
-    doctor: Doctor;
+    doctor: DoctorProfile;
     patient: Patient;
     tool: Tool;
     patientAge?: string;
@@ -25,70 +27,22 @@ export interface RenderPdfPrescription {
     };
     translate?: {
         flag: boolean;
-        lang: '' | 'en' | 'hi' | string;
+        lang: 'en' | 'hi' | 'gu' | 'te' | 'mr' | 'kn' | 'pa' | 'bn' | 'ta' | 'ml' | 'as';
         advices?: boolean;
         medications?: boolean;
         injections?: boolean;
     };
 }
 
-interface Doctor {
-    id: string;
-    profile: Profile;
-    clinic?: ClinicEntity[] | null;
-    preference?: Preference;
-}
-export interface Profile {
-    personal: Personal;
-    professional: Professional;
-}
-interface Personal {
-    name: {
-        f: string;
-        l: string;
-    };
-    phone: Phone;
-}
 interface Phone {
     c: string;
     n: string;
 }
-interface Professional {
-    medicalId: string;
-    speciality: string;
-    degree?: Degree;
-    signature_text?: string;
-    header_text?: string;
-    clinics?: any;
-    signature?: string;
-}
-
-interface Degree {
-    id: string;
-    name: string;
-}
-export interface ClinicEntity {
-    id: string;
-    city_id: string;
-    name: string;
-    address: Address;
-}
-interface Address {
-    line1: string;
-    city: string;
-    state: string;
-    country: string;
-    pin: string;
-}
-export interface Preference {
-    signature: string;
-    language: string;
-}
 
 interface FieldsEntity {
     label: string;
-    type: string;
-    key?: string;
+    type: 'string' | 'number' | 'select';
+    key: string;
     value?: number | string;
 }
 
@@ -231,6 +185,7 @@ export interface IpdAdmission {
     include_procedures?: boolean;
     notes?: string;
 }
+
 export interface Tool {
     language: string;
     symptoms?: SymptomsEntity[] | null;
@@ -537,12 +492,6 @@ export interface TemplateV2 {
         section_name_config?: SectionNameConfig;
         injections_config?: GeniePadElementsSettingItem[];
     };
-}
-
-export interface RenderPdfConfig extends TemplateConfig {
-    docid: string;
-    clinicId: string;
-    type: 'PRINT' | 'SEND';
 }
 
 export interface TemplateConfig {
