@@ -1502,11 +1502,11 @@ export const getFooterHtml = (
                     marginLeft: renderPdfConfig?.footer_left_margin,
                     marginRight: renderPdfConfig?.footer_right_margin,
                     border: rxLocalConfig?.footer_border ? '1px solid black' : '',
-                    height:
-                        renderPdfConfig?.footer_height?.trim() &&
-                        !isNaN(parseFloat(renderPdfConfig?.footer_height))
-                            ? parseFloat(renderPdfConfig?.footer_height) + 1 + 'cm'
-                            : renderPdfConfig?.footer_height || 'auto',
+                    // height:
+                    //     renderPdfConfig?.footer_height?.trim() &&
+                    //     !isNaN(parseFloat(renderPdfConfig?.footer_height))
+                    //         ? parseFloat(renderPdfConfig?.footer_height) + 1 + 'cm'
+                    //         : renderPdfConfig?.footer_height || 'auto',
                 }}
                 id={FOOTER_CONTAINER}
                 className="text-11 flex justify-between items-end"
