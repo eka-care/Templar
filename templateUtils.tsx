@@ -610,7 +610,7 @@ export const getCustomHeaderHtml = (
                         flexDirection: 'column',
                         justifyContent: 'flex-end !important',
                         marginTop: render_pdf_config?.header_top_margin,
-                        marginBottom: render_pdf_config?.header_bottom_margin,
+                        // marginBottom: render_pdf_config?.header_bottom_margin,
                         marginLeft: render_pdf_config?.header_left_margin,
                         marginRight: render_pdf_config?.header_right_margin,
                         border: rxLocalConfig?.header_border && header_img ? '1px solid black' : '',
@@ -641,7 +641,7 @@ export const getCustomHeaderHtml = (
                     <div
                         style={{
                             marginTop: render_pdf_config?.header_top_margin,
-                            marginBottom: render_pdf_config?.header_bottom_margin,
+                            // marginBottom: render_pdf_config?.header_bottom_margin,
                             marginLeft: render_pdf_config?.header_left_margin,
                             marginRight: render_pdf_config?.header_right_margin,
                             border:
@@ -708,7 +708,7 @@ export const getCustomFooterHtml = (
                 style={{
                     marginTop: footer_top_margin,
                     paddingTop: '1cm',
-                    marginBottom: footer_bottom_margin,
+                    // marginBottom: footer_bottom_margin,
                     marginLeft: footer_left_margin,
                     marginRight: footer_right_margin,
                     border:
@@ -839,7 +839,7 @@ export const getHeaderHtml = (
                         justifyContent: 'flex-end !important',
                         // border: '1px solid black',
                         marginTop: render_pdf_config?.header_top_margin,
-                        marginBottom: render_pdf_config?.header_bottom_margin,
+                        // marginBottom: render_pdf_config?.header_bottom_margin,
                         marginLeft: render_pdf_config?.header_left_margin,
                         marginRight: render_pdf_config?.header_right_margin,
                         border:
@@ -898,7 +898,7 @@ export const getHeaderHtml = (
                     <div
                         style={{
                             marginTop: render_pdf_config?.header_top_margin,
-                            marginBottom: render_pdf_config?.header_bottom_margin,
+                            // marginBottom: render_pdf_config?.header_bottom_margin,
                             marginLeft: render_pdf_config?.header_left_margin,
                             marginRight: render_pdf_config?.header_right_margin,
                             border: rxLocalConfig?.header_border ? '1px solid black' : '',
@@ -1498,7 +1498,7 @@ export const getFooterHtml = (
                 style={{
                     marginTop: renderPdfConfig?.footer_top_margin,
                     paddingTop: '1cm',
-                    marginBottom: renderPdfConfig?.footer_bottom_margin,
+                    // marginBottom: renderPdfConfig?.footer_bottom_margin,
                     marginLeft: renderPdfConfig?.footer_left_margin,
                     marginRight: renderPdfConfig?.footer_right_margin,
                     border: rxLocalConfig?.footer_border ? '1px solid black' : '',
@@ -1509,7 +1509,7 @@ export const getFooterHtml = (
                             : renderPdfConfig?.footer_height || 'auto',
                 }}
                 id={FOOTER_CONTAINER}
-                className="text-11 flex justify-between items-end"
+                className="text-11 flex justify-between"
             >
                 <div className="text-left">
                     <p className="text-darwin-neutral-900">Not valid for Medico Legal Purpose</p>
