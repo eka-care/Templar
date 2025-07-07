@@ -706,10 +706,8 @@ export const getCustomFooterHtml = (
             )}
             <div
                 style={{
-                    marginTop:
-                        footer_top_margin?.trim() && !isNaN(parseFloat(footer_top_margin))
-                            ? parseFloat(footer_top_margin) + 1 + 'cm'
-                            : '1cm',
+                    marginTop: footer_top_margin,
+                    paddingTop: '1cm',
                     marginBottom: footer_bottom_margin,
                     marginLeft: footer_left_margin,
                     marginRight: footer_right_margin,
@@ -1498,11 +1496,8 @@ export const getFooterHtml = (
             )}
             <div
                 style={{
-                    marginTop:
-                        renderPdfConfig?.footer_top_margin?.trim() &&
-                        !isNaN(parseFloat(renderPdfConfig?.footer_top_margin))
-                            ? parseFloat(renderPdfConfig?.footer_top_margin) + 1 + 'cm'
-                            : '1cm',
+                    marginTop: renderPdfConfig?.footer_top_margin,
+                    paddingTop: '1cm',
                     marginBottom: renderPdfConfig?.footer_bottom_margin,
                     marginLeft: renderPdfConfig?.footer_left_margin,
                     marginRight: renderPdfConfig?.footer_right_margin,
@@ -4955,7 +4950,7 @@ export const getSymptomsHtml = (
             >
                 {sectionName || 'Symptoms'} :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36 list-outside list-disc">
                         {symptoms?.values?.map((sym) => {
@@ -5075,7 +5070,7 @@ export const getDiagnosisHtml = (
             >
                 {sectionName || 'DIAGNOSIS'} :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36 list-outside list-disc">
                         {diagnosis?.values?.map((diag) => {
@@ -5224,7 +5219,7 @@ export const getPmhHtml = (
             >
                 {mhData?.name} :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36">
                         {mhData?.values?.map((mh) => {
@@ -5316,7 +5311,7 @@ export const getExaminationFindingsHtml = (
             >
                 {sectionName || 'EXAMINATION FINDINGS'} :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36">
                         {examintionFindings?.map((examination) => {
@@ -5414,7 +5409,7 @@ export const getInvestigativeReadingsHtml = (
                     {sectionName || 'INVESTIGATIVE READINGS'} :
                 </span>
 
-                <div>
+                <div style={{ display: 'inline' }}>
                     <ul className="ml-36">
                         {labVitals?.map((labVital) => {
                             return (
@@ -5472,7 +5467,7 @@ export const getInvestigativeReadingsHtml = (
                 {sectionName || 'INVESTIGATIVE READINGS'} :
             </span>
 
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36">
                         {labVitals?.map((labVital) => {
@@ -5569,7 +5564,7 @@ export const getVitalsHtml = (
             >
                 VITALS :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36">
                         {vitals?.map((vital) => {
@@ -5724,7 +5719,7 @@ export const getGrowthChartVitalsHtml = (
             >
                 GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FANTON]' : `[WHO/IAP]`} :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 <ul className="ml-36">
                     {gcVitals?.map((vital) => {
                         return (
@@ -6925,7 +6920,7 @@ export const getProceduresHtmls = (
             >
                 PROCEDURES :
             </span>
-            <div>
+            <div style={{ display: 'inline' }}>
                 {isBullets ? (
                     <ul className="ml-36">
                         {procedures.map((procedure) => (
