@@ -4950,49 +4950,11 @@ export const getSymptomsHtml = (
             >
                 {sectionName || 'Symptoms'} :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36 list-outside list-disc">
-                        {symptoms?.values?.map((sym) => {
-                            return (
-                                <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
-                                    <span
-                                        className={`${
-                                            config.render_pdf_config?.symptoms_name_in_unbold
-                                                ? ''
-                                                : 'bold'
-                                        } ${
-                                            config.render_pdf_config?.symptoms_name_in_capital
-                                                ? 'uppercase'
-                                                : ''
-                                        }`}
-                                        style={{
-                                            color: nameColor,
-                                        }}
-                                    >
-                                        {sym?.name ? `${sym?.name} ` : ''}
-                                        {sym?.toshow ? `- ` : ''}
-                                    </span>
-
-                                    <div
-                                        className={`inline-block tiny-mce`}
-                                        style={{
-                                            display: 'inline', // This is key
-                                            width: 'fit-content',
-                                            color: propertiesColor,
-                                        }}
-                                        dangerouslySetInnerHTML={{
-                                            __html: transformBlocksToInline(sym?.toshow || ''),
-                                        }}
-                                    />
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    symptoms?.values?.map((sym, i: number) => {
+            {isBullets ? (
+                <ul className="ml-36 list-outside list-disc">
+                    {symptoms?.values?.map((sym) => {
                         return (
-                            <>
+                            <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
                                         config.render_pdf_config?.symptoms_name_in_unbold
@@ -5008,30 +4970,64 @@ export const getSymptomsHtml = (
                                     }}
                                 >
                                     {sym?.name ? `${sym?.name} ` : ''}
+                                    {sym?.toshow ? `- ` : ''}
                                 </span>
-                                <span
+
+                                <div
+                                    className={`inline-block tiny-mce`}
                                     style={{
+                                        display: 'inline', // This is key
+                                        width: 'fit-content',
                                         color: propertiesColor,
                                     }}
-                                >
-                                    {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
-
-                                    <span
-                                        className="bold"
-                                        style={{
-                                            color: '#000',
-                                        }}
-                                    >
-                                        {i !== (symptoms?.values || []).length - 1 &&
-                                            getRxSeperator(rxElementKeySeperator)}
-                                        &nbsp;
-                                    </span>
-                                </span>{' '}
-                            </>
+                                    dangerouslySetInnerHTML={{
+                                        __html: transformBlocksToInline(sym?.toshow || ''),
+                                    }}
+                                />
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : (
+                symptoms?.values?.map((sym, i: number) => {
+                    return (
+                        <>
+                            <span
+                                className={`${
+                                    config.render_pdf_config?.symptoms_name_in_unbold ? '' : 'bold'
+                                } ${
+                                    config.render_pdf_config?.symptoms_name_in_capital
+                                        ? 'uppercase'
+                                        : ''
+                                }`}
+                                style={{
+                                    color: nameColor,
+                                }}
+                            >
+                                {sym?.name ? `${sym?.name} ` : ''}
+                            </span>
+                            <span
+                                style={{
+                                    color: propertiesColor,
+                                }}
+                            >
+                                {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
+
+                                <span
+                                    className="bold"
+                                    style={{
+                                        color: '#000',
+                                    }}
+                                >
+                                    {i !== (symptoms?.values || []).length - 1 &&
+                                        getRxSeperator(rxElementKeySeperator)}
+                                    &nbsp;
+                                </span>
+                            </span>{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5070,48 +5066,11 @@ export const getDiagnosisHtml = (
             >
                 {sectionName || 'DIAGNOSIS'} :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36 list-outside list-disc">
-                        {diagnosis?.values?.map((diag) => {
-                            return (
-                                <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
-                                    <span
-                                        className={`${
-                                            config.render_pdf_config?.diagnosis_name_in_unbold
-                                                ? ''
-                                                : 'bold'
-                                        } ${
-                                            config.render_pdf_config?.diagnosis_name_in_capital
-                                                ? 'uppercase'
-                                                : ''
-                                        }`}
-                                        style={{
-                                            color: nameColor,
-                                        }}
-                                    >
-                                        {diag?.name ? `${diag?.name} ` : ''}
-                                        {diag?.toshow ? `- ` : ''}
-                                    </span>
-                                    <div
-                                        className={`tiny-mce`}
-                                        style={{
-                                            display: 'inline', // This is key
-                                            width: 'fit-content',
-                                            color: propertiesColor,
-                                        }}
-                                        dangerouslySetInnerHTML={{
-                                            __html: transformBlocksToInline(diag?.toshow || ''),
-                                        }}
-                                    />
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    diagnosis?.values?.map((diag, i: number) => {
+            {isBullets ? (
+                <ul className="ml-36 list-outside list-disc">
+                    {diagnosis?.values?.map((diag) => {
                         return (
-                            <>
+                            <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
                                         config.render_pdf_config?.diagnosis_name_in_unbold
@@ -5127,30 +5086,63 @@ export const getDiagnosisHtml = (
                                     }}
                                 >
                                     {diag?.name ? `${diag?.name} ` : ''}
+                                    {diag?.toshow ? `- ` : ''}
                                 </span>
-                                <span
+                                <div
+                                    className={`tiny-mce`}
                                     style={{
+                                        display: 'inline', // This is key
+                                        width: 'fit-content',
                                         color: propertiesColor,
                                     }}
-                                >
-                                    {/* {diag?.toshow || ''} */}
-                                    {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
-                                </span>
-                                {i !== (diagnosis?.values || [])?.length - 1 && (
-                                    <span
-                                        className="bold"
-                                        style={{
-                                            color: '#000',
-                                        }}
-                                    >
-                                        {getRxSeperator(rxElementKeySeperator)}
-                                    </span>
-                                )}{' '}
-                            </>
+                                    dangerouslySetInnerHTML={{
+                                        __html: transformBlocksToInline(diag?.toshow || ''),
+                                    }}
+                                />
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : (
+                diagnosis?.values?.map((diag, i: number) => {
+                    return (
+                        <>
+                            <span
+                                className={`${
+                                    config.render_pdf_config?.diagnosis_name_in_unbold ? '' : 'bold'
+                                } ${
+                                    config.render_pdf_config?.diagnosis_name_in_capital
+                                        ? 'uppercase'
+                                        : ''
+                                }`}
+                                style={{
+                                    color: nameColor,
+                                }}
+                            >
+                                {diag?.name ? `${diag?.name} ` : ''}
+                            </span>
+                            <span
+                                style={{
+                                    color: propertiesColor,
+                                }}
+                            >
+                                {/* {diag?.toshow || ''} */}
+                                {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
+                            </span>
+                            {i !== (diagnosis?.values || [])?.length - 1 && (
+                                <span
+                                    className="bold"
+                                    style={{
+                                        color: '#000',
+                                    }}
+                                >
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5219,39 +5211,11 @@ export const getPmhHtml = (
             >
                 {mhData?.name} :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36">
-                        {mhData?.values?.map((mh) => {
-                            return (
-                                <li className="pl-16">
-                                    <span
-                                        className={`${
-                                            config.render_pdf_config?.medical_history_name_in_unbold
-                                                ? ''
-                                                : 'bold'
-                                        }`}
-                                        style={{
-                                            color: sectionNameColor || nameColor,
-                                        }}
-                                    >
-                                        {mh?.name ? `${mh?.name} ` : ''}
-                                    </span>
-                                    <span
-                                        style={{
-                                            color: sectionPropertiesColor || propertiesColor,
-                                        }}
-                                    >
-                                        {editStatus(mh?.toshow, status_display) || ''}
-                                    </span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    mhData?.values?.map((mh, i: number) => {
+            {isBullets ? (
+                <ul className="ml-36">
+                    {mhData?.values?.map((mh) => {
                         return (
-                            <>
+                            <li className="pl-16">
                                 <span
                                     className={`${
                                         config.render_pdf_config?.medical_history_name_in_unbold
@@ -5269,18 +5233,44 @@ export const getPmhHtml = (
                                         color: sectionPropertiesColor || propertiesColor,
                                     }}
                                 >
-                                    {mh?.toshow || ''}
+                                    {editStatus(mh?.toshow, status_display) || ''}
                                 </span>
-                                {i !== (mhData?.values || [])?.length - 1 && (
-                                    <span className="bold">
-                                        {getRxSeperator(rxElementKeySeperator)}
-                                    </span>
-                                )}{' '}
-                            </>
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : (
+                mhData?.values?.map((mh, i: number) => {
+                    return (
+                        <>
+                            <span
+                                className={`${
+                                    config.render_pdf_config?.medical_history_name_in_unbold
+                                        ? ''
+                                        : 'bold'
+                                }`}
+                                style={{
+                                    color: sectionNameColor || nameColor,
+                                }}
+                            >
+                                {mh?.name ? `${mh?.name} ` : ''}
+                            </span>
+                            <span
+                                style={{
+                                    color: sectionPropertiesColor || propertiesColor,
+                                }}
+                            >
+                                {mh?.toshow || ''}
+                            </span>
+                            {i !== (mhData?.values || [])?.length - 1 && (
+                                <span className="bold">
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5311,40 +5301,12 @@ export const getExaminationFindingsHtml = (
             >
                 {sectionName || 'EXAMINATION FINDINGS'} :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36">
-                        {examintionFindings?.map((examination) => {
-                            return (
-                                <li className="pl-16">
-                                    <span
-                                        className={`${
-                                            config.render_pdf_config
-                                                ?.examination_findings_name_in_unbold
-                                                ? ''
-                                                : 'bold'
-                                        }`}
-                                        style={{
-                                            color: nameColor,
-                                        }}
-                                    >
-                                        {examination?.name ? `${examination?.name} ` : ''}
-                                    </span>
-                                    <span
-                                        style={{
-                                            color: propertiesColor,
-                                        }}
-                                    >
-                                        {examination?.notes ? `(${examination?.notes})` : ''}
-                                    </span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    examintionFindings?.map((examination, i: number) => {
+
+            {isBullets ? (
+                <ul className="ml-36">
+                    {examintionFindings?.map((examination) => {
                         return (
-                            <>
+                            <li className="pl-16">
                                 <span
                                     className={`${
                                         config.render_pdf_config
@@ -5356,25 +5318,51 @@ export const getExaminationFindingsHtml = (
                                         color: nameColor,
                                     }}
                                 >
-                                    {examination?.name ? `${examination?.name}` : ''}
+                                    {examination?.name ? `${examination?.name} ` : ''}
                                 </span>
                                 <span
                                     style={{
                                         color: propertiesColor,
                                     }}
                                 >
-                                    {examination?.notes ? ` (${examination?.notes})` : ''}
+                                    {examination?.notes ? `(${examination?.notes})` : ''}
                                 </span>
-                                {i !== (examintionFindings || [])?.length - 1 && (
-                                    <span className="bold">
-                                        {getRxSeperator(rxElementKeySeperator)}
-                                    </span>
-                                )}{' '}
-                            </>
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : (
+                examintionFindings?.map((examination, i: number) => {
+                    return (
+                        <>
+                            <span
+                                className={`${
+                                    config.render_pdf_config?.examination_findings_name_in_unbold
+                                        ? ''
+                                        : 'bold'
+                                }`}
+                                style={{
+                                    color: nameColor,
+                                }}
+                            >
+                                {examination?.name ? `${examination?.name}` : ''}
+                            </span>
+                            <span
+                                style={{
+                                    color: propertiesColor,
+                                }}
+                            >
+                                {examination?.notes ? ` (${examination?.notes})` : ''}
+                            </span>
+                            {i !== (examintionFindings || [])?.length - 1 && (
+                                <span className="bold">
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5409,43 +5397,41 @@ export const getInvestigativeReadingsHtml = (
                     {sectionName || 'INVESTIGATIVE READINGS'} :
                 </span>
 
-                <div style={{ display: 'inline' }}>
-                    <ul className="ml-36">
-                        {labVitals?.map((labVital) => {
-                            return (
-                                <li className="pl-16">
-                                    {labVital?.dt && (
+                <ul className="ml-36">
+                    {labVitals?.map((labVital) => {
+                        return (
+                            <li className="pl-16">
+                                {labVital?.dt && (
+                                    <span
+                                        style={{
+                                            color: nameColor,
+                                        }}
+                                        className="bold"
+                                    >
+                                        {labVital?.dt || ''} :{' '}
+                                    </span>
+                                )}
+
+                                {labVital.arr.map((labValue, i) => {
+                                    return (
                                         <span
                                             style={{
-                                                color: nameColor,
+                                                color: propertiesColor,
                                             }}
-                                            className="bold"
                                         >
-                                            {labVital?.dt || ''} :{' '}
-                                        </span>
-                                    )}
-
-                                    {labVital.arr.map((labValue, i) => {
-                                        return (
-                                            <span
-                                                style={{
-                                                    color: propertiesColor,
-                                                }}
-                                            >
-                                                {labValue.name && <span>{labValue.name} - </span>}
-                                                <span>
-                                                    {labValue.toshownodate || ''}{' '}
-                                                    {i !== (labVital.arr || []).length - 1 &&
-                                                        getRxSeperator(rxElementKeySeperator)}{' '}
-                                                </span>
+                                            {labValue.name && <span>{labValue.name} - </span>}
+                                            <span>
+                                                {labValue.toshownodate || ''}{' '}
+                                                {i !== (labVital.arr || []).length - 1 &&
+                                                    getRxSeperator(rxElementKeySeperator)}{' '}
                                             </span>
-                                        );
-                                    })}
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
+                                        </span>
+                                    );
+                                })}
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         );
     }
@@ -5467,41 +5453,11 @@ export const getInvestigativeReadingsHtml = (
                 {sectionName || 'INVESTIGATIVE READINGS'} :
             </span>
 
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36">
-                        {labVitals?.map((labVital) => {
-                            return (
-                                <li className="pl-16">
-                                    {labVital?.name && (
-                                        <span
-                                            className={`uppercase ${
-                                                config.render_pdf_config?.lab_vitals_name_in_unbold
-                                                    ? ''
-                                                    : 'bold'
-                                            }`}
-                                            style={{
-                                                color: nameColor,
-                                            }}
-                                        >
-                                            {labVital?.name || ''} :{' '}
-                                        </span>
-                                    )}
-                                    <span
-                                        style={{
-                                            color: propertiesColor,
-                                        }}
-                                    >
-                                        {labVital?.toshow || ''}
-                                    </span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    labVitals?.map((labVital, i) => {
+            {isBullets ? (
+                <ul className="ml-36">
+                    {labVitals?.map((labVital) => {
                         return (
-                            <>
+                            <li className="pl-16">
                                 {labVital?.name && (
                                     <span
                                         className={`uppercase ${
@@ -5523,16 +5479,44 @@ export const getInvestigativeReadingsHtml = (
                                 >
                                     {labVital?.toshow || ''}
                                 </span>
-                                {i !== (labVitals || [])?.length - 1 && (
-                                    <span className="bold">
-                                        {getRxSeperator(rxElementKeySeperator)}
-                                    </span>
-                                )}{' '}
-                            </>
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : (
+                labVitals?.map((labVital, i) => {
+                    return (
+                        <>
+                            {labVital?.name && (
+                                <span
+                                    className={`uppercase ${
+                                        config.render_pdf_config?.lab_vitals_name_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    }`}
+                                    style={{
+                                        color: nameColor,
+                                    }}
+                                >
+                                    {labVital?.name || ''} :{' '}
+                                </span>
+                            )}
+                            <span
+                                style={{
+                                    color: propertiesColor,
+                                }}
+                            >
+                                {labVital?.toshow || ''}
+                            </span>
+                            {i !== (labVitals || [])?.length - 1 && (
+                                <span className="bold">
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5564,107 +5548,12 @@ export const getVitalsHtml = (
             >
                 VITALS :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36">
-                        {vitals?.map((vital) => {
-                            return (
-                                <li className="pl-16">
-                                    <span
-                                        className={`uppercase ${
-                                            config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
-                                        }`}
-                                        style={{
-                                            color: nameColor,
-                                        }}
-                                    >
-                                        {vital?.dis_name || vital?.name || ''}
-                                    </span>
-                                    -
-                                    <span
-                                        style={{
-                                            color: propertiesColor,
-                                        }}
-                                    >
-                                        {vital?.value?.qt || ''}
-                                        {vital?.value?.unit || ''}
-                                    </span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : isTabular ? (
-                    <table
-                        className="border-collapse border medication-table-border-color w-full"
-                        style={{
-                            maxWidth: isExtraLarge ? 650 : 550,
-                        }}
-                    >
-                        <thead>
-                            <tr className="text-11">
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '8%' }}
-                                ></th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '30%' }}
-                                >
-                                    Vital
-                                </th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '25%' }}
-                                >
-                                    Observation
-                                </th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '37%' }}
-                                >
-                                    Biological Reference Interval
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {vitals.map((i, index) => {
-                                const { name, value } = i;
-                                return (
-                                    <tr className="text-11">
-                                        <td className="p-4 border medication-table-border-color text-center">
-                                            {index + 1}
-                                        </td>
-                                        <td className="p-4 border medication-table-border-color">
-                                            {name || '-'}
-                                        </td>
-                                        <td className="p-4 border medication-table-border-color text-center">
-                                            {value.qt} {value.unit}
-                                        </td>
-                                        <td className="p-4 border medication-table-border-color text-center">
-                                            {!value.safe
-                                                ? ''
-                                                : `${
-                                                      (value.safe.normal_value
-                                                          ? `${value.safe.normal_value} ${
-                                                                value.unit || ''
-                                                            }`
-                                                          : '') ||
-                                                      (value.safe.low && value.safe.high
-                                                          ? `${value.safe.low} - ${
-                                                                value.safe.high
-                                                            } ${value.unit || ''}`
-                                                          : '')
-                                                  }`}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                ) : (
-                    vitals?.map((vital, i) => {
+
+            {isBullets ? (
+                <ul className="ml-36">
+                    {vitals?.map((vital) => {
                         return (
-                            <>
+                            <li className="pl-16">
                                 <span
                                     className={`uppercase ${
                                         config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
@@ -5673,7 +5562,7 @@ export const getVitalsHtml = (
                                         color: nameColor,
                                     }}
                                 >
-                                    {vital?.name || ''}
+                                    {vital?.dis_name || vital?.name || ''}
                                 </span>
                                 -
                                 <span
@@ -5684,16 +5573,110 @@ export const getVitalsHtml = (
                                     {vital?.value?.qt || ''}
                                     {vital?.value?.unit || ''}
                                 </span>
-                                {i !== (d.tool?.medicalHistory?.vitals || []).length - 1 && (
-                                    <span className="bold">
-                                        {getRxSeperator(rxElementKeySeperator)}
-                                    </span>
-                                )}{' '}
-                            </>
+                            </li>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </ul>
+            ) : isTabular ? (
+                <table
+                    className="border-collapse border medication-table-border-color w-full"
+                    style={{
+                        maxWidth: isExtraLarge ? 650 : 550,
+                    }}
+                >
+                    <thead>
+                        <tr className="text-11">
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '8%' }}
+                            ></th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '30%' }}
+                            >
+                                Vital
+                            </th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '25%' }}
+                            >
+                                Observation
+                            </th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '37%' }}
+                            >
+                                Biological Reference Interval
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {vitals.map((i, index) => {
+                            const { name, value } = i;
+                            return (
+                                <tr className="text-11">
+                                    <td className="p-4 border medication-table-border-color text-center">
+                                        {index + 1}
+                                    </td>
+                                    <td className="p-4 border medication-table-border-color">
+                                        {name || '-'}
+                                    </td>
+                                    <td className="p-4 border medication-table-border-color text-center">
+                                        {value.qt} {value.unit}
+                                    </td>
+                                    <td className="p-4 border medication-table-border-color text-center">
+                                        {!value.safe
+                                            ? ''
+                                            : `${
+                                                  (value.safe.normal_value
+                                                      ? `${value.safe.normal_value} ${
+                                                            value.unit || ''
+                                                        }`
+                                                      : '') ||
+                                                  (value.safe.low && value.safe.high
+                                                      ? `${value.safe.low} - ${value.safe.high} ${
+                                                            value.unit || ''
+                                                        }`
+                                                      : '')
+                                              }`}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            ) : (
+                vitals?.map((vital, i) => {
+                    return (
+                        <>
+                            <span
+                                className={`uppercase ${
+                                    config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                }`}
+                                style={{
+                                    color: nameColor,
+                                }}
+                            >
+                                {vital?.name || ''}
+                            </span>
+                            -
+                            <span
+                                style={{
+                                    color: propertiesColor,
+                                }}
+                            >
+                                {vital?.value?.qt || ''}
+                                {vital?.value?.unit || ''}
+                            </span>
+                            {i !== (d.tool?.medicalHistory?.vitals || []).length - 1 && (
+                                <span className="bold">
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}{' '}
+                        </>
+                    );
+                })
+            )}
         </div>
     );
 };
@@ -5719,20 +5702,19 @@ export const getGrowthChartVitalsHtml = (
             >
                 GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FANTON]' : `[WHO/IAP]`} :
             </span>
-            <div style={{ display: 'inline' }}>
-                <ul className="ml-36">
-                    {gcVitals?.map((vital) => {
-                        return (
-                            <li className="pl-16">
-                                <span className={`uppercase bold`} style={{ color: keyColor }}>
-                                    {vital?.name || ''}
-                                </span>
-                                : <span style={{ color: propertyColor }}>{vital?.value}</span>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </div>
+
+            <ul className="ml-36">
+                {gcVitals?.map((vital) => {
+                    return (
+                        <li className="pl-16">
+                            <span className={`uppercase bold`} style={{ color: keyColor }}>
+                                {vital?.name || ''}
+                            </span>
+                            : <span style={{ color: propertyColor }}>{vital?.value}</span>
+                        </li>
+                    );
+                })}
+            </ul>
         </div>
     );
 };
@@ -6920,91 +6902,11 @@ export const getProceduresHtmls = (
             >
                 PROCEDURES :
             </span>
-            <div style={{ display: 'inline' }}>
-                {isBullets ? (
-                    <ul className="ml-36">
-                        {procedures.map((procedure) => (
-                            <li className="pl-16">
-                                <span
-                                    className={`uppercase ${
-                                        config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                                    }`}
-                                    style={{ color: nameColor }}
-                                >
-                                    {procedure?.name || ''}
-                                </span>
-                                {procedure?.notes ? (
-                                    <span style={{ color: propertiesColor }}>
-                                        {' '}
-                                        (Notes : {procedure.notes})
-                                    </span>
-                                ) : (
-                                    <></>
-                                )}
-                                <span style={{ color: propertiesColor }}>
-                                    {procedure?.date ? ' - ' : ''}
-                                    {procedure?.date
-                                        ? moment(procedure.date).format('Do MMM YY')
-                                        : ''}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                ) : isTabular ? (
-                    <table
-                        className="border-collapse border medication-table-border-color w-full"
-                        style={{ maxWidth: '100%' }}
-                    >
-                        <thead>
-                            <tr className="text-11">
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '4%' }}
-                                ></th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '30%' }}
-                                >
-                                    Procedure
-                                </th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '17%' }}
-                                >
-                                    Date
-                                </th>
-                                <th
-                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                    style={{ width: '49%' }}
-                                >
-                                    Notes
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {procedures.map((procedure, index) => (
-                                <tr className="text-11">
-                                    <td className="p-4 border medication-table-border-color text-center">
-                                        {index + 1}
-                                    </td>
-                                    <td className="p-4 border medication-table-border-color">
-                                        {procedure?.name || '-'}
-                                    </td>
-                                    <td className="p-4 border medication-table-border-color text-center">
-                                        {procedure?.date
-                                            ? moment(procedure.date).format('Do MMM YY')
-                                            : '-'}
-                                    </td>
-                                    <td className="p-4 border medication-table-border-color text-center">
-                                        {procedure?.notes || '-'}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    procedures.map((procedure, i) => (
-                        <>
+
+            {isBullets ? (
+                <ul className="ml-36">
+                    {procedures.map((procedure) => (
+                        <li className="pl-16">
                             <span
                                 className={`uppercase ${
                                     config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
@@ -7016,7 +6918,7 @@ export const getProceduresHtmls = (
                             {procedure?.notes ? (
                                 <span style={{ color: propertiesColor }}>
                                     {' '}
-                                    (Notes : {procedure.notes}){' - '}
+                                    (Notes : {procedure.notes})
                                 </span>
                             ) : (
                                 <></>
@@ -7025,15 +6927,90 @@ export const getProceduresHtmls = (
                                 {procedure?.date ? ' - ' : ''}
                                 {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
                             </span>
-                            {i !== procedures.length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
-                                </span>
-                            )}
-                        </>
-                    ))
-                )}
-            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : isTabular ? (
+                <table
+                    className="border-collapse border medication-table-border-color w-full"
+                    style={{ maxWidth: '100%' }}
+                >
+                    <thead>
+                        <tr className="text-11">
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '4%' }}
+                            ></th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '30%' }}
+                            >
+                                Procedure
+                            </th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '17%' }}
+                            >
+                                Date
+                            </th>
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                style={{ width: '49%' }}
+                            >
+                                Notes
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {procedures.map((procedure, index) => (
+                            <tr className="text-11">
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {index + 1}
+                                </td>
+                                <td className="p-4 border medication-table-border-color">
+                                    {procedure?.name || '-'}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {procedure?.date
+                                        ? moment(procedure.date).format('Do MMM YY')
+                                        : '-'}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {procedure?.notes || '-'}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                procedures.map((procedure, i) => (
+                    <>
+                        <span
+                            className={`uppercase ${
+                                config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                            }`}
+                            style={{ color: nameColor }}
+                        >
+                            {procedure?.name || ''}
+                        </span>
+                        {procedure?.notes ? (
+                            <span style={{ color: propertiesColor }}>
+                                {' '}
+                                (Notes : {procedure.notes}){' - '}
+                            </span>
+                        ) : (
+                            <></>
+                        )}
+                        <span style={{ color: propertiesColor }}>
+                            {procedure?.date ? ' - ' : ''}
+                            {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
+                        </span>
+                        {i !== procedures.length - 1 && (
+                            <span className="bold">{getRxSeperator(rxElementKeySeperator)}</span>
+                        )}
+                    </>
+                ))
+            )}
         </div>
     );
 };

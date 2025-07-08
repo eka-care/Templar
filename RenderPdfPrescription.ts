@@ -677,6 +677,7 @@ export interface TemplateConfig {
     growth_chart_properties_color?: string;
     care_canvas_heading_color?: string;
     medical_history_status_display?: string;
+    __v2?: boolean;
 }
 
 export type MedicationTableWidth = { [key: string]: number | undefined };
