@@ -4973,17 +4973,29 @@ export const getSymptomsHtml = (
                                     {sym?.toshow ? `- ` : ''}
                                 </span>
 
-                                <div
-                                    className={`inline-block tiny-mce`}
-                                    style={{
-                                        display: 'inline', // This is key
-                                        width: 'fit-content',
-                                        color: propertiesColor,
-                                    }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: transformBlocksToInline(sym?.toshow || ''),
-                                    }}
-                                />
+                                {sym?.toshow?.includes('<ul>') ? (
+                                    <div
+                                        className={`tiny-mce`}
+                                        style={{
+                                            width: 'fit-content',
+                                            color: propertiesColor,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: transformBlocksToInline(sym?.toshow || ''),
+                                        }}
+                                    />
+                                ) : (
+                                    <span
+                                        className={`tiny-mce`}
+                                        style={{
+                                            width: 'fit-content',
+                                            color: propertiesColor,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: transformBlocksToInline(sym?.toshow || ''),
+                                        }}
+                                    ></span>
+                                )}
                             </li>
                         );
                     })}
@@ -5088,17 +5100,29 @@ export const getDiagnosisHtml = (
                                     {diag?.name ? `${diag?.name} ` : ''}
                                     {diag?.toshow ? `- ` : ''}
                                 </span>
-                                <div
-                                    className={`tiny-mce`}
-                                    style={{
-                                        display: 'inline', // This is key
-                                        width: 'fit-content',
-                                        color: propertiesColor,
-                                    }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: transformBlocksToInline(diag?.toshow || ''),
-                                    }}
-                                />
+                                {diag?.toshow?.includes('<ul>') ? (
+                                    <div
+                                        className={`tiny-mce`}
+                                        style={{
+                                            width: 'fit-content',
+                                            color: propertiesColor,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: transformBlocksToInline(diag?.toshow || ''),
+                                        }}
+                                    />
+                                ) : (
+                                    <span
+                                        className={`tiny-mce`}
+                                        style={{
+                                            width: 'fit-content',
+                                            color: propertiesColor,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: transformBlocksToInline(diag?.toshow || ''),
+                                        }}
+                                    ></span>
+                                )}
                             </li>
                         );
                     })}
