@@ -4973,7 +4973,7 @@ export const getSymptomsHtml = (
                                     {sym?.toshow ? `- ` : ''}
                                 </span>
 
-                                {sym?.toshow?.includes('<ul>') ? (
+                                {sym?.toshow?.includes('<ul ') || sym?.toshow?.includes('<ul>') ? (
                                     <div
                                         className={`tiny-mce`}
                                         style={{
@@ -5100,7 +5100,8 @@ export const getDiagnosisHtml = (
                                     {diag?.name ? `${diag?.name} ` : ''}
                                     {diag?.toshow ? `- ` : ''}
                                 </span>
-                                {diag?.toshow?.includes('<ul>') ? (
+                                {diag?.toshow?.includes('<ul ') ||
+                                diag?.toshow?.includes('<ul>') ? (
                                     <div
                                         className={`tiny-mce`}
                                         style={{
