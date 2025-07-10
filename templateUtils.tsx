@@ -64,13 +64,19 @@ export const getHeadHtml = (
     language: keyof typeof fontFamily | undefined,
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
-    fontsUrl: string = "<style> @import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&family=Baloo+Tamma+2:wght@400;500;600;700;800&family=Hind+Guntur:wght@300;400;500;600;700&family=Hind+Madurai:wght@300;400;500;600;700&family=Mukta+Mahee:wght@200;300;400;500;600;700;800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rasa:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap'); </style>",
+    fontsUrl: string = "",
 ): string => {
     return `
     
-    ${fontsUrl}
+    ${fontsUrl || ''}
     
-    <style>                     
+    <style>      
+            ${
+                !fontsUrl
+                    ? "@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&family=Baloo+Tamma+2:wght@400;500;600;700;800&family=Hind+Guntur:wght@300;400;500;600;700&family=Hind+Madurai:wght@300;400;500;600;700&family=Mukta+Mahee:wght@200;300;400;500;600;700;800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rasa:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');"
+                    : ''
+            }
+
             *,
             ::before,
             ::after {
