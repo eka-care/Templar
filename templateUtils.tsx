@@ -91,7 +91,6 @@ export const getHeadHtml = (
             
             body {
                 font-family: ${language ? fontFamily[language] : "'Poppins', sans-serif"};
-                min-width: fit-content; 
             }
             
             .flex {
@@ -219,6 +218,12 @@ export const getHeadHtml = (
                 margin-right: calc(0.5rem * var(--tw-space-x-reverse));
                 margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
             }
+
+            .space-x-5> :not([hidden]) ~ :not([hidden]) {
+                --tw-space-x-reverse: 0;
+                margin-right: calc(0.3125rem * var(--tw-space-x-reverse));
+                margin-left: calc(0.3125rem * calc(1 - var(--tw-space-x-reverse)));
+            }
             
             .space-x-4> :not([hidden])~ :not([hidden]) {
                 --tw-space-x-reverse: 0;
@@ -298,7 +303,7 @@ export const getHeadHtml = (
               
               .tiny-mce ul,
               .tiny-mce ol {
-                padding-left: 20px;
+                padding-left: 12px;
                 display: table;
               }
               .tiny-mce ul {
@@ -322,7 +327,7 @@ export const getHeadHtml = (
               }
 
               .tiny-mce li {
-                margin-left: 2.25rem;
+                margin-left: 1.5rem;
               }
               li::marker{
                 font-size: 0.9rem;
@@ -347,6 +352,10 @@ export const getHeadHtml = (
             
             .mb-12 {
                 margin-bottom: 0.75rem;
+            }
+
+            .mb-4 {
+                margin-bottom: 0.25rem;
             }
             
             .text-center {
@@ -395,6 +404,10 @@ export const getHeadHtml = (
             .font-400 {
                 font-weight: 400;
             } 
+            
+            .whitespace-nowrap {
+                white-space: nowrap
+            }
 
             .w-60p{
                 width: 60%;
@@ -443,6 +456,15 @@ export const getHeadHtml = (
             .text-13{
                 font-size: .8125rem;
                 line-height: 1.25rem;
+            }
+
+            .text-28 {
+                font-size: 1.75rem;
+                line-height: 2rem;
+            }
+
+            .mt-28 {
+                margin-top: 1.75rem;
             }
 
             .pb-20{
@@ -544,6 +566,9 @@ export const getHeadHtml = (
             .items-center{
                 align-items:center;
             }
+            .whitespace-nowrap {
+                white-space: nowrap;
+            }
             .w-200{
                 width: 12.5rem;
             }
@@ -556,6 +581,13 @@ export const getHeadHtml = (
             .mb-4{
                 margin-bottom: 0.25rem;
             }
+            
+            input[variable=\"ptSign\"] {
+                color: transparent;
+                height: 56px;
+                background-color: white;
+            }       
+    
             .cursor-pointer {
                 cursor: pointer;
             }
