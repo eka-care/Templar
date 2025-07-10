@@ -1048,8 +1048,8 @@ export const getRepitivePtDetails = (
                 <div
                     style={{
                         // fontSize: '0.68rem',
-                        marginLeft: config.render_pdf_config?.header_left_margin,
-                        marginRight: config.render_pdf_config?.header_right_margin,
+                        marginLeft: config?.render_pdf_config?.header_left_margin,
+                        marginRight: config?.render_pdf_config?.header_right_margin,
                     }}
                     className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
                 >
@@ -1115,8 +1115,8 @@ export const getRepitivePtDetails = (
             <div
                 style={{
                     // fontSize: '0.68rem',
-                    marginLeft: config.render_pdf_config?.header_left_margin,
-                    marginRight: config.render_pdf_config?.header_right_margin,
+                    marginLeft: config?.render_pdf_config?.header_left_margin,
+                    marginRight: config?.render_pdf_config?.header_right_margin,
                 }}
                 className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
             >
@@ -1155,12 +1155,12 @@ export const getBodyHtml = (
     ptFormFields: DFormEntity[],
     flavour: Flavour,
 ): JSX.Element => {
-    const padConfig = config.render_pdf_body_config?.pad_elements_config;
+    const padConfig = config?.render_pdf_body_config?.pad_elements_config;
 
     const doubleColumnConfig =
-        config.render_pdf_config?.columns_config &&
+        config?.render_pdf_config?.columns_config &&
         Object.keys(config.render_pdf_config?.columns_config).length > 0
-            ? config.render_pdf_config?.columns_config
+            ? config?.render_pdf_config?.columns_config
             : DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS;
 
     const elementsInDoubleColumn = new Set([
@@ -1168,9 +1168,9 @@ export const getBodyHtml = (
         ...doubleColumnConfig.right,
     ]);
 
-    const isDoubleColumn = config.render_pdf_config?.template_column_type === 'double';
+    const isDoubleColumn = config?.render_pdf_config?.template_column_type === 'double';
 
-    const sectionNameConfig = config.render_pdf_body_config?.section_name_config;
+    const sectionNameConfig = config?.render_pdf_body_config?.section_name_config;
 
     const spacing = getSpacingBetweenSections(config.render_pdf_config?.spacing_between_sections);
     const filteredPadConfig = padConfig?.filter(
@@ -1288,7 +1288,7 @@ export const getBodyHtml = (
                             <div>
                                 {(
                                     medicationFormatToTableMapping?.[
-                                        config.render_pdf_config
+                                        config?.render_pdf_config
                                             ?.medication_table_format as keyof typeof medicationFormatToTableMapping
                                     ] || getMedications1Html
                                 )(
@@ -1321,10 +1321,10 @@ export const getBodyHtml = (
                     <div>
                         {(
                             injectionsFormatToTableMapping?.[
-                                config.render_pdf_config
+                                config?.render_pdf_config
                                     ?.injections_table_format as keyof typeof injectionsFormatToTableMapping
                             ] || (() => getInjectionsLineHtml(data))
-                        )(data, config.render_pdf_config as TemplateConfig)}
+                        )(data, config?.render_pdf_config as TemplateConfig)}
                     </div>
                     {getProceduresHtmls(data, config)}
                 </>
@@ -4541,7 +4541,7 @@ export const getFollowupHtml = (
                             Visit on{' '}
                             <span
                                 className={`${
-                                    config.render_pdf_config?.followup_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.followup_in_unbold ? '' : 'bold'
                                 }`}
                                 style={{
                                     color: followupDateColor,
@@ -4694,7 +4694,7 @@ export const getLabTestsHtml = (
     sectionName?: string,
 ): JSX.Element | undefined => {
     const labTests = d?.tool?.labTests;
-    const isBullets = config.render_pdf_config?.bullets_config?.['labTests'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['labTests'];
     const headingColor = config?.render_pdf_config?.lab_tests_heading_color;
     const nameColor = config?.render_pdf_config?.lab_tests_name_color;
     const propertiesColor = config?.render_pdf_config?.lab_tests_properties_color;
@@ -4721,11 +4721,11 @@ export const getLabTestsHtml = (
                             <li className="pl-16">
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.lab_tests_name_in_unbold
+                                        config?.render_pdf_config?.lab_tests_name_in_unbold
                                             ? ''
                                             : 'bold'
                                     } ${
-                                        config.render_pdf_config?.lab_tests_name_in_capital
+                                        config?.render_pdf_config?.lab_tests_name_in_capital
                                             ? 'uppercase'
                                             : ''
                                     }`}
@@ -4782,9 +4782,11 @@ export const getLabTestsHtml = (
                         <span>
                             <span
                                 className={`${
-                                    config.render_pdf_config?.lab_tests_name_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.lab_tests_name_in_unbold
+                                        ? ''
+                                        : 'bold'
                                 } ${
-                                    config.render_pdf_config?.lab_tests_name_in_capital
+                                    config?.render_pdf_config?.lab_tests_name_in_capital
                                         ? 'uppercase'
                                         : ''
                                 }`}
@@ -4960,11 +4962,11 @@ export const getSymptomsHtml = (
                             <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.symptoms_name_in_unbold
+                                        config?.render_pdf_config?.symptoms_name_in_unbold
                                             ? ''
                                             : 'bold'
                                     } ${
-                                        config.render_pdf_config?.symptoms_name_in_capital
+                                        config?.render_pdf_config?.symptoms_name_in_capital
                                             ? 'uppercase'
                                             : ''
                                     }`}
@@ -5009,9 +5011,9 @@ export const getSymptomsHtml = (
                         <>
                             <span
                                 className={`${
-                                    config.render_pdf_config?.symptoms_name_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.symptoms_name_in_unbold ? '' : 'bold'
                                 } ${
-                                    config.render_pdf_config?.symptoms_name_in_capital
+                                    config?.render_pdf_config?.symptoms_name_in_capital
                                         ? 'uppercase'
                                         : ''
                                 }`}
@@ -5061,7 +5063,7 @@ export const getDiagnosisHtml = (
     sectionName?: string,
 ): JSX.Element | undefined => {
     const diagnosis = d.tool?.sectionProp?.dy;
-    const isBullets = config.render_pdf_config?.bullets_config?.['diagnosis'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['diagnosis'];
     const headingColor = config?.render_pdf_config?.diagnosis_heading_color;
     const nameColor = config?.render_pdf_config?.diagnosis_name_color;
     const propertiesColor = config?.render_pdf_config?.diagnosis_properties_color;
@@ -5088,11 +5090,11 @@ export const getDiagnosisHtml = (
                             <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.diagnosis_name_in_unbold
+                                        config?.render_pdf_config?.diagnosis_name_in_unbold
                                             ? ''
                                             : 'bold'
                                     } ${
-                                        config.render_pdf_config?.diagnosis_name_in_capital
+                                        config?.render_pdf_config?.diagnosis_name_in_capital
                                             ? 'uppercase'
                                             : ''
                                     }`}
@@ -5137,9 +5139,11 @@ export const getDiagnosisHtml = (
                         <>
                             <span
                                 className={`${
-                                    config.render_pdf_config?.diagnosis_name_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.diagnosis_name_in_unbold
+                                        ? ''
+                                        : 'bold'
                                 } ${
-                                    config.render_pdf_config?.diagnosis_name_in_capital
+                                    config?.render_pdf_config?.diagnosis_name_in_capital
                                         ? 'uppercase'
                                         : ''
                                 }`}
@@ -5195,7 +5199,7 @@ export const getPmhHtml = (
     config: TemplateV2,
 ): JSX.Element | undefined => {
     const mhData = d.tool?.sectionProp?.mhData?.[type];
-    const isBullets = config.render_pdf_config?.bullets_config?.['medicalHistory'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['medicalHistory'];
     const headingColor = config?.render_pdf_config?.pmh_heading_color;
     const nameColor = config?.render_pdf_config?.pmh_name_color;
     const propertiesColor = config?.render_pdf_config?.pmh_properties_color;
@@ -5246,7 +5250,7 @@ export const getPmhHtml = (
                             <li className="pl-16">
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.medical_history_name_in_unbold
+                                        config?.render_pdf_config?.medical_history_name_in_unbold
                                             ? ''
                                             : 'bold'
                                     }`}
@@ -5273,7 +5277,7 @@ export const getPmhHtml = (
                         <>
                             <span
                                 className={`${
-                                    config.render_pdf_config?.medical_history_name_in_unbold
+                                    config?.render_pdf_config?.medical_history_name_in_unbold
                                         ? ''
                                         : 'bold'
                                 }`}
@@ -5309,7 +5313,7 @@ export const getExaminationFindingsHtml = (
     sectionName?: string,
 ): JSX.Element | undefined => {
     const examintionFindings = d.tool?.medicalHistory?.examinations;
-    const isBullets = config.render_pdf_config?.bullets_config?.['examinations'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['examinations'];
     const headingColor = config?.render_pdf_config?.examinations_heading_color;
     const nameColor = config?.render_pdf_config?.examinations_name_color;
     const propertiesColor = config?.render_pdf_config?.examinations_properties_color;
@@ -5337,7 +5341,7 @@ export const getExaminationFindingsHtml = (
                             <li className="pl-16">
                                 <span
                                     className={`${
-                                        config.render_pdf_config
+                                        config?.render_pdf_config
                                             ?.examination_findings_name_in_unbold
                                             ? ''
                                             : 'bold'
@@ -5365,7 +5369,7 @@ export const getExaminationFindingsHtml = (
                         <>
                             <span
                                 className={`${
-                                    config.render_pdf_config?.examination_findings_name_in_unbold
+                                    config?.render_pdf_config?.examination_findings_name_in_unbold
                                         ? ''
                                         : 'bold'
                                 }`}
@@ -5555,7 +5559,7 @@ export const getInvestigativeReadingsHtml = (
                                 <td className="p-4 border medication-table-border-color text-center">
                                     <span
                                         className={`${
-                                            config.render_pdf_config?.lab_vitals_name_in_unbold
+                                            config?.render_pdf_config?.lab_vitals_name_in_unbold
                                                 ? ''
                                                 : 'bold'
                                         }`}
@@ -5619,7 +5623,7 @@ export const getInvestigativeReadingsHtml = (
                                 {labVital?.name && (
                                     <span
                                         className={`uppercase ${
-                                            config.render_pdf_config?.lab_vitals_name_in_unbold
+                                            config?.render_pdf_config?.lab_vitals_name_in_unbold
                                                 ? ''
                                                 : 'bold'
                                         }`}
@@ -5648,7 +5652,7 @@ export const getInvestigativeReadingsHtml = (
                             {labVital?.name && (
                                 <span
                                     className={`uppercase ${
-                                        config.render_pdf_config?.lab_vitals_name_in_unbold
+                                        config?.render_pdf_config?.lab_vitals_name_in_unbold
                                             ? ''
                                             : 'bold'
                                     }`}
@@ -5684,8 +5688,8 @@ export const getVitalsHtml = (
     config: TemplateV2,
 ): JSX.Element | undefined => {
     const vitals = d.tool?.medicalHistory?.vitals;
-    const isBullets = config.render_pdf_config?.bullets_config?.['vitals'];
-    const isTabular = config.render_pdf_config?.tabular_config?.['vitals'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['vitals'];
+    const isTabular = config?.render_pdf_config?.tabular_config?.['vitals'];
     const headingColor = config?.render_pdf_config?.vitals_heading_color;
     const nameColor = config?.render_pdf_config?.vitals_name_color;
     const propertiesColor = config?.render_pdf_config?.vitals_properties_color;
@@ -5714,7 +5718,7 @@ export const getVitalsHtml = (
                             <li className="pl-16">
                                 <span
                                     className={`uppercase ${
-                                        config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                        config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
                                     }`}
                                     style={{
                                         color: nameColor,
@@ -5809,7 +5813,7 @@ export const getVitalsHtml = (
                         <>
                             <span
                                 className={`uppercase ${
-                                    config.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
                                 }`}
                                 style={{
                                     color: nameColor,
@@ -5920,7 +5924,7 @@ export const getFormDataHtml = (
                             {(commonFormData?.length || 0) - 1 === i ? (
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.patient_form_data_in_unbold
+                                        config?.render_pdf_config?.patient_form_data_in_unbold
                                             ? ''
                                             : 'bold'
                                     }`}
@@ -5930,7 +5934,7 @@ export const getFormDataHtml = (
                             ) : (
                                 <span
                                     className={`${
-                                        config.render_pdf_config?.patient_form_data_in_unbold
+                                        config?.render_pdf_config?.patient_form_data_in_unbold
                                             ? ''
                                             : 'bold'
                                     }`}
@@ -5959,7 +5963,7 @@ export const getFormDataHtml = (
                     <>
                         <span
                             className={`${
-                                config.render_pdf_config?.patient_form_data_in_unbold ? '' : 'bold'
+                                config?.render_pdf_config?.patient_form_data_in_unbold ? '' : 'bold'
                             } break-all`}
                             style={{
                                 color: nameColor,
@@ -5979,7 +5983,7 @@ export const getFormDataHtml = (
                         {(commonFormData?.length || 0) - 1 === i ? (
                             <span
                                 className={`${
-                                    config.render_pdf_config?.patient_form_data_in_unbold
+                                    config?.render_pdf_config?.patient_form_data_in_unbold
                                         ? ''
                                         : 'bold'
                                 }`}
@@ -5989,7 +5993,7 @@ export const getFormDataHtml = (
                         ) : (
                             <span
                                 className={`${
-                                    config.render_pdf_config?.patient_form_data_in_unbold
+                                    config?.render_pdf_config?.patient_form_data_in_unbold
                                         ? ''
                                         : 'bold'
                                 }`}
@@ -6058,8 +6062,8 @@ export const getPatientDetailsHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
 ): JSX.Element => {
-    const patientDetailsFormat = config.render_pdf_config?.patient_details_format;
-    const patientDetailsUppercase = config.render_pdf_config?.patient_details_in_uppercase;
+    const patientDetailsFormat = config?.render_pdf_config?.patient_details_format;
+    const patientDetailsUppercase = config?.render_pdf_config?.patient_details_in_uppercase;
     const patientNameColor = config?.render_pdf_config?.patient_details_patient_name_color;
 
     if (patientDetailsFormat === 'name-age-slash-gender-number') {
@@ -7040,8 +7044,8 @@ export const getProceduresHtmls = (
     config: TemplateV2,
 ): JSX.Element | undefined => {
     const procedures = d.tool?.procedures;
-    const isBullets = config.render_pdf_config?.bullets_config?.['procedures'];
-    const isTabular = config.render_pdf_config?.tabular_config?.['procedures'];
+    const isBullets = config?.render_pdf_config?.bullets_config?.['procedures'];
+    const isTabular = config?.render_pdf_config?.tabular_config?.['procedures'];
     const headingColor = config?.render_pdf_config?.procedures_heading_color;
     const nameColor = config?.render_pdf_config?.procedures_name_color;
     const propertiesColor = config?.render_pdf_config?.procedures_properties_color;
@@ -7067,7 +7071,7 @@ export const getProceduresHtmls = (
                         <li className="pl-16">
                             <span
                                 className={`uppercase ${
-                                    config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                                    config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
                                 }`}
                                 style={{ color: nameColor }}
                             >
@@ -7145,7 +7149,7 @@ export const getProceduresHtmls = (
                     <>
                         <span
                             className={`uppercase ${
-                                config.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                                config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
                             }`}
                             style={{ color: nameColor }}
                         >
