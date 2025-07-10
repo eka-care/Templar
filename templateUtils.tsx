@@ -5406,7 +5406,7 @@ export const getInvestigativeReadingsHtml = (
     const nameColor = config?.render_pdf_config?.lab_vitals_name_color;
     const propertiesColor = config?.render_pdf_config?.lab_vitals_properties_color;
     const rxElementKeySeperator = config?.render_pdf_config?.rx_element_key_seperator;
-
+    const isTabularFormat = config?.render_pdf_config?.tabular_config?.['labVitals'];
     if (labVitalFormat === 'date-data') {
         const labVitals = d.tool.labVitalsDate;
 
@@ -5464,12 +5464,142 @@ export const getInvestigativeReadingsHtml = (
         );
     }
 
+    if (isTabularFormat) {
+        const labVitals = d?.tool?.labVitalsDate;
+        if (!labVitals?.length) {
+            return;
+        }
+        // Collect all unique dates and test names
+        const allDates = Array.from(new Set(labVitals?.map((lv) => lv.dt)))?.sort((a, b) => {
+            const da = Date.parse(a.replace(/'/g, ''));
+            const db = Date.parse(b.replace(/'/g, ''));
+            if (!isNaN(da) && !isNaN(db)) {
+                return db - da; // descending
+            }
+            return b.localeCompare(a); // fallback
+        });
+        const allNamesSet = new Set<string>();
+        labVitals?.forEach((lv) => {
+            lv?.arr?.forEach((item: any) => {
+                if (item.name) allNamesSet.add(item.name);
+            });
+        });
+        const allNames = Array.from(allNamesSet);
+
+        // Build a map: name -> { date -> reading }
+        const nameDateMap: Record<string, Record<string, any>> = {};
+        allNames?.forEach((name) => {
+            nameDateMap[name] = {};
+        });
+        labVitals?.forEach((lv) => {
+            lv?.arr?.forEach((item: any) => {
+                if (item?.name) {
+                    nameDateMap[item.name][lv.dt] = item;
+                }
+            });
+        });
+
+        // Calculate widths
+        const serialWidth = '4%';
+        const nameWidth = '25%';
+        const dateColCount = allDates.length;
+        const dateColWidth = dateColCount > 0 ? `${(76 / dateColCount).toFixed(2)}%` : 'auto';
+
+        return (
+            <div className="text-darwin-neutral-1000">
+                <span
+                    style={{ color: headingColor }}
+                    className="uppercase text-darwin-accent-symptoms-blue-800 bold"
+                >
+                    {sectionName || 'INVESTIGATIVE READINGS'} :
+                </span>
+                <table className="border-collapse border medication-table-border-color w-full mt-2">
+                    <thead>
+                        <tr className="text-11 bold w-full">
+                            <th
+                                style={{ width: serialWidth }}
+                                className="border medication-table-border-color medication-title-color w-64 text-center p-4"
+                            >
+                                S. No.
+                            </th>
+                            <th
+                                style={{ width: nameWidth }}
+                                className="border medication-table-border-color medication-title-color bold text-center p-4"
+                            >
+                                Name
+                            </th>
+                            {allDates.map((dt) => (
+                                <th
+                                    key={dt}
+                                    style={{ width: dateColWidth }}
+                                    className="border medication-table-border-color medication-title-color bold text-center p-4"
+                                >
+                                    {dt
+                                        ? dt?.length === 10
+                                            ? `${dt?.slice(0, 2)}${dt?.slice(3, 5)}${dt?.slice(
+                                                  8,
+                                                  10,
+                                              )}`
+                                            : dt
+                                        : ''}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {allNames?.map((name, idx) => (
+                            <tr className="text-11" key={name}>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {idx + 1}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    <span
+                                        className={`${
+                                            config.render_pdf_config?.lab_vitals_name_in_unbold
+                                                ? ''
+                                                : 'bold'
+                                        }`}
+                                    >
+                                        {name}
+                                    </span>
+                                </td>
+                                {allDates?.map((dt) => {
+                                    const reading = nameDateMap[name][dt];
+                                    return (
+                                        <td
+                                            key={dt}
+                                            className="p-4 border medication-table-border-color text-center align-middle"
+                                        >
+                                            {reading ? (
+                                                <div className="flex flex-col items-center justify-center">
+                                                    <span>
+                                                        {reading?.value} {reading?.unit?.name}
+                                                    </span>
+                                                    {reading?.interpretation && (
+                                                        <span className="text-10 mt-1">
+                                                            {'[ '}
+                                                            {reading?.interpretation?.value || ''}
+                                                            {' ]'}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ) : null}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+
     const labVitals = d?.tool?.labVitals;
 
     if (!labVitals?.length) {
         return;
     }
-
     return (
         <div className="space-x-8 text-darwin-neutral-1000">
             <span
