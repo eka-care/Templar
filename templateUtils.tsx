@@ -1159,7 +1159,7 @@ export const getBodyHtml = (
 
     const doubleColumnConfig =
         config?.render_pdf_config?.columns_config &&
-        Object.keys(config.render_pdf_config?.columns_config).length > 0
+        Object.keys(config?.render_pdf_config?.columns_config).length > 0
             ? config?.render_pdf_config?.columns_config
             : DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS;
 
@@ -1172,7 +1172,7 @@ export const getBodyHtml = (
 
     const sectionNameConfig = config?.render_pdf_body_config?.section_name_config;
 
-    const spacing = getSpacingBetweenSections(config.render_pdf_config?.spacing_between_sections);
+    const spacing = getSpacingBetweenSections(config?.render_pdf_config?.spacing_between_sections);
     const filteredPadConfig = padConfig?.filter(
         (i) => !IGNORE_CONFIG_KEYS[flavour.toLowerCase() as Flavour].has(i.id),
     );
@@ -1185,7 +1185,7 @@ export const getBodyHtml = (
             {showWaterMark && (
                 <img src="" alt="#" className="w-full absolute z-1 top left right bottom" />
             )}
-            {!config.render_pdf_config?.floating_patient_details && (
+            {!config?.render_pdf_config?.floating_patient_details && (
                 <>
                     <div className="flex items-start justify-between italic text-darwin-neutral-1000">
                         {getPatientDetailsHtml(data, config)}
@@ -5901,7 +5901,7 @@ export const getFormDataHtml = (
         return null;
     }
 
-    if (config.render_pdf_config?.patient_form_data_format === 'pipe-seperated-without-key') {
+    if (config?.render_pdf_config?.patient_form_data_format === 'pipe-seperated-without-key') {
         return (
             <div
                 className={
@@ -6014,7 +6014,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
     if (config?.render_pdf_config?.date_and_time === 'date') {
         return (
             <p
-                className={`${config.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
+                className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
                 style={{
                     color: dateColor,
                 }}
@@ -6030,7 +6030,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
     if (config?.render_pdf_config?.date_and_time === 'day-month-date-year-time') {
         return (
             <p
-                className={`${config.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
+                className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
                 style={{
                     color: dateColor,
                 }}
@@ -6045,7 +6045,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
 
     return (
         <p
-            className={`${config.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
+            className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
             style={{
                 color: dateColor,
             }}
