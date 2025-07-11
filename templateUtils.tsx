@@ -60,20 +60,6 @@ const fontFamily = {
     as: "'Poppins', sans-serif",
 };
 
-const TAP_PREFIX = '(Tapering Dose)';
-
-const addTaperPrefix = (isTapered: boolean, showTaperedTitle: boolean) => {
-    if (isTapered && showTaperedTitle) {
-        return (
-            <span className="mr-5">
-                <strong>{TAP_PREFIX}</strong>
-            </span>
-        );
-    }
-
-    return null;
-};
-
 export const getHeadHtml = (
     language: keyof typeof fontFamily | undefined,
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
@@ -1904,10 +1890,6 @@ export const getMedications1Html = (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 <span
                                                     className={`bold ${
                                                         render_pdf_config?.medication_name_in_capital
@@ -1936,10 +1918,6 @@ export const getMedications1Html = (
                                             </>
                                         ) : (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 {med?.generic_name ? (
                                                     <p
                                                         className={`bold ${
@@ -2195,10 +2173,6 @@ export const getMedications1Html = (
                                         ''
                                     ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                         <>
-                                            {addTaperPrefix(
-                                                !!med?.isTapering,
-                                                !!med?.taperingDoseTitleDisplay,
-                                            )}
                                             <span
                                                 className={`bold ${
                                                     render_pdf_config?.medication_name_in_capital
@@ -2227,10 +2201,6 @@ export const getMedications1Html = (
                                         </>
                                     ) : (
                                         <>
-                                            {addTaperPrefix(
-                                                !!med?.isTapering,
-                                                !!med?.taperingDoseTitleDisplay,
-                                            )}
                                             {med?.generic_name ? (
                                                 <p
                                                     className={`bold ${
@@ -2571,10 +2541,6 @@ export const getMedications2Html = (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
-                                                    {addTaperPrefix(
-                                                        !!med?.isTapering,
-                                                        !!med?.taperingDoseTitleDisplay,
-                                                    )}
                                                     <span
                                                         className={`bold ${
                                                             render_pdf_config?.medication_name_in_capital
@@ -2600,10 +2566,6 @@ export const getMedications2Html = (
                                                 </>
                                             ) : (
                                                 <>
-                                                    {addTaperPrefix(
-                                                        !!med?.isTapering,
-                                                        !!med?.taperingDoseTitleDisplay,
-                                                    )}
                                                     {med?.generic_name ? (
                                                         <p
                                                             className={`bold ${
@@ -2874,10 +2836,6 @@ export const getMedications2Html = (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 <span
                                                     className={`bold ${
                                                         render_pdf_config?.medication_name_in_capital
@@ -3255,10 +3213,6 @@ export const getMedications3Html = (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
-                                                    {addTaperPrefix(
-                                                        !!med?.isTapering,
-                                                        !!med?.taperingDoseTitleDisplay,
-                                                    )}
                                                     <span
                                                         className={`bold ${
                                                             render_pdf_config?.medication_name_in_capital
@@ -3525,10 +3479,6 @@ export const getMedications3Html = (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 <span
                                                     className={`bold ${
                                                         render_pdf_config?.medication_name_in_capital
@@ -3905,10 +3855,6 @@ export const getMedications4Html = (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
-                                                    {addTaperPrefix(
-                                                        !!med?.isTapering,
-                                                        !!med?.taperingDoseTitleDisplay,
-                                                    )}
                                                     <span
                                                         className={`bold ${
                                                             render_pdf_config?.medication_name_in_capital
@@ -4204,10 +4150,6 @@ export const getMedications4Html = (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 <span
                                                     className={`bold ${
                                                         render_pdf_config?.medication_name_in_capital
@@ -4231,10 +4173,6 @@ export const getMedications4Html = (
                                             </>
                                         ) : (
                                             <>
-                                                {addTaperPrefix(
-                                                    !!med?.isTapering,
-                                                    !!med?.taperingDoseTitleDisplay,
-                                                )}
                                                 {med?.generic_name ? (
                                                     <p
                                                         className={`bold ${
