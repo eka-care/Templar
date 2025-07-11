@@ -386,6 +386,15 @@ interface MedicationsEntity {
     tapering_dose: taperingEntity[];
     isTapering?: boolean;
     ind?: number;
+    route?: MedRoute;
+    taperingDoseTitleDisplay?: boolean;
+}
+
+export interface MedRoute {
+    name: string;
+    id: string;
+    display_name: string;
+    snomed_id: string;
 }
 
 interface taperingEntity {
@@ -395,6 +404,7 @@ interface taperingEntity {
     instruction?: string | null;
     dose: DoseObject;
     start_from: stObject;
+    route?: MedRoute;
 }
 
 interface stObject {
