@@ -387,6 +387,7 @@ interface MedicationsEntity {
     isTapering?: boolean;
     ind?: number;
     route?: MedRoute;
+    taperingDoseTitleDisplay?: boolean;
 }
 
 export interface MedRoute {
