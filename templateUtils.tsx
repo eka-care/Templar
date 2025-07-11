@@ -65,7 +65,7 @@ export const getHeadHtml = (
     language: keyof typeof fontFamily | undefined,
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
-    fontsUrl: string = "",
+    fontsUrl: string = '',
 ): string => {
     return `
     
@@ -5520,7 +5520,7 @@ export const getInvestigativeReadingsHtml = (
                                 style={{ width: serialWidth }}
                                 className="border medication-table-border-color medication-title-color w-64 text-center p-4"
                             >
-                                S. No.
+                                {' '}
                             </th>
                             <th
                                 style={{ width: nameWidth }}
