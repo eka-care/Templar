@@ -2,6 +2,7 @@ import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import React, { Fragment } from 'react';
+import { parseHTMLToStringForPipeSeperated } from '../components/common/htmlParser';
 
 import {
     GeniePadElementsSettingItem,
@@ -4885,49 +4886,6 @@ export const getLabTestsHtml = (
             )}
         </div>
     );
-};
-
-export const parseHTMLToStringForPipeSeperated = (html: string): string => {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const walker = doc.body;
-
-    const result: string[] = [];
-
-    const traverse = (node: Node) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-            result.push((node.textContent || '').replace(/\s+/g, ' '));
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            const el = node as HTMLElement;
-            switch (el.tagName.toLowerCase()) {
-                case 'li':
-                    result.push('• ');
-                    break;
-                case 'br':
-                    result.push(' ');
-                    break;
-                case 'p':
-                case 'ul':
-                    result.push(' ');
-                    break;
-            }
-
-            for (const child of Array.from(el.childNodes)) {
-                traverse(child);
-            }
-
-            // Add spacing after closing certain tags
-            // if (['p'].includes(el.tagName.toLowerCase())) {
-            //     result.push('| ');
-            // }
-            if (['p', 'li', 'ul'].includes(el.tagName.toLowerCase())) {
-                result.push(' ');
-            }
-        }
-    };
-
-    traverse(walker);
-
-    return result.join('').replace(/\s+/g, ' ').trim();
 };
 
 // keeping it for some time : other best wayyyyyy
