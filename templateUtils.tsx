@@ -65,20 +65,20 @@ const TAP_PREFIX = '(Tapering Dose)';
 const addTaperPrefix = (isTapered: boolean, showTaperedTitle: boolean) => {
     if (isTapered && showTaperedTitle) {
         return (
-            <span className='mr-5'>
+            <span className="mr-5">
                 <strong>{TAP_PREFIX}</strong>
             </span>
         );
     }
 
     return null;
-}
+};
 
 export const getHeadHtml = (
     language: keyof typeof fontFamily | undefined,
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
-    fontsUrl: string = "",
+    fontsUrl: string = '',
 ): string => {
     return `
     
