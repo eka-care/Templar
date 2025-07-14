@@ -1681,10 +1681,12 @@ export const getDoubleColumnMedications = (
                                                 .join(', ')}{' '}
                                         </span>
                                     )}
-                                    {med?.area?.name ? (
+                                    {med?.area?.name && !med?.route?.display_name ? (
                                         <span>[Apply on: {med?.area?.name || ''}]</span>
                                     ) : (
-                                        ''
+                                        <span>{`${med?.route?.display_name || ''}${
+                                            med?.area?.name ? `, ${med?.area?.name}` : ''
+                                        }`}</span>
                                     )}
                                     {med?.timing && <span>[{med?.timing || ''}]</span>}
                                     {med?.duration?.custom && (
@@ -1885,7 +1887,7 @@ export const getMedications1Html = (
                                         }}
                                         className="p-4 border medication-table-border-color"
                                     >
-                                        {med?.isTapering ? (
+                                        {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
@@ -1988,10 +1990,15 @@ export const getMedications1Html = (
                                                 >
                                                     <p>{med?.frequency?.custom || ''}</p>
                                                     <p>{med?.timing || ''}</p>
-                                                    {med?.area?.name ? (
+                                                    {med?.area?.name &&
+                                                    !med?.route?.display_name ? (
                                                         <p>Apply on: {med?.area?.name || ''}</p>
                                                     ) : (
-                                                        ''
+                                                        <p>{`${med?.route?.display_name || ''}${
+                                                            med?.area?.name
+                                                                ? `, ${med?.area?.name}`
+                                                                : ''
+                                                        }`}</p>
                                                     )}
                                                 </td>
                                             );
@@ -2163,7 +2170,7 @@ export const getMedications1Html = (
                                     }}
                                     className="p-4 border medication-table-border-color"
                                 >
-                                    {med?.isTapering ? (
+                                    {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                         ''
                                     ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                         <>
@@ -2270,10 +2277,15 @@ export const getMedications1Html = (
                                                 >
                                                     <p>{med?.frequency?.custom || ''}</p>
                                                     <p>{med?.timing || ''}</p>
-                                                    {med?.area?.name ? (
+                                                    {med?.area?.name &&
+                                                    !med?.route?.display_name ? (
                                                         <p>Apply on: {med?.area?.name || ''}</p>
                                                     ) : (
-                                                        ''
+                                                        <p>{`${med?.route?.display_name || ''}${
+                                                            med?.area?.name
+                                                                ? `, ${med?.area?.name}`
+                                                                : ''
+                                                        }`}</p>
                                                     )}
                                                 </td>
                                             );
@@ -2526,7 +2538,7 @@ export const getMedications2Html = (
                                             }}
                                             className="p-4 border medication-table-border-color"
                                         >
-                                            {med?.isTapering ? (
+                                            {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
@@ -2622,10 +2634,15 @@ export const getMedications2Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
@@ -2816,7 +2833,7 @@ export const getMedications2Html = (
                                         }}
                                         className="p-4 border medication-table-border-color"
                                     >
-                                        {med?.isTapering ? (
+                                        {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
@@ -2913,10 +2930,15 @@ export const getMedications2Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
@@ -3188,7 +3210,7 @@ export const getMedications3Html = (
                                             style={{ width: `${medicationWidth}%` }}
                                             className="p-4"
                                         >
-                                            {med?.isTapering ? (
+                                            {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
@@ -3282,10 +3304,15 @@ export const getMedications3Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
@@ -3449,7 +3476,7 @@ export const getMedications3Html = (
                                         {med?.ind || ''}
                                     </td>
                                     <td style={{ width: `${medicationWidth}%` }} className="p-4">
-                                        {med?.isTapering ? (
+                                        {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
@@ -3544,10 +3571,15 @@ export const getMedications3Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
@@ -3820,7 +3852,7 @@ export const getMedications4Html = (
                                             style={{ width: `${medicationWidth}%` }}
                                             className="p-4"
                                         >
-                                            {med?.isTapering ? (
+                                            {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                                 ''
                                             ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                                 <>
@@ -3914,10 +3946,15 @@ export const getMedications4Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
@@ -4110,7 +4147,7 @@ export const getMedications4Html = (
                                         {med?.ind || ''}
                                     </td>
                                     <td style={{ width: `${medicationWidth}%` }} className="p-4">
-                                        {med?.isTapering ? (
+                                        {med?.isTapering && !med?.taperingDoseTitleDisplay ? (
                                             ''
                                         ) : !render_pdf_config?.make_generic_name_as_primary ? (
                                             <>
@@ -4205,10 +4242,15 @@ export const getMedications4Html = (
                                                     >
                                                         <p>{med?.frequency?.custom || ''}</p>
                                                         <p>{med?.timing || ''}</p>
-                                                        {med?.area?.name ? (
+                                                        {med?.area?.name &&
+                                                        !med?.route?.display_name ? (
                                                             <p>Apply on: {med?.area?.name || ''}</p>
                                                         ) : (
-                                                            ''
+                                                            <p>{`${med?.route?.display_name || ''}${
+                                                                med?.area?.name
+                                                                    ? `, ${med?.area?.name}`
+                                                                    : ''
+                                                            }`}</p>
                                                         )}
                                                     </td>
                                                 );
