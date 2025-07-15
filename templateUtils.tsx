@@ -1344,6 +1344,10 @@ export const getBodyHtml = (
                             elementsInDoubleColumn,
                             'prescriptionNotes',
                         ) && getNotesHtml(data, config, sectionNameConfig?.['prescriptionNotes'])}
+                        <div className="leading-5">
+                            {getPmhHtml(data, 'g-vh', config)}
+                            {getPmhHtml(data, 'd-vh', config)}
+                        </div>
                     </div>
                     {getAdvicesHtml(data, config, sectionNameConfig?.['advices'])}
                     {getFollowupHtml(data, config, sectionNameConfig?.['followup'])}
@@ -5216,8 +5220,18 @@ export const getDiagnosisHtml = (
         </div>
     );
 };
-
-type MedicalHistory = 'pmh' | 'fh' | 'lh' | 'th' | 'cm' | 'da' | 'oa' | 'pp' | 'omh';
+type MedicalHistory =
+    | 'pmh'
+    | 'fh'
+    | 'lh'
+    | 'th'
+    | 'cm'
+    | 'da'
+    | 'oa'
+    | 'pp'
+    | 'omh'
+    | 'd-vh'
+    | 'g-vh';
 
 const mhSectionNameToColor = {
     pmh: 'patient_medical_history',
@@ -5229,6 +5243,8 @@ const mhSectionNameToColor = {
     oa: 'other_allergies',
     pp: 'past_procedure',
     omh: 'other_medical_history',
+    'd-vh': 'due-vaccination-history',
+    'g-vh': 'given-vaccination-history',
 };
 
 export const getPmhHtml = (
@@ -5236,8 +5252,11 @@ export const getPmhHtml = (
     type: MedicalHistory,
     config: TemplateV2,
 ): JSX.Element | undefined => {
-    const mhData = d.tool?.sectionProp?.mhData?.[type];
-    const isBullets = config?.render_pdf_config?.bullets_config?.['medicalHistory'];
+    const mhData = d?.tool?.sectionProp?.mhData?.[type];
+    const isBullets =
+        type === 'g-vh' || type === 'd-vh'
+            ? true
+            : config?.render_pdf_config?.bullets_config?.['medicalHistory'];
     const headingColor = config?.render_pdf_config?.pmh_heading_color;
     const nameColor = config?.render_pdf_config?.pmh_name_color;
     const propertiesColor = config?.render_pdf_config?.pmh_properties_color;
