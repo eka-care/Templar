@@ -214,6 +214,8 @@ export interface Tool {
             oa: mhDataElement;
             pp: mhDataElement;
             omh: mhDataElement;
+            'd-vh': mhDataElement;
+            'g-vh': mhDataElement;
         };
         dy: {
             values: {

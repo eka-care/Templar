@@ -28,7 +28,7 @@ import {
     getVitalsHtml,
     injectionsFormatToTableMapping,
     medicationFormatToTableMapping,
-} from "../Templar/templateUtils";
+} from '../Templar/templateUtils';
 
 export const padElements = (
     data: RenderPdfPrescription,
@@ -74,6 +74,8 @@ export const padElements = (
                     {getPmhHtml(data, 'oa', config)}
                     {getPmhHtml(data, 'pp', config)}
                     {getPmhHtml(data, 'omh', config)}
+                    {getPmhHtml(data, 'd-vh', config)}
+                    {getPmhHtml(data, 'g-vh', config)}
                 </>
             );
         case 'labTests':
