@@ -1764,10 +1764,10 @@ export const getMedications1Html = (
     const medicationsTableHeaderColor = render_pdf_config?.medications_table_header_color;
     const medTableWidth = render_pdf_config?.medication_table_width;
     medication?.forEach((med) => {
-        if (med?.dose?.custom?.trim()) {
+        if (med?.dose?.custom?.trim() || med?.area?.name || med?.route?.display_name) {
             showColumns['dose'] = true;
         }
-        if (med?.frequency?.custom || med?.timing || med?.area?.name) {
+        if (med?.frequency?.custom || med?.timing) {
             showColumns['frequency'] = true;
         }
         if (med?.duration?.custom || med?.start_from?.text) {
@@ -2417,10 +2417,10 @@ export const getMedications2Html = (
     const medTableWidth = render_pdf_config?.medication_table_width;
 
     medication?.forEach((med) => {
-        if (med?.dose?.custom?.trim()) {
+        if (med?.dose?.custom?.trim() || med?.area?.name || med?.route?.display_name) {
             showColumns['dose'] = true;
         }
-        if (med?.frequency?.custom || med?.timing || med?.area?.name) {
+        if (med?.frequency?.custom || med?.timing) {
             showColumns['frequency'] = true;
         }
         if (med?.duration?.custom || med?.start_from?.text) {
@@ -3100,10 +3100,10 @@ export const getMedications3Html = (
     const medTableWidth = render_pdf_config?.medication_table_width;
 
     medication?.forEach((med) => {
-        if (med?.dose?.custom?.trim()) {
+        if (med?.dose?.custom?.trim() || med?.area?.name || med?.route?.display_name) {
             showColumns['dose'] = true;
         }
-        if (med?.frequency?.custom || med?.timing || med?.area?.name) {
+        if (med?.frequency?.custom || med?.timing) {
             showColumns['frequency'] = true;
         }
         if (med?.duration?.custom || med?.start_from?.text) {
@@ -3751,10 +3751,10 @@ export const getMedications4Html = (
     const medTableWidth = render_pdf_config?.medication_table_width;
 
     medication?.forEach((med) => {
-        if (med?.dose?.custom?.trim()) {
+        if (med?.dose?.custom?.trim() || med?.area?.name || med?.route?.display_name) {
             showColumns['dose'] = true;
         }
-        if (med?.frequency?.custom || med?.timing || med?.area?.name) {
+        if (med?.frequency?.custom || med?.timing) {
             showColumns['frequency'] = true;
         }
         if (med?.duration?.custom || med?.start_from?.text) {
