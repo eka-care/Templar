@@ -5515,62 +5515,6 @@ export const getInvestigativeReadingsHtml = (
     const propertiesColor = config?.render_pdf_config?.lab_vitals_properties_color;
     const rxElementKeySeperator = config?.render_pdf_config?.rx_element_key_seperator;
     const isTabularFormat = config?.render_pdf_config?.tabular_config?.['labVitals'];
-    if (labVitalFormat === 'date-data') {
-        const labVitals = d.tool.labVitalsDate;
-
-        if (!labVitals?.length) {
-            return;
-        }
-
-        return (
-            <div className="space-x-8 text-darwin-neutral-1000">
-                <span
-                    style={{
-                        color: headingColor,
-                    }}
-                    className="uppercase text-darwin-accent-symptoms-blue-800 bold"
-                >
-                    {sectionName || 'INVESTIGATIVE READINGS'} :
-                </span>
-
-                <ul className="ml-36">
-                    {labVitals?.map((labVital) => {
-                        return (
-                            <li className="pl-16">
-                                {labVital?.dt && (
-                                    <span
-                                        style={{
-                                            color: nameColor,
-                                        }}
-                                        className="bold"
-                                    >
-                                        {labVital?.dt || ''} :{' '}
-                                    </span>
-                                )}
-
-                                {labVital.arr.map((labValue, i) => {
-                                    return (
-                                        <span
-                                            style={{
-                                                color: propertiesColor,
-                                            }}
-                                        >
-                                            {labValue.name && <span>{labValue.name} - </span>}
-                                            <span>
-                                                {labValue.toshownodate || ''}{' '}
-                                                {i !== (labVital.arr || []).length - 1 &&
-                                                    getRxSeperator(rxElementKeySeperator)}{' '}
-                                            </span>
-                                        </span>
-                                    );
-                                })}
-                            </li>
-                        );
-                    })}
-                </ul>
-            </div>
-        );
-    }
 
     if (isTabularFormat) {
         const labVitals = d?.tool?.labVitalsDate;
@@ -5699,6 +5643,63 @@ export const getInvestigativeReadingsHtml = (
                         ))}
                     </tbody>
                 </table>
+            </div>
+        );
+    }
+
+    if (labVitalFormat === 'date-data') {
+        const labVitals = d.tool.labVitalsDate;
+
+        if (!labVitals?.length) {
+            return;
+        }
+
+        return (
+            <div className="space-x-8 text-darwin-neutral-1000">
+                <span
+                    style={{
+                        color: headingColor,
+                    }}
+                    className="uppercase text-darwin-accent-symptoms-blue-800 bold"
+                >
+                    {sectionName || 'INVESTIGATIVE READINGS'} :
+                </span>
+
+                <ul className="ml-36">
+                    {labVitals?.map((labVital) => {
+                        return (
+                            <li className="pl-16">
+                                {labVital?.dt && (
+                                    <span
+                                        style={{
+                                            color: nameColor,
+                                        }}
+                                        className="bold"
+                                    >
+                                        {labVital?.dt || ''} :{' '}
+                                    </span>
+                                )}
+
+                                {labVital.arr.map((labValue, i) => {
+                                    return (
+                                        <span
+                                            style={{
+                                                color: propertiesColor,
+                                            }}
+                                        >
+                                            {labValue.name && <span>{labValue.name} - </span>}
+                                            <span>
+                                                {labValue.toshownodate || ''}{' '}
+                                                {i !== (labVital.arr || []).length - 1 &&
+                                                    getRxSeperator(rxElementKeySeperator)}{' '}
+                                            </span>
+                                        </span>
+                                    );
+                                })}
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         );
     }
