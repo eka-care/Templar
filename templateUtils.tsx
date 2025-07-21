@@ -5514,9 +5514,9 @@ export const getInvestigativeReadingsHtml = (
     const nameColor = config?.render_pdf_config?.lab_vitals_name_color;
     const propertiesColor = config?.render_pdf_config?.lab_vitals_properties_color;
     const rxElementKeySeperator = config?.render_pdf_config?.rx_element_key_seperator;
-    const isTabularFormat = config?.render_pdf_config?.tabular_config?.['labVitals'];
-
-    if (isTabularFormat) {
+    const isTestBasedTabularFormat = config?.render_pdf_config?.tabular_config?.['labVitals'];
+    const isDefaultTabularFormat = config?.render_pdf_config?.tabular_config?.['labVitals_v2'];
+    if (isTestBasedTabularFormat) {
         const labVitals = d?.tool?.labVitalsDate;
         if (!labVitals?.length) {
             return;
@@ -5639,6 +5639,104 @@ export const getInvestigativeReadingsHtml = (
                                         </td>
                                     );
                                 })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+
+    if (isDefaultTabularFormat) {
+        const labVitals = d?.tool?.labVitals;
+        if (!labVitals?.length) {
+            return;
+        }
+
+        // Width allocations for each column
+        const serialWidth = '4%';
+        const nameWidth = '24%';
+        const dateColWidth = '12%';
+        const readingColWidth = '20%';
+        const interpretationColWidth = '15%';
+        const remarksColWidth = '25%';
+
+        return (
+            <div className="text-darwin-neutral-1000">
+                <span
+                    style={{ color: headingColor }}
+                    className="uppercase text-darwin-accent-symptoms-blue-800 bold"
+                >
+                    {sectionName || 'INVESTIGATIVE READINGS'} :
+                </span>
+                <table className="border-collapse border medication-table-border-color w-full mt-2">
+                    <thead>
+                        <tr className="text-11 bold w-full">
+                            <th
+                                style={{ width: serialWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            />
+                            <th
+                                style={{ width: nameWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            >
+                                Name
+                            </th>
+                            <th
+                                style={{ width: readingColWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            >
+                                Reading
+                            </th>
+                            <th
+                                style={{ width: interpretationColWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            >
+                                Interpretation
+                            </th>
+                            <th
+                                style={{ width: dateColWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            >
+                                Date
+                            </th>
+                            <th
+                                style={{ width: remarksColWidth }}
+                                className="border medication-table-border-color medication-title-color text-center p-4"
+                            >
+                                Remarks
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {labVitals?.map((labVital, idx) => (
+                            <tr className="text-11" key={`${labVital?.name}-${idx}`}>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {idx + 1}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    <span
+                                        className={`${
+                                            config?.render_pdf_config?.lab_vitals_name_in_unbold
+                                                ? ''
+                                                : 'bold'
+                                        }`}
+                                    >
+                                        {labVital?.name || ''}
+                                    </span>
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {labVital?.value} {labVital?.unit?.name}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {labVital?.interpretation?.value || ''}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {labVital?.dateInString || ''}
+                                </td>
+                                <td className="p-4 border medication-table-border-color text-center">
+                                    {labVital?.remark || ''}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

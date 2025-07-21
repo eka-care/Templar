@@ -481,6 +481,7 @@ interface LabVitals {
     remark: string;
     unit: Unit;
     toshow?: string;
+    dateInString?: string;
 }
 interface Interpretation {
     value: string;
