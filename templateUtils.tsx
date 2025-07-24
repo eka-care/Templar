@@ -1389,12 +1389,10 @@ export const getBodyHtml = (
 export function isDoubleColumnElementVisible(
     config: TemplateV2,
     elementsInDoubleColumn?: Set<string>,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    elementName: string,
+    elementName?: string,
 ): boolean {
     if (
-        config?.render_pdf_config?.template_column_type === 'double' &&
+        elementName && config?.render_pdf_config?.template_column_type === 'double' &&
         elementsInDoubleColumn?.has(elementName)
     ) {
         return false;
