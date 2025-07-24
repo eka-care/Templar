@@ -27,6 +27,7 @@ import {
     getSymptomsHtml,
     getVitalsHtml,
     injectionsFormatToTableMapping,
+    isDoubleColumnElementVisible,
     medicationFormatToTableMapping,
 } from '../Templar/templateUtils';
 
@@ -36,11 +37,42 @@ export const padElements = (
     config: TemplateV2,
     sectionNameConfig: SectionNameConfig | undefined,
     isDoubleColumn?: boolean,
+    elementsInDoubleColumn?: Set<string>,
 ): JSX.Element | undefined => {
     switch (elementId) {
         case 'symptoms':
             return getSymptomsHtml(data, config, sectionNameConfig?.[elementId]);
-
+        case 'sym-dia':
+            return (
+                <>
+                    {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'symptoms') &&
+                        getSymptomsHtml(data, config, sectionNameConfig?.['symptoms'])}
+                    {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'diagnosis') &&
+                        getDiagnosisHtml(data, config, sectionNameConfig?.['diagnosis'])}
+                </>
+            );
+        case 'prescribe':
+            return (
+                <>
+                    {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'medications') &&
+                        (
+                            medicationFormatToTableMapping?.[
+                                config?.render_pdf_config
+                                    ?.medication_table_format as keyof typeof medicationFormatToTableMapping
+                            ] || getMedications1Html
+                        )(
+                            data,
+                            config?.render_pdf_body_config?.medication_config,
+                            config?.render_pdf_config,
+                        )}
+                    {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'labTests') &&
+                        getLabTestsHtml(data, config, sectionNameConfig?.['labTests'])}
+                </>
+            );
+        case 'followup':
+            return getFollowupHtml(data, config, sectionNameConfig?.['followup']);
+        case 'advices':
+            return getAdvicesHtml(data, config, sectionNameConfig?.['advices']);
         case 'medications':
             if (isDoubleColumn) {
                 return getDoubleColumnMedications(data, config?.render_pdf_config);

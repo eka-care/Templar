@@ -1259,8 +1259,14 @@ export const getBodyHtml = (
                         ?.filter((i) => (isDoubleColumn ? !elementsInDoubleColumn.has(i.id) : true))
                         ?.map((item) => {
                             return (
-                                padElements(data, item.id, config, sectionNameConfig) ||
-                                getDyformHtml(data, item.id, config)
+                                padElements(
+                                    data,
+                                    item.id,
+                                    config,
+                                    sectionNameConfig,
+                                    false,
+                                    elementsInDoubleColumn,
+                                ) || getDyformHtml(data, item.id, config)
                             );
                         })
                         .filter(Boolean)}
@@ -1380,14 +1386,14 @@ export const getBodyHtml = (
     );
 };
 
-function isDoubleColumnElementVisible(
+export function isDoubleColumnElementVisible(
     config: TemplateV2,
-    elementsInDoubleColumn: Set<string>,
+    elementsInDoubleColumn?: Set<string>,
     elementName: string,
 ) {
     if (
         config?.render_pdf_config?.template_column_type === 'double' &&
-        elementsInDoubleColumn.has(elementName)
+        elementsInDoubleColumn?.has(elementName)
     ) {
         return false;
     }
@@ -1400,7 +1406,17 @@ export const doubleColumnsHtml = (
     config: TemplateV2,
     doubleColumnConfig: ColumnConfig,
     sectionNameConfig?: SectionNameConfig,
-): JSX.Element => {
+): JSX.Element | null => {
+    const leftComponentNonEmptyElements =
+        doubleColumnConfig?.left?.filter((key) => padElements(data, key, config, sectionNameConfig)) || [];
+
+    const rightComponentNonEmptyElements =
+        doubleColumnConfig?.right?.filter((key) => padElements(data, key, config, sectionNameConfig)) || [];
+
+    if (leftComponentNonEmptyElements?.length <= 0 && rightComponentNonEmptyElements?.length <= 0) {
+        return null;
+    }
+
     const maxRow = Math.max(
         doubleColumnConfig?.left?.length || 0,
         doubleColumnConfig?.right?.length || 0,
