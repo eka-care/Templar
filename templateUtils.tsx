@@ -5620,7 +5620,7 @@ export const getInvestigativeReadingsHtml = (
                                 <td className="p-4 border medication-table-border-color text-center">
                                     {idx + 1}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     <span
                                         className={`${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -5636,7 +5636,7 @@ export const getInvestigativeReadingsHtml = (
                                     return (
                                         <td
                                             key={dt}
-                                            className="p-4 border medication-table-border-color text-center align-middle"
+                                            className="p-4 border medication-table-border-color text-left align-middle"
                                         >
                                             {reading ? (
                                                 <div className="flex flex-col items-center justify-center">
@@ -5730,7 +5730,7 @@ export const getInvestigativeReadingsHtml = (
                                 <td className="p-4 border medication-table-border-color text-center">
                                     {idx + 1}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     <span
                                         className={`${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -5741,16 +5741,16 @@ export const getInvestigativeReadingsHtml = (
                                         {labVital?.name || ''}
                                     </span>
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     {labVital?.value} {labVital?.unit?.name}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     {labVital?.interpretation?.value || ''}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     {labVital?.dateInString || ''}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td className="p-4 border medication-table-border-color text-left">
                                     {labVital?.remark || ''}
                                 </td>
                             </tr>
