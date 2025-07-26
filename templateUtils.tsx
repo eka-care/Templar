@@ -6398,8 +6398,8 @@ export const getDentalExaminationsHtml = (
                         t[1].map((i) => {
                             return `${TEETH_TO_NAME[i.teeth_id || ''] || `T${i.teeth_id}`} ${
                                 i.surfaces &&
-                                i.surfaces.length > 0 &&
-                                `(${i.surfaces?.map((i) => i.name)})`
+                                i.surfaces.length > 0 ?
+                                `(${i.surfaces?.map((i) => i.name)})` : ''
                             }`;
                         }),
                     ).join(', ');
