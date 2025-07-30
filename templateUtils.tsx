@@ -6336,12 +6336,15 @@ export const getPatientDetailsHtml = (
         );
     }
 
+    const c = d?.patient?.profile?.personal?.phone?.c || '';
+    const n = d?.patient?.profile?.personal?.phone?.n || '';
+    const mobileNumber = c && n ? `${c}${n}` : '';
+
     const patientDetails = [
         d?.patient?.profile?.personal?.gender,
         d?.patientAge,
-        `${d?.patient?.profile?.personal?.phone?.c || ''}${
-            d?.patient?.profile?.personal?.phone?.n || ''
-        }`,
+        mobileNumber,
+        d?.patient?.profile?.personal?.phone?.n || ''
     ].filter(Boolean);
 
     return (
