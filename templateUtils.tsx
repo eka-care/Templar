@@ -6344,7 +6344,6 @@ export const getPatientDetailsHtml = (
         d?.patient?.profile?.personal?.gender,
         d?.patientAge,
         mobileNumber,
-        d?.patient?.profile?.personal?.phone?.n || ''
     ].filter(Boolean);
 
     return (
