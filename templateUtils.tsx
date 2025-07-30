@@ -6293,9 +6293,9 @@ export const getPatientDetailsHtml = (
             .filter(Boolean)
             .join(' / ');
 
-        const mobileNumber = `${d?.patient?.profile?.personal?.phone?.c || ''}${
-            d?.patient?.profile?.personal?.phone?.n || ''
-        }`;
+        const c = d?.patient?.profile?.personal?.phone?.c || '';
+        const n = d?.patient?.profile?.personal?.phone?.n || '';
+        const mobileNumber = c && n ? `${c}${n}` : '';
 
         return (
             <div
