@@ -12,6 +12,7 @@ import {
 export interface RenderPdfPrescription {
     id: string;
     date: string;
+    timeZone: string;
     dateEnd: string;
     selectedClinic: string;
     selectedClinicData?: any;

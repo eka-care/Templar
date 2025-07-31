@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import React, { Fragment } from 'react';
@@ -741,6 +741,9 @@ export const getCustomFooterHtml = (
     footer_height?: string,
     floating_footer?: boolean,
 ): JSX.Element => {
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
+
     return (
         <>
             {rxLocalConfig?.footer_border && (
@@ -839,7 +842,10 @@ export const getCustomFooterHtml = (
                                 <span>
                                     PRESCRIPTION AUTHORIZED BY{' '}
                                     {(d.actor?.name || '-').toUpperCase()} ON{' '}
-                                    {moment().format('DD MMM YYYY hh:mm a').toUpperCase()}
+                                    {moment()
+                                        .tz(d?.timeZone || 'Asia/Calcutta')
+                                        .format('DD MMM YYYY hh:mm a') || ''}{' '}
+                                    {timeZoneInfo}
                                 </span>
                                 <span>
                                     (THIS IS A COMPUTER GENERATED REPORT. SIGNATURE IS NOT
@@ -1556,6 +1562,8 @@ export const getFooterHtml = (
     renderPdfConfig?: TemplateConfig,
 ): JSX.Element => {
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
 
     return (
         <>
@@ -1624,7 +1632,10 @@ export const getFooterHtml = (
                 >
                     <span>
                         PRESCRIPTION AUTHORIZED BY {(d.actor?.name || '-').toUpperCase()} ON{' '}
-                        {moment().format('DD MMM YYYY hh:mm a').toUpperCase()}
+                        {moment()
+                            .tz(d?.timeZone || 'Asia/Calcutta')
+                            .format('DD MMM YYYY hh:mm a') || ''}{' '}
+                        {timeZoneInfo}
                     </span>
                     <span>(THIS IS A COMPUTER GENERATED REPORT. SIGNATURE IS NOT REQUIRED.)</span>
                 </div>
@@ -6236,6 +6247,10 @@ export const getFormDataHtml = (
 
 export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): JSX.Element => {
     const dateColor = config?.render_pdf_config?.patient_details_date_color;
+
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
+
     if (config?.render_pdf_config?.date_and_time === 'date') {
         return (
             <p
@@ -6244,10 +6259,10 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment
-                    .utc(d?.date || '')
-                    .utcOffset('+05:30')
-                    .format('DD/MM/YYYY') || ''}
+                {moment(d.dateEnd || d?.date || '')
+                    .tz(d?.timeZone || 'Asia/Calcutta')
+                    .format('DD/MM/YYYY') || ''}{' '}
+                {timeZoneInfo}
             </p>
         );
     }
@@ -6260,25 +6275,27 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment
-                    .utc(d?.date || '')
-                    .utcOffset('+05:30')
-                    .format('dddd, MMMM D, YYYY h:mm A') || ''}
+                {moment(d.dateEnd || d?.date || '')
+                    .tz(d?.timeZone || 'Asia/Calcutta')
+                    .format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
+                {timeZoneInfo}
             </p>
         );
     }
 
     return (
         <p
-            className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
+            className={`${
+                config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
+            }  whitespace-nowrap`}
             style={{
                 color: dateColor,
             }}
         >
-            {moment
-                .utc(d?.date || '')
-                .utcOffset('+05:30')
-                .format('DD/MM/YYYY, HH:mm') || ''}
+            {moment(d.dateEnd || d?.date || '')
+                .tz(d?.timeZone || 'Asia/Calcutta')
+                .format('DD/MM/YYYY, HH:mm') || ''}{' '}
+            {timeZoneInfo}
         </p>
     );
 };
@@ -6375,6 +6392,27 @@ export const getPatientDetailsHtml = (
             })}
         </div>
     );
+};
+
+const getTimeZoneInfo = (
+    timeZone: string = 'Asia/Calcutta',
+): {
+    abbreviation: string;
+    utcOffset: string;
+} => {
+    // Get the current date
+    const date = moment();
+
+    // Get the abbreviation for the timezone
+    const abbreviation = date.tz(timeZone).format('z');
+
+    // Get the UTC offset for the timezone
+    const utcOffset = date.tz(timeZone).format('Z');
+
+    return {
+        abbreviation: abbreviation,
+        utcOffset: utcOffset,
+    };
 };
 
 export const getDentalExaminationsHtml = (
@@ -6934,8 +6972,13 @@ const renderInjectionRow = ({
                             <div>
                                 {injection?.frequency?.time_split?.map((time) => (
                                     <div className="flex flex-col">
-                                        <span>{moment(time?.timing).format('hh:mm A')}</span>-
-                                        <span>{time?.custom}</span>
+                                        <span>
+                                            {moment
+                                                .utc(time.timing)
+                                                .utcOffset('+05:30')
+                                                .format('hh:mm A')}
+                                        </span>
+                                        {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                     </div>
                                 ))}
                             </div>
@@ -6949,8 +6992,13 @@ const renderInjectionRow = ({
                         <div>
                             {injection?.frequency?.time_split?.map((time) => (
                                 <div className="flex flex-col">
-                                    <span>{moment(time?.timing).format('hh:mm A')}</span>-
-                                    <span>{time?.custom}</span>
+                                    <span>
+                                        {moment
+                                            .utc(time.timing)
+                                            .utcOffset('+05:30')
+                                            .format('hh:mm A')}
+                                    </span>
+                                    {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                 </div>
                             ))}
                         </div>
@@ -7007,6 +7055,9 @@ const renderInjectionRow = ({
 export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element | undefined => {
     const injections = data?.tool?.injections;
 
+    const timeZoneInfo =
+        data?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(data.timeZone).abbreviation;
+
     if (!injections?.length) {
         return;
     }
@@ -7062,7 +7113,10 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time?.timing).format('hh:mm A')}{' '}
+                                            {moment(time.timing)
+                                                .tz(timeZoneInfo || 'Asia/Calcutta')
+                                                .format('hh:mm A')}
+                                            {timeZoneInfo}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
                                             {index === array.length - 1 ? ']' : ''}
@@ -7116,7 +7170,10 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time?.timing).format('hh:mm A')}{' '}
+                                            {moment(time.timing)
+                                                .tz(timeZoneInfo || 'Asia/Calcutta')
+                                                .format('hh:mm A')}
+                                            {timeZoneInfo}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
                                             {index === array.length - 1 ? ']' : ''}
@@ -7172,7 +7229,10 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time?.timing).format('hh:mm A')}{' '}
+                                            {moment(time.timing)
+                                                .tz(timeZoneInfo || 'Asia/Calcutta')
+                                                .format('hh:mm A')}
+                                            {timeZoneInfo}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
                                             {index === array.length - 1 ? ']' : ''}
@@ -7848,6 +7908,9 @@ export const getInjections1Html = (
     const tableHeaderColor = render_pdf_config?.injections_table_header_color || '#8064A2';
     const tableWidth = render_pdf_config?.injections_table_width;
 
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
+
     injections?.forEach((inj) => {
         if (inj?.dose?.custom?.trim()) {
             showColumns['dose'] = true;
@@ -8170,9 +8233,10 @@ export const getInjections1Html = (
                                                         <>
                                                             {' '}
                                                             {index === 0 ? '[ at ' : ''}
-                                                            {moment(time?.timing).format(
-                                                                'hh:mm A',
-                                                            )}{' '}
+                                                            {moment(time.timing)
+                                                                .tz(timeZoneInfo || 'Asia/Calcutta')
+                                                                .format('hh:mm A')}
+                                                            {timeZoneInfo}{' '}
                                                             {time?.custom
                                                                 ? ` - ${time?.custom}`
                                                                 : null}
@@ -8311,9 +8375,13 @@ export const getInjections1Html = (
                                                             <>
                                                                 {' '}
                                                                 {index === 0 ? '[ at ' : ''}
-                                                                {moment(time?.timing).format(
-                                                                    'hh:mm A',
-                                                                )}{' '}
+                                                                {moment(time.timing)
+                                                                    .tz(
+                                                                        timeZoneInfo ||
+                                                                            'Asia/Calcutta',
+                                                                    )
+                                                                    .format('hh:mm A')}
+                                                                {timeZoneInfo}{' '}
                                                                 {time?.custom
                                                                     ? ` - ${time?.custom}`
                                                                     : null}
@@ -8383,6 +8451,9 @@ export const getInjections2Html = (
     const tableTitleAlignment = render_pdf_config?.injections_table_title_alignment;
     const tableHeaderColor = render_pdf_config?.injections_table_header_color || '#8064A2';
     const tableWidth = render_pdf_config?.injections_table_width;
+
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
 
     injections?.forEach((inj) => {
         if (inj?.dose?.custom?.trim()) {
@@ -8691,9 +8762,10 @@ export const getInjections2Html = (
                                                     (time, timeIdx, array) => (
                                                         <span key={`time-${timeIdx}`}>
                                                             {timeIdx === 0 ? '[ at ' : ''}
-                                                            {moment(time?.timing).format(
-                                                                'hh:mm A',
-                                                            )}{' '}
+                                                            {moment(time.timing)
+                                                                .tz(timeZoneInfo || 'Asia/Calcutta')
+                                                                .format('hh:mm A')}
+                                                            {timeZoneInfo}{' '}
                                                             {time?.custom
                                                                 ? ` - ${time?.custom}`
                                                                 : null}
@@ -8861,9 +8933,13 @@ export const getInjections2Html = (
                                                                 <>
                                                                     {' '}
                                                                     {index === 0 ? '[ at ' : ''}
-                                                                    {moment(time?.timing).format(
-                                                                        'hh:mm A',
-                                                                    )}{' '}
+                                                                    {moment(time.timing)
+                                                                        .tz(
+                                                                            timeZoneInfo ||
+                                                                                'Asia/Calcutta',
+                                                                        )
+                                                                        .format('hh:mm A')}
+                                                                    {timeZoneInfo}{' '}
                                                                     {time?.custom
                                                                         ? ` - ${time?.custom}`
                                                                         : null}
@@ -8953,6 +9029,9 @@ export const getInjections3Html = (
     const tableTitleAlignment = render_pdf_config?.injections_table_title_alignment;
     const tableHeaderColor = render_pdf_config?.injections_table_header_color || '#8064A2';
     const tableWidth = render_pdf_config?.injections_table_width;
+
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
 
     injections?.forEach((inj) => {
         if (inj?.dose?.custom?.trim()) {
@@ -9291,9 +9370,13 @@ export const getInjections3Html = (
                                                                         {timeIdx === 0
                                                                             ? '[ at '
                                                                             : ''}
-                                                                        {moment(
-                                                                            time?.timing,
-                                                                        ).format('hh:mm A')}{' '}
+                                                                        {moment(time.timing)
+                                                                            .tz(
+                                                                                timeZoneInfo ||
+                                                                                    'Asia/Calcutta',
+                                                                            )
+                                                                            .format('hh:mm A')}
+                                                                        {timeZoneInfo}{' '}
                                                                         {time?.custom
                                                                             ? ` - ${time?.custom}`
                                                                             : null}
@@ -9497,11 +9580,15 @@ export const getInjections3Html = (
                                                                                 {timeIdx === 0
                                                                                     ? '[ at '
                                                                                     : ''}
-                                                                                {moment(
-                                                                                    time?.timing,
-                                                                                ).format(
-                                                                                    'hh:mm A',
-                                                                                )}{' '}
+                                                                                {moment(time.timing)
+                                                                                    .tz(
+                                                                                        timeZoneInfo ||
+                                                                                            'Asia/Calcutta',
+                                                                                    )
+                                                                                    .format(
+                                                                                        'hh:mm A',
+                                                                                    )}
+                                                                                {timeZoneInfo}{' '}
                                                                                 {time?.custom
                                                                                     ? ` - ${time?.custom}`
                                                                                     : null}
@@ -9584,6 +9671,9 @@ export const getInjections4Html = (
     const tableTitleAlignment = render_pdf_config?.injections_table_title_alignment;
     const tableHeaderColor = render_pdf_config?.injections_table_header_color || '#8064A2';
     const tableWidth = render_pdf_config?.injections_table_width;
+
+    const timeZoneInfo =
+        d?.timeZone === 'Asia/Calcutta' ? '' : getTimeZoneInfo(d.timeZone).abbreviation;
 
     injections?.forEach((inj) => {
         if (inj?.dose?.custom?.trim()) {
@@ -9924,9 +10014,13 @@ export const getInjections4Html = (
                                                                         {timeIdx === 0
                                                                             ? '[ at '
                                                                             : ''}
-                                                                        {moment(
-                                                                            time?.timing,
-                                                                        ).format('hh:mm A')}{' '}
+                                                                        {moment(time.timing)
+                                                                            .tz(
+                                                                                timeZoneInfo ||
+                                                                                    'Asia/Calcutta',
+                                                                            )
+                                                                            .format('hh:mm A')}
+                                                                        {timeZoneInfo}{' '}
                                                                         {time?.custom
                                                                             ? ` - ${time?.custom}`
                                                                             : null}
@@ -10140,11 +10234,13 @@ export const getInjections4Html = (
                                                                             {timeIdx === 0
                                                                                 ? '[ at '
                                                                                 : ''}
-                                                                            {moment(
-                                                                                time?.timing,
-                                                                            ).format(
-                                                                                'hh:mm A',
-                                                                            )}{' '}
+                                                                            {moment(time.timing)
+                                                                                .tz(
+                                                                                    timeZoneInfo ||
+                                                                                        'Asia/Calcutta',
+                                                                                )
+                                                                                .format('hh:mm A')}
+                                                                            {timeZoneInfo}{' '}
                                                                             {time?.custom
                                                                                 ? ` - ${time?.custom}`
                                                                                 : null}
