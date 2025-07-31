@@ -6801,6 +6801,11 @@ export const getOphthalmologyHtml = (
 export const getInjectionsHtml = (data: RenderPdfPrescription): JSX.Element | undefined => {
     const injections = data.tool?.injections;
 
+    const timeZoneInfo =
+        data?.timeZone === 'Asia/Calcutta' || data?.timeZone === 'Asia/Kolkata'
+            ? ''
+            : getTimeZoneInfo(data.timeZone).abbreviation;
+
     if (!injections) {
         return;
     }
@@ -6882,15 +6887,18 @@ export const getInjectionsHtml = (data: RenderPdfPrescription): JSX.Element | un
                                         {injection?.name}
                                         {injection?.generic_name}
                                     </td>
-                                    {renderInjectionRow({
-                                        injection,
-                                        routeSpan:
-                                            Math.max(
-                                                injection?.added_drug?.length || 0,
-                                                injection?.tapering_dose?.length || 0,
-                                            ) + 1,
-                                        spanAll: !!injection?.added_drug?.length,
-                                    })}
+                                    {renderInjectionRow(
+                                        {
+                                            injection,
+                                            routeSpan:
+                                                Math.max(
+                                                    injection?.added_drug?.length || 0,
+                                                    injection?.tapering_dose?.length || 0,
+                                                ) + 1,
+                                            spanAll: !!injection?.added_drug?.length,
+                                        },
+                                        timeZoneInfo,
+                                    )}
                                 </tr>
                                 {injection?.added_drug?.map((drug) => (
                                     <tr key={drug.id}>
@@ -6898,12 +6906,15 @@ export const getInjectionsHtml = (data: RenderPdfPrescription): JSX.Element | un
                                             {drug.name}
                                             {drug.generic_name}
                                         </td>
-                                        {renderInjectionRow({ injection: drug, spanAll: true })}
+                                        {renderInjectionRow(
+                                            { injection: drug, spanAll: true },
+                                            timeZoneInfo,
+                                        )}
                                     </tr>
                                 ))}
                                 {injection?.tapering_dose?.map((td) => (
                                     <tr key={injection?.id}>
-                                        {renderInjectionRow({ injection: td })}
+                                        {renderInjectionRow({ injection: td }, timeZoneInfo)}
                                     </tr>
                                 ))}
                             </>
@@ -6915,15 +6926,18 @@ export const getInjectionsHtml = (data: RenderPdfPrescription): JSX.Element | un
     );
 };
 
-const renderInjectionRow = ({
-    injection,
-    routeSpan = 0,
-    spanAll = false,
-}: {
-    routeSpan?: number;
-    injection: InjectionsEntity;
-    spanAll?: boolean;
-}) => {
+const renderInjectionRow = (
+    {
+        injection,
+        routeSpan = 0,
+        spanAll = false,
+    }: {
+        routeSpan?: number;
+        injection: InjectionsEntity;
+        spanAll?: boolean;
+    },
+    timeZoneInfo: string = 'Asia/Calcutta',
+) => {
     return (
         <>
             <td className="p-4 border medication-table-border-color text-center">
@@ -6979,10 +6993,7 @@ const renderInjectionRow = ({
                                 {injection?.frequency?.time_split?.map((time) => (
                                     <div className="flex flex-col">
                                         <span>
-                                            {moment
-                                                .utc(time.timing)
-                                                .utcOffset('+05:30')
-                                                .format('hh:mm A')}
+                                            {moment(time.timing).tz(timeZoneInfo).format('hh:mm A')}
                                         </span>
                                         {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                     </div>
@@ -6999,10 +7010,7 @@ const renderInjectionRow = ({
                             {injection?.frequency?.time_split?.map((time) => (
                                 <div className="flex flex-col">
                                     <span>
-                                        {moment
-                                            .utc(time.timing)
-                                            .utcOffset('+05:30')
-                                            .format('hh:mm A')}
+                                        {moment(time.timing).tz(timeZoneInfo).format('hh:mm A')}
                                     </span>
                                     {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                 </div>
@@ -7062,7 +7070,7 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
     const injections = data?.tool?.injections;
 
     const timeZoneInfo =
-        data?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
+        data?.timeZone === 'Asia/Calcutta' || data?.timeZone === 'Asia/Kolkata'
             ? ''
             : getTimeZoneInfo(data.timeZone).abbreviation;
 
