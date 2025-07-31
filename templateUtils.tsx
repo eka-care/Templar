@@ -765,7 +765,7 @@ export const getCustomFooterHtml = (
                             : '',
                     height:
                         footer_height?.trim() && !isNaN(parseFloat(footer_height))
-                            ? parseFloat(footer_height) + 1 + 'cm'
+                            ? parseFloat(footer_height) + 1.3 + 'cm'
                             : footer_height || 'auto',
                 }}
                 id={FOOTER_CONTAINER}
@@ -1567,7 +1567,7 @@ export const getFooterHtml = (
                     height:
                         renderPdfConfig?.footer_height?.trim() &&
                         !isNaN(parseFloat(renderPdfConfig?.footer_height))
-                            ? parseFloat(renderPdfConfig?.footer_height) + 1 + 'cm'
+                            ? parseFloat(renderPdfConfig?.footer_height) + 1.3 + 'cm'
                             : renderPdfConfig?.footer_height || 'auto',
                 }}
                 id={FOOTER_CONTAINER}
