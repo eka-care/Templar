@@ -219,6 +219,10 @@ export const getHeadHtml = (
                 margin-right: calc(0.5rem * var(--tw-space-x-reverse));
                 margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
             }
+            
+            .ml-8 {
+                margin-left: 0.5rem;
+            }
 
             .space-x-5> :not([hidden]) ~ :not([hidden]) {
                 --tw-space-x-reverse: 0;
@@ -4506,10 +4510,10 @@ export const getDyformHtml = (d: RenderPdfPrescription, id: string, config: Temp
             >
                 {selectedDyForm?.name || ''} :
             </p>
-            <ul className="text-darwin-neutral-1000 list-disc ml-36 space-y-6">
+            <ul className="text-darwin-neutral-1000 list-disc ml-36">
                 {selectedDyForm?.elements?.map((ele) => {
                     return (
-                        <li className="pl-16">
+                        <li className="">
                             <span className="flex items-start space-x-8">
                                 <div className="flex items-center space-x-4">
                                     <span
@@ -4637,7 +4641,7 @@ export const getReferredToHtml = (
                                     }}
                                     className="bold uppercase text-darwin-accent-symptoms-blue-800"
                                 >
-                                    {sectionName || 'REFERRED TO'} :
+                                    {sectionName || 'REFERRED TO'} :{' '}
                                 </span>
                                 {referredTo?.ref_doc_details?.map((ref, index) => (
                                     <React.Fragment key={index}>
@@ -4698,7 +4702,7 @@ export const getFollowupHtml = (
                     }}
                     className="bold uppercase text-darwin-accent-symptoms-blue-800"
                 >
-                    {sectionName || 'FOLLOWUP'} :{' '}
+                    {sectionName || 'FOLLOWUP'}:{' '}
                 </span>
                 <span
                     style={{
@@ -4887,7 +4891,7 @@ export const getLabTestsHtml = (
                 <ul className="ml-36">
                     {labTests?.map((labTest) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.lab_tests_name_in_unbold
@@ -5072,7 +5076,7 @@ export const getSymptomsHtml = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: headingColor,
@@ -5085,7 +5089,7 @@ export const getSymptomsHtml = (
                 <ul className="ml-36 list-outside list-disc">
                     {symptoms?.values?.map((sym) => {
                         return (
-                            <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.symptoms_name_in_unbold
@@ -5132,44 +5136,48 @@ export const getSymptomsHtml = (
                     })}
                 </ul>
             ) : (
-                symptoms?.values?.map((sym, i: number) => {
-                    return (
-                        <>
-                            <span
-                                className={`${
-                                    config?.render_pdf_config?.symptoms_name_in_unbold ? '' : 'bold'
-                                } ${
-                                    config?.render_pdf_config?.symptoms_name_in_capital
-                                        ? 'uppercase'
-                                        : ''
-                                }`}
-                                style={{
-                                    color: nameColor,
-                                }}
-                            >
-                                {sym?.name ? `${sym?.name} ` : ''}
-                            </span>
-                            <span
-                                style={{
-                                    color: propertiesColor,
-                                }}
-                            >
-                                {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
-
+                <span className="ml-8">
+                    {symptoms?.values?.map((sym, i: number) => {
+                        return (
+                            <span>
                                 <span
-                                    className="bold"
+                                    className={`${
+                                        config?.render_pdf_config?.symptoms_name_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    } ${
+                                        config?.render_pdf_config?.symptoms_name_in_capital
+                                            ? 'uppercase'
+                                            : ''
+                                    }`}
                                     style={{
-                                        color: '#000',
+                                        color: nameColor,
                                     }}
                                 >
-                                    {i !== (symptoms?.values || []).length - 1 &&
-                                        getRxSeperator(rxElementKeySeperator)}
-                                    &nbsp;
+                                    {sym?.name ? `${sym?.name} ` : ''}
                                 </span>
-                            </span>{' '}
-                        </>
-                    );
-                })
+                                <span
+                                    style={{
+                                        color: propertiesColor,
+                                    }}
+                                >
+                                    {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
+
+                                    <span
+                                        className="bold"
+                                        style={{
+                                            color: '#000',
+                                        }}
+                                    >
+                                        {i !== (symptoms?.values || []).length - 1 &&
+                                            getRxSeperator(rxElementKeySeperator)}
+                                        &nbsp;
+                                    </span>
+                                </span>
+                            </span>
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -5200,7 +5208,7 @@ export const getDiagnosisHtml = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: headingColor,
@@ -5213,7 +5221,7 @@ export const getDiagnosisHtml = (
                 <ul className="ml-36 list-outside list-disc">
                     {diagnosis?.values?.map((diag) => {
                         return (
-                            <li className="pl-16 flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.diagnosis_name_in_unbold
@@ -5260,46 +5268,48 @@ export const getDiagnosisHtml = (
                     })}
                 </ul>
             ) : (
-                diagnosis?.values?.map((diag, i: number) => {
-                    return (
-                        <>
-                            <span
-                                className={`${
-                                    config?.render_pdf_config?.diagnosis_name_in_unbold
-                                        ? ''
-                                        : 'bold'
-                                } ${
-                                    config?.render_pdf_config?.diagnosis_name_in_capital
-                                        ? 'uppercase'
-                                        : ''
-                                }`}
-                                style={{
-                                    color: nameColor,
-                                }}
-                            >
-                                {diag?.name ? `${diag?.name} ` : ''}
-                            </span>
-                            <span
-                                style={{
-                                    color: propertiesColor,
-                                }}
-                            >
-                                {/* {diag?.toshow || ''} */}
-                                {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
-                            </span>
-                            {i !== (diagnosis?.values || [])?.length - 1 && (
+                <span className="ml-8">
+                    {diagnosis?.values?.map((diag, i: number) => {
+                        return (
+                            <span>
                                 <span
-                                    className="bold"
+                                    className={`${
+                                        config?.render_pdf_config?.diagnosis_name_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    } ${
+                                        config?.render_pdf_config?.diagnosis_name_in_capital
+                                            ? 'uppercase'
+                                            : ''
+                                    }`}
                                     style={{
-                                        color: '#000',
+                                        color: nameColor,
                                     }}
                                 >
-                                    {getRxSeperator(rxElementKeySeperator)}
+                                    {diag?.name ? `${diag?.name} ` : ''}
                                 </span>
-                            )}{' '}
-                        </>
-                    );
-                })
+                                <span
+                                    style={{
+                                        color: propertiesColor,
+                                    }}
+                                >
+                                    {/* {diag?.toshow || ''} */}
+                                    {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
+                                </span>
+                                {i !== (diagnosis?.values || [])?.length - 1 && (
+                                    <span
+                                        className="bold"
+                                        style={{
+                                            color: '#000',
+                                        }}
+                                    >
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}
+                            </span>
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -5375,7 +5385,7 @@ export const getPmhHtml = (
     };
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: sectionHeadingColor || headingColor,
@@ -5388,7 +5398,7 @@ export const getPmhHtml = (
                 <ul className="ml-36">
                     {mhData?.values?.map((mh) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.medical_history_name_in_unbold
@@ -5413,36 +5423,38 @@ export const getPmhHtml = (
                     })}
                 </ul>
             ) : (
-                mhData?.values?.map((mh, i: number) => {
-                    return (
-                        <>
-                            <span
-                                className={`${
-                                    config?.render_pdf_config?.medical_history_name_in_unbold
-                                        ? ''
-                                        : 'bold'
-                                }`}
-                                style={{
-                                    color: sectionNameColor || nameColor,
-                                }}
-                            >
-                                {mh?.name ? `${mh?.name} ` : ''}
-                            </span>
-                            <span
-                                style={{
-                                    color: sectionPropertiesColor || propertiesColor,
-                                }}
-                            >
-                                {mh?.toshow || ''}
-                            </span>
-                            {i !== (mhData?.values || [])?.length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
+                <span className="ml-8">
+                    {mhData?.values?.map((mh, i: number) => {
+                        return (
+                            <>
+                                <span
+                                    className={`${
+                                        config?.render_pdf_config?.medical_history_name_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    }`}
+                                    style={{
+                                        color: sectionNameColor || nameColor,
+                                    }}
+                                >
+                                    {mh?.name ? `${mh?.name} ` : ''}
                                 </span>
-                            )}{' '}
-                        </>
-                    );
-                })
+                                <span
+                                    style={{
+                                        color: sectionPropertiesColor || propertiesColor,
+                                    }}
+                                >
+                                    {mh?.toshow || ''}
+                                </span>
+                                {i !== (mhData?.values || [])?.length - 1 && (
+                                    <span className="bold">
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}{' '}
+                            </>
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -5465,7 +5477,7 @@ export const getExaminationFindingsHtml = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: headingColor,
@@ -5479,7 +5491,7 @@ export const getExaminationFindingsHtml = (
                 <ul className="ml-36">
                     {examintionFindings?.map((examination) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config
@@ -5505,36 +5517,39 @@ export const getExaminationFindingsHtml = (
                     })}
                 </ul>
             ) : (
-                examintionFindings?.map((examination, i: number) => {
-                    return (
-                        <>
-                            <span
-                                className={`${
-                                    config?.render_pdf_config?.examination_findings_name_in_unbold
-                                        ? ''
-                                        : 'bold'
-                                }`}
-                                style={{
-                                    color: nameColor,
-                                }}
-                            >
-                                {examination?.name ? `${examination?.name}` : ''}
-                            </span>
-                            <span
-                                style={{
-                                    color: propertiesColor,
-                                }}
-                            >
-                                {examination?.notes ? ` (${examination?.notes})` : ''}
-                            </span>
-                            {i !== (examintionFindings || [])?.length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
+                <span className="ml-8">
+                    {examintionFindings?.map((examination, i: number) => {
+                        return (
+                            <span>
+                                <span
+                                    className={`${
+                                        config?.render_pdf_config
+                                            ?.examination_findings_name_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    }`}
+                                    style={{
+                                        color: nameColor,
+                                    }}
+                                >
+                                    {examination?.name ? `${examination?.name}` : ''}
                                 </span>
-                            )}{' '}
-                        </>
-                    );
-                })
+                                <span
+                                    style={{
+                                        color: propertiesColor,
+                                    }}
+                                >
+                                    {examination?.notes ? ` (${examination?.notes})` : ''}
+                                </span>{' '}
+                                {i !== (examintionFindings || [])?.length - 1 && (
+                                    <span className="bold">
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}{' '}
+                            </span>
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -5790,7 +5805,7 @@ export const getInvestigativeReadingsHtml = (
         }
 
         return (
-            <div className="space-x-8 text-darwin-neutral-1000">
+            <div className="text-darwin-neutral-1000">
                 <span
                     style={{
                         color: headingColor,
@@ -5803,7 +5818,7 @@ export const getInvestigativeReadingsHtml = (
                 <ul className="ml-36">
                     {labVitals?.map((labVital) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 {labVital?.dt && (
                                     <span
                                         style={{
@@ -5845,7 +5860,7 @@ export const getInvestigativeReadingsHtml = (
         return;
     }
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: headingColor,
@@ -5859,7 +5874,7 @@ export const getInvestigativeReadingsHtml = (
                 <ul className="ml-36">
                     {labVitals?.map((labVital) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 {labVital?.name && (
                                     <span
                                         className={`uppercase ${
@@ -5886,38 +5901,40 @@ export const getInvestigativeReadingsHtml = (
                     })}
                 </ul>
             ) : (
-                labVitals?.map((labVital, i) => {
-                    return (
-                        <>
-                            {labVital?.name && (
+                <span className="ml-8">
+                    {labVitals?.map((labVital, i) => {
+                        return (
+                            <span>
+                                {labVital?.name && (
+                                    <span
+                                        className={`uppercase ${
+                                            config?.render_pdf_config?.lab_vitals_name_in_unbold
+                                                ? ''
+                                                : 'bold'
+                                        }`}
+                                        style={{
+                                            color: nameColor,
+                                        }}
+                                    >
+                                        {labVital?.name || ''} :{' '}
+                                    </span>
+                                )}
                                 <span
-                                    className={`uppercase ${
-                                        config?.render_pdf_config?.lab_vitals_name_in_unbold
-                                            ? ''
-                                            : 'bold'
-                                    }`}
                                     style={{
-                                        color: nameColor,
+                                        color: propertiesColor,
                                     }}
                                 >
-                                    {labVital?.name || ''} :{' '}
+                                    {labVital?.toshow || ''}
                                 </span>
-                            )}
-                            <span
-                                style={{
-                                    color: propertiesColor,
-                                }}
-                            >
-                                {labVital?.toshow || ''}
+                                {i !== (labVitals || [])?.length - 1 && (
+                                    <span className="bold">
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}{' '}
                             </span>
-                            {i !== (labVitals || [])?.length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
-                                </span>
-                            )}{' '}
-                        </>
-                    );
-                })
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -5941,7 +5958,7 @@ export const getVitalsHtml = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{
                     color: headingColor,
@@ -5955,7 +5972,7 @@ export const getVitalsHtml = (
                 <ul className="ml-36">
                     {vitals?.map((vital) => {
                         return (
-                            <li className="pl-16">
+                            <li className="">
                                 <span
                                     className={`uppercase ${
                                         config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
@@ -6048,36 +6065,38 @@ export const getVitalsHtml = (
                     </tbody>
                 </table>
             ) : (
-                vitals?.map((vital, i) => {
-                    return (
-                        <>
-                            <span
-                                className={`uppercase ${
-                                    config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
-                                }`}
-                                style={{
-                                    color: nameColor,
-                                }}
-                            >
-                                {vital?.name || ''}
-                            </span>
-                            -
-                            <span
-                                style={{
-                                    color: propertiesColor,
-                                }}
-                            >
-                                {vital?.value?.qt || ''}
-                                {vital?.value?.unit || ''}
-                            </span>
-                            {i !== (d.tool?.medicalHistory?.vitals || []).length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
+                <span className="ml-8">
+                    {vitals?.map((vital, i) => {
+                        return (
+                            <span>
+                                <span
+                                    className={`uppercase ${
+                                        config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
+                                    }`}
+                                    style={{
+                                        color: nameColor,
+                                    }}
+                                >
+                                    {vital?.name || ''}
                                 </span>
-                            )}{' '}
-                        </>
-                    );
-                })
+                                -
+                                <span
+                                    style={{
+                                        color: propertiesColor,
+                                    }}
+                                >
+                                    {vital?.value?.qt || ''}
+                                    {vital?.value?.unit || ''}
+                                </span>
+                                {i !== (d.tool?.medicalHistory?.vitals || []).length - 1 && (
+                                    <span className="bold">
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}{' '}
+                            </span>
+                        );
+                    })}
+                </span>
             )}
         </div>
     );
@@ -6097,7 +6116,7 @@ export const getGrowthChartVitalsHtml = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
                 style={{ color: headingColor }}
@@ -6108,7 +6127,7 @@ export const getGrowthChartVitalsHtml = (
             <ul className="ml-36">
                 {gcVitals?.map((vital) => {
                     return (
-                        <li className="pl-16">
+                        <li className="">
                             <span className={`uppercase bold`} style={{ color: keyColor }}>
                                 {vital?.name || ''}
                             </span>
@@ -7083,7 +7102,7 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
             <p className="uppercase text-darwin-accent-symptoms-blue-800 bold">Injections :</p>
             {injections.map((injection) => {
                 return (
-                    <ul style={{ marginLeft: 12 }}>
+                    <ul className="ml-36">
                         {injection?.added_drug && injection?.added_drug.length > 0 ? (
                             <li>
                                 <u>
@@ -7360,7 +7379,7 @@ export const getProceduresHtmls = (
     }
 
     return (
-        <div className="space-x-8 text-darwin-neutral-1000">
+        <div className="text-darwin-neutral-1000">
             <span
                 style={{ color: headingColor }}
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
@@ -7371,7 +7390,7 @@ export const getProceduresHtmls = (
             {isBullets ? (
                 <ul className="ml-36">
                     {procedures.map((procedure) => (
-                        <li className="pl-16">
+                        <li className="">
                             <span
                                 className={`uppercase ${
                                     config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
@@ -7448,33 +7467,37 @@ export const getProceduresHtmls = (
                     </tbody>
                 </table>
             ) : (
-                procedures.map((procedure, i) => (
-                    <>
-                        <span
-                            className={`uppercase ${
-                                config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                            }`}
-                            style={{ color: nameColor }}
-                        >
-                            {procedure?.name || ''}
-                        </span>
-                        {procedure?.notes ? (
-                            <span style={{ color: propertiesColor }}>
-                                {' '}
-                                (Notes : {procedure.notes}){' - '}
+                <span>
+                    {procedures.map((procedure, i) => (
+                        <span>
+                            <span
+                                className={`uppercase ${
+                                    config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
+                                }`}
+                                style={{ color: nameColor }}
+                            >
+                                {procedure?.name || ''}
                             </span>
-                        ) : (
-                            <></>
-                        )}
-                        <span style={{ color: propertiesColor }}>
-                            {procedure?.date ? ' - ' : ''}
-                            {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
+                            {procedure?.notes ? (
+                                <span style={{ color: propertiesColor }}>
+                                    {' '}
+                                    (Notes : {procedure.notes})
+                                </span>
+                            ) : (
+                                <></>
+                            )}
+                            <span style={{ color: propertiesColor }}>
+                                {procedure?.date ? ' - ' : ''}
+                                {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
+                            </span>
+                            {i !== procedures.length - 1 && (
+                                <span className="bold">
+                                    {getRxSeperator(rxElementKeySeperator)}
+                                </span>
+                            )}
                         </span>
-                        {i !== procedures.length - 1 && (
-                            <span className="bold">{getRxSeperator(rxElementKeySeperator)}</span>
-                        )}
-                    </>
-                ))
+                    ))}
+                </span>
             )}
         </div>
     );
