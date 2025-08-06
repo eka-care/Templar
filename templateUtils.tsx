@@ -815,7 +815,7 @@ export const getCustomFooterHtml = (
                                 </div>
                             )}
 
-                            <div className="flex items-end justify-center flex-col">
+                            <div className="flex items-end flex-col">
                                 {show_signature && (
                                     <img
                                         src={docProfile?.profile?.professional?.signature}
@@ -1613,7 +1613,7 @@ export const getFooterHtml = (
                     </div>
                 )}
 
-                <div className="flex items-end justify-center flex-col">
+                <div className="flex items-end flex-col">
                     <img
                         src={docProfile?.profile?.professional?.signature}
                         className="max-w-92 h-60 object-fit-contain"
