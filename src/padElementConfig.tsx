@@ -29,7 +29,7 @@ import {
     injectionsFormatToTableMapping,
     isDoubleColumnElementVisible,
     medicationFormatToTableMapping,
-} from '../Templar/templateUtils';
+} from './templateUtils';
 
 export const padElements = (
     data: RenderPdfPrescription,

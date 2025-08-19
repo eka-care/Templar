@@ -1,0 +1,15 @@
+{
+    "tabWidth": 4,
+    "printWidth": 100,
+    "parser": "babel-ts",
+    "singleQuote": true,
+    "trailingComma": "all",
+    "overrides": [
+        {
+          "files": "*.css",
+          "options": {
+            "parser": "css"
+          }
+        }
+      ]
+}
