@@ -1,12 +1,21 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import dts from 'vite-plugin-dts';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+      outDir: 'dist',
+      include: ['src/**/*'],
+      exclude: ['**/*.test.*', '**/*.spec.*']
+    })
+  ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.tsx'),
+      entry: path.resolve(__dirname, 'src/index.tsx'),
       name: 'Templar',
       formats: ['es', 'cjs'],
       fileName: (format) => {
@@ -31,7 +40,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });
