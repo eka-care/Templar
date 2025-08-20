@@ -2,7 +2,6 @@ import moment from 'moment-timezone';
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import React, { Fragment } from 'react';
-import { parseHTMLToStringForPipeSeperated } from './htmlParser';
 
 import {
     GeniePadElementsSettingItem,
@@ -29,6 +28,18 @@ import {
 import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
+
+const Utility = {
+    parseHTMLToStringForPipeSeperated: (html: string): string => {
+        throw Error('Not implemented');
+    },
+};
+
+let utility: typeof Utility = Utility;
+
+export const setTemplarUtility = (u: typeof Utility): void => {
+    utility = u;
+};
 
 export const HEADER_CONTAINER = 'header_container';
 export const FOOTER_CONTAINER = 'footer_container';
@@ -1043,6 +1054,37 @@ export const getFooter = (
     renderPdfConfig?: TemplateConfig,
     isHideFooterDetails?: boolean,
 ): JSX.Element => {
+    if (renderPdfConfig?.floating_footer) {
+        return renderPdfConfig?.floating_footer_details ? (
+            getCustomFooterHtml(
+                docProfile,
+                data,
+                rxLocalConfig,
+                renderPdfConfig?.footer_top_margin,
+                renderPdfConfig?.footer_bottom_margin,
+                renderPdfConfig?.footer_left_margin,
+                renderPdfConfig?.footer_right_margin,
+                renderPdfConfig?.footer_img === NO_FOOTER ? undefined : renderPdfConfig?.footer_img,
+                renderPdfConfig?.show_signature,
+                renderPdfConfig?.show_name_in_signature,
+                renderPdfConfig?.show_signature_text,
+                renderPdfConfig?.show_page_number,
+                renderPdfConfig?.show_prescription_id,
+                renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
+                renderPdfConfig.show_eka_logo,
+                renderPdfConfig.attachment_image,
+                renderPdfConfig?.footer_doctor_name_color,
+                false,
+                true,
+                renderPdfConfig.show_approval_details,
+                undefined,
+                renderPdfConfig.floating_footer_details,
+            )
+        ) : (
+            <></>
+        );
+    }
+
     if (renderPdfConfig?.footer_img) {
         return getCustomFooterHtml(
             docProfile,
@@ -1072,7 +1114,6 @@ export const getFooter = (
 
     return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
 };
-
 
 export const getRepitivePtDetails = (
     d: RenderPdfPrescription,
@@ -5235,7 +5276,7 @@ export const getSymptomsHtml = (
                                         color: propertiesColor,
                                     }}
                                 >
-                                    {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
+                                    {utility?.parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
 
                                     <span
                                         className="bold"
@@ -5368,7 +5409,7 @@ export const getDiagnosisHtml = (
                                     }}
                                 >
                                     {/* {diag?.toshow || ''} */}
-                                    {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
+                                    {utility?.parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
                                 </span>
                                 {i !== (diagnosis?.values || [])?.length - 1 && (
                                     <span
