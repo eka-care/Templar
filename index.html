@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>getHeaderHtml Test</title>
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18",
+      "react-dom": "https://esm.sh/react-dom@18",
+      "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module">
+    import React from "react";
+    import ReactDOM from "react-dom";
+    import { getHeaderHtml } from "./dist/Templar.esm.js";
+
+    // Sample doctor profile data
+    const doctorProfile = {
+      _id: "sample-doc-id",
+      profile: {
+        personal: {
+          name: { f: "Dr. Jane", l: "Doe" },
+          phone: { code: "+91", value: "9876543210" },
+          email: "jane.doe@hospital.com"
+        },
+        professional: {
+          degree: [{ id: "1", name: "MBBS, MD" }],
+          registrations: {
+            council: "Medical Council of India",
+            id: "MCI123456",
+            medical_id: "DOC789",
+            year: "2015"
+          },
+          clinics: [{
+            _id: "clinic-1",
+            name: "City Medical Center",
+            address: {
+              line1: "123 Healthcare Avenue",
+              city: "Mumbai",
+              state: "Maharashtra", 
+              country: "India",
+              pin: "400001"
+            },
+            number: [{ c: "+91", n: "02212345678" }],
+            email: "info@citymedical.com"
+          }],
+          signature: "Dr. Jane Doe",
+          default_clinic: "clinic-1"
+        }
+      }
+    };
+
+    // Generate header
+    const headerElement = getHeaderHtml({
+      docProfile: doctorProfile,
+      ptFormFields: [],
+      rxLocalConfig: { header_border: true },
+      data: {},
+      rxConfig: {}
+    });
+
+    // Render the header
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(headerElement);
+  </script>
+</body>
+</html>
