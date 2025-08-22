@@ -58,7 +58,7 @@ const spacingAccortingToType = {
     'extra-spacious': 'space-y-8',
 };
 
-const fontFamily = {
+export const fontFamily = {
     en: "'Poppins', sans-serif",
     hi: "'Poppins', sans-serif",
     gu: "'Poppins', sans-serif",

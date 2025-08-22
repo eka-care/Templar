@@ -1,13 +1,9 @@
 import { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
-import { getFooter, getHeader } from './templateUtils';
+import { fontFamily, getFooter, getHeader, getHeadHtml } from './templateUtils';
 import { DFormEntity, DoctorProfile, LocalTemplateConfig } from './types';
 
 // Export all types for consumers
-export type { 
-    DFormEntity, 
-    DoctorProfile, 
-    LocalTemplateConfig 
-} from './types';
+export type { DFormEntity, DoctorProfile, LocalTemplateConfig } from './types';
 export type { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
 
 type GetHeaderPayload = {
@@ -58,4 +54,18 @@ export const getFooterHtml = ({
         rxConfig?.render_pdf_config,
         isHideFooterDetails,
     );
+};
+
+export const getHead = ({
+    language = 'en',
+    sizeType = 'normal',
+    showPageBorder = false,
+    fontsUrl = '',
+}: {
+    language: keyof typeof fontFamily | undefined;
+    sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal';
+    showPageBorder?: boolean;
+    fontsUrl: string;
+}): string => {
+    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl);
 };
