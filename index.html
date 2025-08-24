@@ -10,6 +10,7 @@
     "imports": {
       "react": "https://esm.sh/react@18",
       "react-dom": "https://esm.sh/react-dom@18",
+      "react-dom/server": "https://esm.sh/react-dom@18/server",
       "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
     }
   }
@@ -21,6 +22,7 @@
   <script type="module">
     import React from "react";
     import ReactDOM from "react-dom";
+    import { renderToString } from "react-dom/server";
     import { getHeaderHtml } from "./dist/Templar.esm.js";
 
     // Sample doctor profile data
@@ -59,7 +61,7 @@
       }
     };
 
-    // Generate header
+    // Generate header JSX element
     const headerElement = getHeaderHtml({
       docProfile: doctorProfile,
       ptFormFields: [],
@@ -68,9 +70,48 @@
       rxConfig: {}
     });
 
-    // Render the header
-    const root = ReactDOM.createRoot(document.getElementById("root"));
+    // Option 1: Convert JSX element to HTML string
+    const headerHtmlString = renderToString(headerElement);
+    console.log("HTML String:", headerHtmlString);
+
+    // Option 2: Convert HTML string to actual DOM elements
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(headerHtmlString, 'text/html');
+    const htmlElements = doc.body.children; // HTMLCollection of DOM elements
+    
+    console.log("DOM Elements:", htmlElements);
+    console.log("First DOM element:", htmlElements[0]);
+
+    // Option 3: Create DOM elements directly from HTML string
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = headerHtmlString;
+    const domElements = tempDiv.children; // HTMLCollection
+    
+    console.log("DOM elements from div:", domElements);
+
+    // Option 4: Use React to render to a DOM container and extract elements
+    const containerDiv = document.createElement('div');
+    const root = ReactDOM.createRoot(containerDiv);
     root.render(headerElement);
+    
+    // Wait for React to render, then access DOM elements
+    setTimeout(() => {
+      const reactRenderedElements = containerDiv.children;
+      console.log("React-rendered DOM elements:", reactRenderedElements);
+      
+      // Now you can work with actual DOM elements
+      // For example, append to your target container:
+      const targetContainer = document.getElementById("root");
+      
+      // Clear and append the DOM elements
+      targetContainer.innerHTML = '';
+      Array.from(reactRenderedElements).forEach(element => {
+        targetContainer.appendChild(element.cloneNode(true));
+      });
+    }, 100);
+
+    // Option 5: Simple approach - just set innerHTML (creates DOM elements)
+    // document.getElementById("root").innerHTML = headerHtmlString;
   </script>
 </body>
 </html>
