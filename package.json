@@ -48,5 +48,13 @@
       "import": "./dist/Templar.esm.js",
       "require": "./dist/Templar.js"
     }
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eka-care/Templar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eka-care/Templar/issues"
+  },
+  "homepage": "https://github.com/eka-care/Templar#readme"
 }
