@@ -48,6 +48,8 @@ const footerElement = getFooterHtml({
 
 After building with `npm run build`, you'll get a single UMD file `dist/Templar.js` (~1.17MB) that includes all dependencies bundled and can be used directly in the browser:
 
+#### Option 1: Local File
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -79,6 +81,39 @@ After building with `npm run build`, you'll get a single UMD file `dist/Templar.
             sizeType: 'normal', // optional, default 'normal'
             showPageBorder: false, // optional, default false
             fontsUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap' // required
+        });
+    </script>
+</body>
+</html>
+```
+
+#### Option 2: CDN (unpkg)
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Include Templar directly from CDN -->
+    <script src="https://unpkg.com/@eka-care/templar/dist/Templar.js"></script>
+</head>
+<body>
+    <script>
+        // Use Templar functions via the global Templar object
+        const headerHtml = Templar.getHeaderHtml({
+            docProfile: { /* your doctor profile */ },
+            // ... other options
+        });
+        
+        const footerHtml = Templar.getFooterHtml({
+            docProfile: { /* your doctor profile */ },
+            // ... other options
+        });
+        
+        const headHtml = Templar.getHead({
+            language: 'en',
+            sizeType: 'normal',
+            showPageBorder: false,
+            fontsUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'
         });
     </script>
 </body>
