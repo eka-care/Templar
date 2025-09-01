@@ -1,6 +1,6 @@
 {
   "name": "@eka-care/templar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Contains the logic to beautify data to PDF HTML",
   "main": "dist/Templar.js",
   "types": "dist/Templar.d.ts",
