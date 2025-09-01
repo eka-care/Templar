@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from 'react-dom/server';
 import { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
 import { fontFamily, getFooter, getHeader, getHeadHtml } from './templateUtils';
 import { DFormEntity, DoctorProfile, LocalTemplateConfig } from './types';
@@ -20,15 +21,17 @@ export const getHeaderHtml = ({
     rxLocalConfig,
     data,
     rxConfig,
-}: GetHeaderPayload): JSX.Element => {
-    return getHeader(
-        docProfile,
-        ptFormFields || [],
-        rxConfig?.render_pdf_config,
-        rxLocalConfig,
-        rxConfig?.render_pdf_config?.clinicId,
-        data,
-        rxConfig,
+}: GetHeaderPayload): string => {
+    return renderToStaticMarkup(
+        getHeader(
+            docProfile,
+            ptFormFields || [],
+            rxConfig?.render_pdf_config,
+            rxLocalConfig,
+            rxConfig?.render_pdf_config?.clinicId,
+            data,
+            rxConfig,
+        ),
     );
 };
 
@@ -46,13 +49,15 @@ export const getFooterHtml = ({
     data,
     rxConfig,
     isHideFooterDetails,
-}: GetFooterHtml): JSX.Element => {
-    return getFooter(
-        docProfile,
-        data || ({} as RenderPdfPrescription),
-        rxLocalConfig,
-        rxConfig?.render_pdf_config,
-        isHideFooterDetails,
+}: GetFooterHtml): string => {
+    return renderToStaticMarkup(
+        getFooter(
+            docProfile,
+            data || ({} as RenderPdfPrescription),
+            rxLocalConfig,
+            rxConfig?.render_pdf_config,
+            isHideFooterDetails,
+        ),
     );
 };
 

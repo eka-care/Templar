@@ -13,25 +13,21 @@ export default defineConfig({
       exclude: ['**/*.test.*', '**/*.spec.*']
     })
   ],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    'process.env': '{}',
+    'global': 'globalThis',
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.tsx'),
       name: 'Templar',
-      formats: ['es', 'cjs'],
-      fileName: (format) => {
-        if (format === 'es') return 'Templar.esm.js';
-        if (format === 'cjs') return 'Templar.js';
-        return `Templar.${format}.js`;
-      }
+      formats: ['umd'],
+      fileName: () => 'Templar.js'
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime'
-        }
+        inlineDynamicImports: true,
       }
     },
     sourcemap: true,

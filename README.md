@@ -19,7 +19,7 @@ npm install @eka-care/templar
 
 ## Usage
 
-### Basic Usage
+### NPM Package Usage
 
 ```tsx
 import { getHeaderHtml, getFooterHtml } from '@eka-care/templar';
@@ -44,6 +44,47 @@ const footerElement = getFooterHtml({
 });
 ```
 
+### Browser Usage (Single JS File)
+
+After building with `npm run build`, you'll get a single UMD file `dist/Templar.js` (~1.17MB) that includes all dependencies bundled and can be used directly in the browser:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Include your Templar library - single file with all dependencies bundled -->
+    <script src="./dist/Templar.js"></script>
+</head>
+<body>
+    <script>
+        // Use Templar functions via the global Templar object
+        const headerHtml = Templar.getHeaderHtml({
+            docProfile: { /* your doctor profile */ },
+            ptFormFields: [], // optional
+            data: {}, // optional
+            rxConfig: {}, // optional
+            rxLocalConfig: {} // optional
+        });
+        
+        const footerHtml = Templar.getFooterHtml({
+            docProfile: { /* your doctor profile */ },
+            rxLocalConfig: {}, // optional
+            data: {}, // optional
+            rxConfig: {}, // optional
+            isHideFooterDetails: false // optional
+        });
+        
+        const headHtml = Templar.getHead({
+            language: 'en', // optional, default 'en'
+            sizeType: 'normal', // optional, default 'normal'
+            showPageBorder: false, // optional, default false
+            fontsUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap' // required
+        });
+    </script>
+</body>
+</html>
+```
+
 ### Type Definitions
 
 The package exports all necessary TypeScript types:
@@ -60,9 +101,9 @@ import type {
 
 ## API Reference
 
-### `getHeaderHtml(payload: GetHeaderPayload): JSX.Element`
+### `getHeaderHtml(payload: GetHeaderPayload): string`
 
-Generates the header HTML for PDF documents.
+Generates the header HTML string for PDF documents.
 
 **Parameters:**
 - `docProfile: DoctorProfile` - Doctor's profile information
@@ -71,9 +112,9 @@ Generates the header HTML for PDF documents.
 - `data?: RenderPdfPrescription` - Prescription data (optional)
 - `rxConfig?: TemplateV2` - Render configuration (optional)
 
-### `getFooterHtml(payload: GetFooterPayload): JSX.Element`
+### `getFooterHtml(payload: GetFooterPayload): string`
 
-Generates the footer HTML for PDF documents.
+Generates the footer HTML string for PDF documents.
 
 **Parameters:**
 - `docProfile: DoctorProfile` - Doctor's profile information  
@@ -81,6 +122,16 @@ Generates the footer HTML for PDF documents.
 - `data?: RenderPdfPrescription` - Prescription data (optional)
 - `rxConfig?: TemplateV2` - Render configuration (optional)
 - `isHideFooterDetails?: boolean` - Whether to hide footer details (optional)
+
+### `getHead(options: HeadOptions): string`
+
+Generates HTML head content with styles and fonts.
+
+**Parameters:**
+- `language?: keyof typeof fontFamily` - Language for fonts (default: 'en')
+- `sizeType?: 'extra-large' | 'compact' | 'spacious' | 'normal'` - Size type (default: 'normal')
+- `showPageBorder?: boolean` - Whether to show page border (default: false)
+- `fontsUrl: string` - URL for font CSS (required)
 
 ## Development
 
@@ -117,10 +168,14 @@ npm run dev
 
 The Vite build process generates:
 
-- `dist/Templar.js` - CommonJS build
-- `dist/Templar.esm.js` - ESM build  
+- `dist/Templar.js` - Single UMD build (~1.17MB, all dependencies bundled)
 - `dist/Templar.d.ts` - TypeScript definitions
-- Source maps for debugging
+- Additional TypeScript declaration files for all modules
+
+**Build Size:**
+- Single UMD file: ~1.17MB (includes React and all dependencies)
+- Gzipped: ~244KB
+- The file includes all Templar logic and utilities bundled into a single file for browser usage
 
 ### Scripts
 

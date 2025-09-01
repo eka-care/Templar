@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Contains the logic to beautify data to PDF HTML",
   "main": "dist/Templar.js",
-  "module": "dist/Templar.esm.js",
   "types": "dist/Templar.d.ts",
   "files": [
     "dist"
@@ -45,8 +44,7 @@
   "exports": {
     ".": {
       "types": "./dist/Templar.d.ts",
-      "import": "./dist/Templar.esm.js",
-      "require": "./dist/Templar.js"
+      "default": "./dist/Templar.js"
     }
   },
   "repository": {
