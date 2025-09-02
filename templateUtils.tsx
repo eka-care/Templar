@@ -32,6 +32,8 @@ import { padElements } from './padElementConfig';
 
 export const HEADER_CONTAINER = 'header_container';
 export const FOOTER_CONTAINER = 'footer_container';
+const NO_HEADER = 'no-header';
+const NO_FOOTER = 'no-footer';
 
 const fontSizeAccortingToType = {
     compact: '14px',
@@ -640,7 +642,7 @@ export const getHeadHtml = (
 
 export const getCustomHeaderHtml = (
     render_pdf_config: TemplateConfig,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     rxLocalConfig?: LocalTemplateConfig,
     header_img?: string,
     d?: RenderPdfPrescription,
@@ -748,7 +750,7 @@ export const getCustomFooterHtml = (
     const timeZoneInfo =
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
-            : getTimeZoneInfo(d.timeZone).abbreviation;
+            : getTimeZoneInfo(d?.timeZone)?.abbreviation;
 
     return (
         <>
@@ -872,7 +874,7 @@ export const getCustomFooterHtml = (
 };
 export const getHeaderHtml = (
     docProfile: DoctorProfile,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     render_pdf_config?: TemplateConfig,
     rxLocalConfig?: LocalTemplateConfig,
     activeClinic?: string,
@@ -1003,7 +1005,7 @@ export const getHeaderHtml = (
 export const getRepitivePtDetails = (
     d: RenderPdfPrescription,
     config: TemplateV2,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
 ): JSX.Element => {
     const patientDetailsFormat = config?.render_pdf_config?.patient_details_format;
     const patientDetailsUppercase = config?.render_pdf_config?.patient_details_in_uppercase;
@@ -1198,6 +1200,26 @@ export const getSpacingBetweenSections = (
     }
 
     return spacingAccortingToType?.[spacing_between_sections];
+};
+
+export const getBodyHtmlMCERT = (heading: string, description: string) => {
+    return (
+        <div>
+            <p
+                className="flex flex-col text-center text-28"
+                dangerouslySetInnerHTML={{
+                    __html: heading,
+                }}
+            ></p>
+
+            <p
+                className="mt-28"
+                dangerouslySetInnerHTML={{
+                    __html: description,
+                }}
+            ></p>
+        </div>
+    );
 };
 
 export const getBodyHtml = (
@@ -1569,9 +1591,10 @@ export const getFooterHtml = (
 ): JSX.Element => {
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
     const timeZoneInfo =
-        d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
+        d &&
+        (d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
-            : getTimeZoneInfo(d.timeZone).abbreviation;
+            : getTimeZoneInfo(d.timeZone).abbreviation);
 
     return (
         <>
@@ -6143,7 +6166,7 @@ export const getGrowthChartVitalsHtml = (
 export const getFormDataHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     fromHeader?: boolean,
 ): JSX.Element | null => {
     const nameColor = config?.render_pdf_config?.patient_details_form_data_name_color;
@@ -6153,7 +6176,7 @@ export const getFormDataHtml = (
     }
 
     const commonFormData = d?.patient?.formData?.filter(
-        (fd) => fd.key === 'uhid' || ptFormFields.some((ptf) => ptf.key === fd.key),
+        (fd) => fd.key === 'uhid' || ptFormFields?.some((ptf) => ptf.key === fd.key),
     );
 
     if (!commonFormData?.length) {
@@ -10428,4 +10451,72 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
             ))}
         </div>
     );
+};
+
+export const getHeader = (
+    docProfile: DoctorProfile,
+    ptFormFields?: DFormEntity[],
+    render_pdf_config?: TemplateConfig,
+    rxLocalConfig?: LocalTemplateConfig,
+    activeClinic?: string,
+    data?: RenderPdfPrescription,
+    rxConfig?: TemplateV2,
+): JSX.Element => {
+    if (render_pdf_config?.header_img) {
+        return getCustomHeaderHtml(
+            render_pdf_config,
+            ptFormFields,
+            rxLocalConfig,
+            render_pdf_config?.header_img === NO_HEADER ? undefined : render_pdf_config?.header_img,
+            data,
+            rxConfig,
+        );
+    }
+
+    return getHeaderHtml(
+        docProfile,
+        ptFormFields,
+        render_pdf_config,
+        rxLocalConfig,
+        activeClinic,
+        data,
+        rxConfig,
+    );
+};
+
+export const getFooter = (
+    docProfile: DoctorProfile,
+    data: any,
+    renderPdfConfig?: TemplateConfig,
+    rxLocalConfig?: LocalTemplateConfig,
+    isHideFooterDetails?: boolean,
+): JSX.Element => {
+    if (renderPdfConfig?.footer_img) {
+        return getCustomFooterHtml(
+            docProfile,
+            data,
+            rxLocalConfig,
+            renderPdfConfig?.footer_top_margin,
+            renderPdfConfig?.footer_bottom_margin,
+            renderPdfConfig?.footer_left_margin,
+            renderPdfConfig?.footer_right_margin,
+            renderPdfConfig?.footer_img === NO_FOOTER ? undefined : renderPdfConfig?.footer_img,
+            renderPdfConfig?.show_signature,
+            renderPdfConfig?.show_name_in_signature,
+            renderPdfConfig?.show_signature_text,
+            renderPdfConfig?.show_page_number,
+            renderPdfConfig?.show_prescription_id,
+            renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
+            renderPdfConfig.show_eka_logo,
+            renderPdfConfig.attachment_image,
+            renderPdfConfig?.footer_doctor_name_color,
+            isHideFooterDetails,
+            undefined,
+            renderPdfConfig.show_approval_details,
+            renderPdfConfig.footer_height,
+            renderPdfConfig.floating_footer_details,
+        );
+    }
+
+    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
 };
