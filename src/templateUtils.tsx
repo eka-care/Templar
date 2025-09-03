@@ -6352,7 +6352,10 @@ export const getFormDataHtml = (
     );
 };
 
-export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): JSX.Element => {
+export const getVisitDateHtml = (
+    d: RenderPdfPrescription,
+    config: TemplateV2,
+): JSX.Element | null => {
     const dateColor = config?.render_pdf_config?.patient_details_date_color;
 
     const timeZoneInfo =
@@ -6376,7 +6379,10 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
         );
     }
 
-    if (config?.render_pdf_config?.date_and_time === 'day-month-date-year-time' && (d?.dateEnd || d?.date)) {
+    if (
+        config?.render_pdf_config?.date_and_time === 'day-month-date-year-time' &&
+        (d?.dateEnd || d?.date)
+    ) {
         return (
             <p
                 className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
@@ -6392,23 +6398,21 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
         );
     }
 
-    return (
-        (d?.dateEnd || d?.date) ?
-            <p
-                className={`${
-                    config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
-                }  whitespace-nowrap`}
-                style={{
-                    color: dateColor,
-                }}
-            >
-                {moment(d.dateEnd || d.date || '')
-                    .tz(d?.timeZone || 'Asia/Calcutta')
-                    .format('DD/MM/YYYY, HH:mm') || ''}{' '}
-                {timeZoneInfo}
-            </p>
-        : null
-    );
+    return d?.dateEnd || d?.date ? (
+        <p
+            className={`${
+                config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
+            }  whitespace-nowrap`}
+            style={{
+                color: dateColor,
+            }}
+        >
+            {moment(d.dateEnd || d.date || '')
+                .tz(d?.timeZone || 'Asia/Calcutta')
+                .format('DD/MM/YYYY, HH:mm') || ''}{' '}
+            {timeZoneInfo}
+        </p>
+    ) : null;
 };
 
 export const getPatientDetailsHtml = (
