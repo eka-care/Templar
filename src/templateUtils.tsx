@@ -43,6 +43,8 @@ export const setTemplarUtility = (u: typeof Utility): void => {
 
 export const HEADER_CONTAINER = 'header_container';
 export const FOOTER_CONTAINER = 'footer_container';
+const NO_HEADER = 'no-header';
+export const NO_FOOTER = 'no-footer';
 
 const fontSizeAccortingToType = {
     compact: '14px',
@@ -649,9 +651,9 @@ export const getHeadHtml = (
         </style>`;
 };
 
-const getCustomHeaderHtml = (
+export const getCustomHeaderHtml = (
     render_pdf_config: TemplateConfig,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     rxLocalConfig?: LocalTemplateConfig,
     header_img?: string,
     d?: RenderPdfPrescription,
@@ -733,7 +735,7 @@ const getCustomHeaderHtml = (
     );
 };
 
-const getCustomFooterHtml = (
+export const getCustomFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
@@ -760,7 +762,7 @@ const getCustomFooterHtml = (
     const timeZoneInfo =
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
-            : getTimeZoneInfo(d.timeZone).abbreviation;
+            : getTimeZoneInfo(d?.timeZone)?.abbreviation;
 
     return (
         <>
@@ -883,9 +885,9 @@ const getCustomFooterHtml = (
     );
 };
 
-const getHeaderHtml = (
+export const getHeaderHtml = (
     docProfile: DoctorProfile,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     render_pdf_config?: TemplateConfig,
     rxLocalConfig?: LocalTemplateConfig,
     activeClinic?: string,
@@ -1013,40 +1015,6 @@ const getHeaderHtml = (
     );
 };
 
-export const NO_HEADER = 'no-header';
-export const NO_FOOTER = 'no-footer';
-
-export const getHeader = (
-    docProfile: DoctorProfile,
-    ptFormFields: DFormEntity[],
-    render_pdf_config?: TemplateConfig,
-    rxLocalConfig?: LocalTemplateConfig,
-    activeClinic?: string,
-    data?: RenderPdfPrescription,
-    rxConfig?: TemplateV2,
-): JSX.Element => {
-    if (render_pdf_config?.header_img) {
-        return getCustomHeaderHtml(
-            render_pdf_config,
-            ptFormFields,
-            rxLocalConfig,
-            render_pdf_config?.header_img === NO_HEADER ? undefined : render_pdf_config?.header_img,
-            data,
-            rxConfig,
-        );
-    }
-
-    return getHeaderHtml(
-        docProfile,
-        ptFormFields,
-        render_pdf_config,
-        rxLocalConfig,
-        activeClinic,
-        data,
-        rxConfig,
-    );
-};
-
 export const getFooter = (
     docProfile: DoctorProfile,
     data: RenderPdfPrescription,
@@ -1118,7 +1086,7 @@ export const getFooter = (
 export const getRepitivePtDetails = (
     d: RenderPdfPrescription,
     config: TemplateV2,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
 ): JSX.Element => {
     const patientDetailsFormat = config?.render_pdf_config?.patient_details_format;
     const patientDetailsUppercase = config?.render_pdf_config?.patient_details_in_uppercase;
@@ -1676,7 +1644,7 @@ export const doubleColumnsHtml = (
     );
 };
 
-const getFooterHtml = (
+export const getFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
@@ -1684,9 +1652,10 @@ const getFooterHtml = (
 ): JSX.Element => {
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
     const timeZoneInfo =
-        d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
+        d &&
+        (d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
-            : getTimeZoneInfo(d.timeZone).abbreviation;
+            : getTimeZoneInfo(d.timeZone).abbreviation);
 
     return (
         <>
@@ -6258,7 +6227,7 @@ export const getGrowthChartVitalsHtml = (
 export const getFormDataHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
-    ptFormFields: DFormEntity[],
+    ptFormFields?: DFormEntity[],
     fromHeader?: boolean,
 ): JSX.Element | null => {
     const nameColor = config?.render_pdf_config?.patient_details_form_data_name_color;
@@ -6268,7 +6237,7 @@ export const getFormDataHtml = (
     }
 
     const commonFormData = d?.patient?.formData?.filter(
-        (fd) => fd.key === 'uhid' || ptFormFields.some((ptf) => ptf.key === fd.key),
+        (fd) => fd.key === 'uhid' || ptFormFields?.some((ptf) => ptf.key === fd.key),
     );
 
     if (!commonFormData?.length) {
@@ -6383,7 +6352,10 @@ export const getFormDataHtml = (
     );
 };
 
-export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): JSX.Element => {
+export const getVisitDateHtml = (
+    d: RenderPdfPrescription,
+    config: TemplateV2,
+): JSX.Element | null => {
     const dateColor = config?.render_pdf_config?.patient_details_date_color;
 
     const timeZoneInfo =
@@ -6407,7 +6379,10 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
         );
     }
 
-    if (config?.render_pdf_config?.date_and_time === 'day-month-date-year-time' && (d?.dateEnd || d?.date)) {
+    if (
+        config?.render_pdf_config?.date_and_time === 'day-month-date-year-time' &&
+        (d?.dateEnd || d?.date)
+    ) {
         return (
             <p
                 className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
@@ -6423,23 +6398,21 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
         );
     }
 
-    return (
-        (d?.dateEnd || d?.date) ?
-            <p
-                className={`${
-                    config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
-                }  whitespace-nowrap`}
-                style={{
-                    color: dateColor,
-                }}
-            >
-                {moment(d.dateEnd || d.date || '')
-                    .tz(d?.timeZone || 'Asia/Calcutta')
-                    .format('DD/MM/YYYY, HH:mm') || ''}{' '}
-                {timeZoneInfo}
-            </p>
-        : null
-    );
+    return d?.dateEnd || d?.date ? (
+        <p
+            className={`${
+                config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
+            }  whitespace-nowrap`}
+            style={{
+                color: dateColor,
+            }}
+        >
+            {moment(d.dateEnd || d.date || '')
+                .tz(d?.timeZone || 'Asia/Calcutta')
+                .format('DD/MM/YYYY, HH:mm') || ''}{' '}
+            {timeZoneInfo}
+        </p>
+    ) : null;
 };
 
 export const getPatientDetailsHtml = (
@@ -10544,5 +10517,36 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
                 </div>
             ))}
         </div>
+    );
+};
+
+export const getHeader = (
+    docProfile: DoctorProfile,
+    ptFormFields?: DFormEntity[],
+    render_pdf_config?: TemplateConfig,
+    rxLocalConfig?: LocalTemplateConfig,
+    activeClinic?: string,
+    data?: RenderPdfPrescription,
+    rxConfig?: TemplateV2,
+): JSX.Element => {
+    if (render_pdf_config?.header_img) {
+        return getCustomHeaderHtml(
+            render_pdf_config,
+            ptFormFields,
+            rxLocalConfig,
+            render_pdf_config?.header_img === NO_HEADER ? undefined : render_pdf_config?.header_img,
+            data,
+            rxConfig,
+        );
+    }
+
+    return getHeaderHtml(
+        docProfile,
+        ptFormFields,
+        render_pdf_config,
+        rxLocalConfig,
+        activeClinic,
+        data,
+        rxConfig,
     );
 };
