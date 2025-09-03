@@ -2,7 +2,6 @@ import moment from 'moment-timezone';
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import React, { Fragment } from 'react';
-import { parseHTMLToStringForPipeSeperated } from '../components/common/htmlParser';
 
 import {
     GeniePadElementsSettingItem,
@@ -30,6 +29,18 @@ import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
 
+const Utility = {
+    parseHTMLToStringForPipeSeperated: (html: string): string => {
+        throw Error('Not implemented');
+    },
+};
+
+let utility: typeof Utility = Utility;
+
+export const setTemplarUtility = (u: typeof Utility): void => {
+    utility = u;
+};
+
 export const HEADER_CONTAINER = 'header_container';
 export const FOOTER_CONTAINER = 'footer_container';
 const NO_HEADER = 'no-header';
@@ -49,7 +60,7 @@ const spacingAccortingToType = {
     'extra-spacious': 'space-y-8',
 };
 
-const fontFamily = {
+export const fontFamily = {
     en: "'Poppins', sans-serif",
     hi: "'Poppins', sans-serif",
     gu: "'Poppins', sans-serif",
@@ -640,7 +651,7 @@ export const getHeadHtml = (
         </style>`;
 };
 
-export const getCustomHeaderHtml = (
+const getCustomHeaderHtml = (
     render_pdf_config: TemplateConfig,
     ptFormFields?: DFormEntity[],
     rxLocalConfig?: LocalTemplateConfig,
@@ -723,7 +734,8 @@ export const getCustomHeaderHtml = (
         </>
     );
 };
-export const getCustomFooterHtml = (
+
+const getCustomFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
@@ -872,7 +884,8 @@ export const getCustomFooterHtml = (
         </>
     );
 };
-export const getHeaderHtml = (
+
+const getHeaderHtml = (
     docProfile: DoctorProfile,
     ptFormFields?: DFormEntity[],
     render_pdf_config?: TemplateConfig,
@@ -1000,6 +1013,108 @@ export const getHeaderHtml = (
             )}
         </>
     );
+};
+
+export const NO_HEADER = 'no-header';
+export const NO_FOOTER = 'no-footer';
+
+export const getHeader = (
+    docProfile: DoctorProfile,
+    ptFormFields: DFormEntity[],
+    render_pdf_config?: TemplateConfig,
+    rxLocalConfig?: LocalTemplateConfig,
+    activeClinic?: string,
+    data?: RenderPdfPrescription,
+    rxConfig?: TemplateV2,
+): JSX.Element => {
+    if (render_pdf_config?.header_img) {
+        return getCustomHeaderHtml(
+            render_pdf_config,
+            ptFormFields,
+            rxLocalConfig,
+            render_pdf_config?.header_img === NO_HEADER ? undefined : render_pdf_config?.header_img,
+            data,
+            rxConfig,
+        );
+    }
+
+    return getHeaderHtml(
+        docProfile,
+        ptFormFields,
+        render_pdf_config,
+        rxLocalConfig,
+        activeClinic,
+        data,
+        rxConfig,
+    );
+};
+
+export const getFooter = (
+    docProfile: DoctorProfile,
+    data: RenderPdfPrescription,
+    rxLocalConfig?: LocalTemplateConfig,
+    renderPdfConfig?: TemplateConfig,
+    isHideFooterDetails?: boolean,
+): JSX.Element => {
+    if (renderPdfConfig?.floating_footer) {
+        return renderPdfConfig?.floating_footer_details ? (
+            getCustomFooterHtml(
+                docProfile,
+                data,
+                rxLocalConfig,
+                renderPdfConfig?.footer_top_margin,
+                renderPdfConfig?.footer_bottom_margin,
+                renderPdfConfig?.footer_left_margin,
+                renderPdfConfig?.footer_right_margin,
+                renderPdfConfig?.footer_img === NO_FOOTER ? undefined : renderPdfConfig?.footer_img,
+                renderPdfConfig?.show_signature,
+                renderPdfConfig?.show_name_in_signature,
+                renderPdfConfig?.show_signature_text,
+                renderPdfConfig?.show_page_number,
+                renderPdfConfig?.show_prescription_id,
+                renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
+                renderPdfConfig.show_eka_logo,
+                renderPdfConfig.attachment_image,
+                renderPdfConfig?.footer_doctor_name_color,
+                false,
+                true,
+                renderPdfConfig.show_approval_details,
+                undefined,
+                renderPdfConfig.floating_footer_details,
+            )
+        ) : (
+            <></>
+        );
+    }
+
+    if (renderPdfConfig?.footer_img) {
+        return getCustomFooterHtml(
+            docProfile,
+            data,
+            rxLocalConfig,
+            renderPdfConfig?.footer_top_margin,
+            renderPdfConfig?.footer_bottom_margin,
+            renderPdfConfig?.footer_left_margin,
+            renderPdfConfig?.footer_right_margin,
+            renderPdfConfig?.footer_img === NO_FOOTER ? undefined : renderPdfConfig?.footer_img,
+            renderPdfConfig?.show_signature,
+            renderPdfConfig?.show_name_in_signature,
+            renderPdfConfig?.show_signature_text,
+            renderPdfConfig?.show_page_number,
+            renderPdfConfig?.show_prescription_id,
+            renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
+            renderPdfConfig.show_eka_logo,
+            renderPdfConfig.attachment_image,
+            renderPdfConfig?.footer_doctor_name_color,
+            isHideFooterDetails,
+            undefined,
+            renderPdfConfig.show_approval_details,
+            renderPdfConfig.footer_height,
+            renderPdfConfig.floating_footer_details,
+        );
+    }
+
+    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
 };
 
 export const getRepitivePtDetails = (
@@ -1563,7 +1678,7 @@ export const doubleColumnsHtml = (
     );
 };
 
-export const getFooterHtml = (
+const getFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
@@ -5164,7 +5279,7 @@ export const getSymptomsHtml = (
                                         color: propertiesColor,
                                     }}
                                 >
-                                    {parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
+                                    {utility?.parseHTMLToStringForPipeSeperated(sym?.toshow) || ''}
 
                                     <span
                                         className="bold"
@@ -5297,7 +5412,7 @@ export const getDiagnosisHtml = (
                                     }}
                                 >
                                     {/* {diag?.toshow || ''} */}
-                                    {parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
+                                    {utility?.parseHTMLToStringForPipeSeperated(diag?.toshow) || ''}
                                 </span>
                                 {i !== (diagnosis?.values || [])?.length - 1 && (
                                     <span

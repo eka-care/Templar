@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templar Test</title>
+    <!-- Include your Templar library - single file with all dependencies bundled -->
+    <!-- <script src="./dist/Templar.js"></script> -->
+    <script src="https://unpkg.com/@eka-care/templar/dist/Templar.js"></script>
+</head>
+<body>
+    <h1>Templar Library Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        try {
+            // Check if Templar is loaded
+            console.log('Templar object:', typeof Templar);
+            console.log('Available methods:', Object.keys(Templar || {}));
+            
+            // Example usage data (replace with your actual data)
+            const yourDocProfile = {
+                doctorName: 'Dr. Test Doctor',
+                specialization: 'General Medicine',
+                // Add more required fields as needed
+            };
+            
+            const yourRxLocalConfig = {
+                // your local config
+            };
+            
+            // Test the functions
+            console.log('Testing getHeaderHtml...');
+            const headerHtml = Templar.getHeaderHtml({
+                docProfile: yourDocProfile,
+                ptFormFields: [], // optional
+                data: {}, // optional
+                rxConfig: {}, // optional
+                rxLocalConfig: yourRxLocalConfig // optional
+            });
+
+            console.log('Testing getFooterHtml...');
+            const footerHtml = Templar.getFooterHtml({
+                docProfile: yourDocProfile,
+                rxLocalConfig: yourRxLocalConfig, // optional
+                data: {}, // optional
+                rxConfig: {}, // optional
+                isHideFooterDetails: false // optional
+            });
+
+            console.log('Testing getHead...');
+            const headHtml = Templar.getHead({
+                language: 'en', // optional, default 'en'
+                sizeType: 'normal', // optional, default 'normal' 
+                showPageBorder: false, // optional, default false
+                fontsUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap' // required
+            });
+
+            // Display results
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <h2>Success! All functions executed without errors.</h2>
+                <h3>Header HTML:</h3>
+                <pre style="background: #f5f5f5; padding: 10px; white-space: pre-wrap;">${headerHtml.slice(0, 200)}...</pre>
+                <h3>Footer HTML:</h3>
+                <pre style="background: #f5f5f5; padding: 10px; white-space: pre-wrap;">${footerHtml.slice(0, 200)}...</pre>
+                <h3>Head HTML:</h3>
+                <pre style="background: #f5f5f5; padding: 10px; white-space: pre-wrap;">${headHtml.slice(0, 200)}...</pre>
+            `;
+            
+            console.log('✅ All tests passed!');
+            console.log('Header HTML length:', headerHtml.length);
+            console.log('Footer HTML length:', footerHtml.length);
+            console.log('Head HTML length:', headHtml.length);
+            
+        } catch (error) {
+            console.error('❌ Error occurred:', error);
+            document.getElementById('output').innerHTML = `
+                <h2 style="color: red;">Error occurred:</h2>
+                <pre style="background: #ffe6e6; padding: 10px; color: red;">${error.message}</pre>
+            `;
+        }
+    </script>
+</body>
+</html>
+        console.log('Available functions:', Object.keys(Templar));
+        // Should show: ['getHeaderHtml', 'getFooterHtml', 'getHead']
+    </script>
+</body>
+</html>
