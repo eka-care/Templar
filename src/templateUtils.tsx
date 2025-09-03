@@ -651,7 +651,7 @@ export const getHeadHtml = (
         </style>`;
 };
 
-const getCustomHeaderHtml = (
+export const getCustomHeaderHtml = (
     render_pdf_config: TemplateConfig,
     ptFormFields?: DFormEntity[],
     rxLocalConfig?: LocalTemplateConfig,
@@ -735,7 +735,7 @@ const getCustomHeaderHtml = (
     );
 };
 
-const getCustomFooterHtml = (
+export const getCustomFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
@@ -885,7 +885,7 @@ const getCustomFooterHtml = (
     );
 };
 
-const getHeaderHtml = (
+export const getHeaderHtml = (
     docProfile: DoctorProfile,
     ptFormFields?: DFormEntity[],
     render_pdf_config?: TemplateConfig,
@@ -1644,7 +1644,7 @@ export const doubleColumnsHtml = (
     );
 };
 
-const getFooterHtml = (
+export const getFooterHtml = (
     docProfile: DoctorProfile,
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
