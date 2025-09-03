@@ -1015,40 +1015,6 @@ const getHeaderHtml = (
     );
 };
 
-export const NO_HEADER = 'no-header';
-export const NO_FOOTER = 'no-footer';
-
-export const getHeader = (
-    docProfile: DoctorProfile,
-    ptFormFields: DFormEntity[],
-    render_pdf_config?: TemplateConfig,
-    rxLocalConfig?: LocalTemplateConfig,
-    activeClinic?: string,
-    data?: RenderPdfPrescription,
-    rxConfig?: TemplateV2,
-): JSX.Element => {
-    if (render_pdf_config?.header_img) {
-        return getCustomHeaderHtml(
-            render_pdf_config,
-            ptFormFields,
-            rxLocalConfig,
-            render_pdf_config?.header_img === NO_HEADER ? undefined : render_pdf_config?.header_img,
-            data,
-            rxConfig,
-        );
-    }
-
-    return getHeaderHtml(
-        docProfile,
-        ptFormFields,
-        render_pdf_config,
-        rxLocalConfig,
-        activeClinic,
-        data,
-        rxConfig,
-    );
-};
-
 export const getFooter = (
     docProfile: DoctorProfile,
     data: RenderPdfPrescription,
