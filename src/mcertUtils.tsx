@@ -1,5 +1,5 @@
 import { TemplateConfig } from './RenderPdfPrescription';
-import { getCustomFooterHtml, getFooterHtml, NO_FOOTER } from './templateUtils';
+import { getCustomFooterHtml, getFooterHtml, NO_FOOTER } from '../templateUtils';
 import { DoctorProfile, LocalTemplateConfig } from './types';
 
 export const getBodyHtmlMCERT = (heading: string, description: string) => {
