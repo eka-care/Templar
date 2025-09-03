@@ -6391,7 +6391,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation;
 
-    if (config?.render_pdf_config?.date_and_time === 'date') {
+    if (config?.render_pdf_config?.date_and_time === 'date' && (d?.dateEnd || d?.date)) {
         return (
             <p
                 className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
@@ -6399,7 +6399,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d?.date || '')
+                {moment(d.dateEnd || d.date || '')
                     .tz(d?.timeZone || 'Asia/Calcutta')
                     .format('DD/MM/YYYY') || ''}{' '}
                 {timeZoneInfo}
@@ -6407,7 +6407,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
         );
     }
 
-    if (config?.render_pdf_config?.date_and_time === 'day-month-date-year-time') {
+    if (config?.render_pdf_config?.date_and_time === 'day-month-date-year-time' && (d?.dateEnd || d?.date)) {
         return (
             <p
                 className={`${config?.render_pdf_config?.date_in_unbold ? '' : 'bold'}`}
@@ -6415,7 +6415,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d?.date || '')
+                {moment(d.dateEnd || d.date || '')
                     .tz(d?.timeZone || 'Asia/Calcutta')
                     .format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
                 {timeZoneInfo}
@@ -6424,19 +6424,21 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
     }
 
     return (
-        <p
-            className={`${
-                config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
-            }  whitespace-nowrap`}
-            style={{
-                color: dateColor,
-            }}
-        >
-            {moment(d.dateEnd || d?.date || '')
-                .tz(d?.timeZone || 'Asia/Calcutta')
-                .format('DD/MM/YYYY, HH:mm') || ''}{' '}
-            {timeZoneInfo}
-        </p>
+        (d?.dateEnd || d?.date) ?
+            <p
+                className={`${
+                    config?.render_pdf_config?.date_in_unbold ? '' : 'bold'
+                }  whitespace-nowrap`}
+                style={{
+                    color: dateColor,
+                }}
+            >
+                {moment(d.dateEnd || d.date || '')
+                    .tz(d?.timeZone || 'Asia/Calcutta')
+                    .format('DD/MM/YYYY, HH:mm') || ''}{' '}
+                {timeZoneInfo}
+            </p>
+        : null
     );
 };
 
