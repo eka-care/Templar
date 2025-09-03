@@ -6399,7 +6399,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d?.date || '')
+                {moment(d.dateEnd || d.date || '')
                     .tz(d?.timeZone || 'Asia/Calcutta')
                     .format('DD/MM/YYYY') || ''}{' '}
                 {timeZoneInfo}
@@ -6415,7 +6415,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d?.date || '')
+                {moment(d.dateEnd || d.date || '')
                     .tz(d?.timeZone || 'Asia/Calcutta')
                     .format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
                 {timeZoneInfo}
@@ -6433,7 +6433,7 @@ export const getVisitDateHtml = (d: RenderPdfPrescription, config: TemplateV2): 
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d?.date || '')
+                {moment(d.dateEnd || d.date || '')
                     .tz(d?.timeZone || 'Asia/Calcutta')
                     .format('DD/MM/YYYY, HH:mm') || ''}{' '}
                 {timeZoneInfo}
