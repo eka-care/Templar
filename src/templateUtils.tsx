@@ -98,8 +98,11 @@ export const getHeadHtml = (
                 margin: 0px;
                 padding: 0px;
             }
-            .ekavariable{
-                    white-space: nowrap;
+            .toDate{
+                white-space: nowrap;
+            }
+            .fromDate{
+                white-space: nowrap;
             }
 
             html{
