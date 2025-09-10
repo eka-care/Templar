@@ -98,6 +98,12 @@ export const getHeadHtml = (
                 margin: 0px;
                 padding: 0px;
             }
+            .toDate{
+                white-space: nowrap;
+            }
+            .fromDate{
+                white-space: nowrap;
+            }
 
             html{
                 font-size: ${fontSizeAccortingToType[sizeType] || '16px'};
