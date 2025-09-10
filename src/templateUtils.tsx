@@ -98,6 +98,9 @@ export const getHeadHtml = (
                 margin: 0px;
                 padding: 0px;
             }
+            .ekavariable{
+                    white-space: nowrap;
+            }
 
             html{
                 font-size: ${fontSizeAccortingToType[sizeType] || '16px'};
