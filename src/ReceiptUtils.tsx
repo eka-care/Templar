@@ -114,7 +114,7 @@ export interface ClinicsEntity {
     email?: string;
 }
 
-export const getHeader = ({
+export const getHeaderForReceipt = ({
     doctorName,
     headerText,
     clinicAddress,
@@ -166,7 +166,7 @@ export const getHeader = ({
 `;
 };
 
-export const getFooter = ({
+export const getFooterForReceipt = ({
     config,
     data,
 }: {
@@ -211,7 +211,7 @@ export const getFooter = ({
 </div>`;
 };
 
-export const getBody = ({ data }: { data: TPdfObject }): string => {
+export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
     const {
         receipt_number,
         receipt_sku,
@@ -241,21 +241,21 @@ export const getBody = ({ data }: { data: TPdfObject }): string => {
         discount_column === COLUMN_STATE.ALWAYS
             ? true
             : discount_column === COLUMN_STATE.IF_APL && discountPresentInSku
-              ? true
-              : false;
+            ? true
+            : false;
     const _showQuantity =
         quantity_column === COLUMN_STATE.ALWAYS
             ? true
             : quantity_column === COLUMN_STATE.IF_APL && isQtyGreaterThanOne
-              ? true
-              : false;
+            ? true
+            : false;
 
     const colSpan =
         _showQuantity && _showDiscount
             ? 5
             : (_showDiscount && !_showQuantity) || (!_showDiscount && _showQuantity)
-              ? 4
-              : 3;
+            ? 4
+            : 3;
 
     const showAmountDue = !!amount_due && amount_due > 0;
     const showAdvancePayment = !!amount_due && amount_due < 0;
@@ -280,7 +280,7 @@ export const getBody = ({ data }: { data: TPdfObject }): string => {
   <div class="invoice-header--bottom">
     <div>
       <span>Billed To: </span>
-      <span>${getPatientIntro(data)}</span>
+      <span>${getPatientIntroForReceipt(data)}</span>
     </div>
   </div>
 </div>
@@ -367,9 +367,9 @@ export const getBody = ({ data }: { data: TPdfObject }): string => {
                       <div class="paymode-card__title">${
                           payment_status === 'success' ? 'Paid' : 'Pending Payment'
                       } Via ${rp.paymode
-                          .split('_')
-                          .map((c) => `${c[0]}${c.slice(1).toLowerCase()}`)
-                          .join(' ')}</div>
+                                  .split('_')
+                                  .map((c) => `${c[0]}${c.slice(1).toLowerCase()}`)
+                                  .join(' ')}</div>
                     </div>
                    <div class="paymode-card__amount">Rs. ${rp.amount.toLocaleString('en-IN')}</div>
                         </div>`,
@@ -431,7 +431,7 @@ export const getBody = ({ data }: { data: TPdfObject }): string => {
     `;
 };
 
-export const getBodyForPaymentNote = ({ data }: { data: TPdfObject }): string => {
+export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }): string => {
     const {
         name,
         mobile,
@@ -468,7 +468,7 @@ export const getBodyForPaymentNote = ({ data }: { data: TPdfObject }): string =>
         <div class="invoice-header--bottom">
           <div>
             <span>Billed To: </span>
-            <span>${getPatientIntro(data)}</span>
+            <span>${getPatientIntroForReceipt(data)}</span>
           </div>
         </div>
       </div>
@@ -532,7 +532,7 @@ export const getBodyForPaymentNote = ({ data }: { data: TPdfObject }): string =>
   `;
 };
 
-export function getPatientIntro(data: TPdfObject): string {
+export function getPatientIntroForReceipt(data: TPdfObject): string {
     const { name, gender, ageInM, mobile, uhid, config } = data;
     const { flags } = config;
     const { print_uhid } = flags;
@@ -549,7 +549,7 @@ export function getPatientIntro(data: TPdfObject): string {
         .join(' | ');
 }
 
-export const getPdfCss = ({ config, ref_trx_id }: TPdfObject): string => {
+export const getPdfCssForReceipt = ({ config, ref_trx_id }: TPdfObject): string => {
     const { margins, heights } = config;
     const { header, footer } = heights;
     const { bottom, top, left, right } = margins;
@@ -805,7 +805,7 @@ export enum COLUMN_STATE {
     ALWAYS = 'ALWAYS',
     IF_APL = 'IF_APL',
 }
-export const getDefaultPdfConfig = (): ReceiptPdfConfig => {
+export const getDefaultPdfConfigForReceipt = (): ReceiptPdfConfig => {
     return {
         owner_id: '',
         clinic_id: '',
