@@ -1289,7 +1289,6 @@ export const getSpacingBetweenSections = (
     return spacingAccortingToType?.[spacing_between_sections];
 };
 
-
 export const getBodyHtml = (
     data: RenderPdfPrescription,
     showWaterMark: boolean,
@@ -10505,7 +10504,6 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
     const careCanvas = Array.isArray(data.tool?.careCanvas) ? data.tool?.careCanvas : [];
     const headingColor = config?.render_pdf_config?.care_canvas_heading_color;
     if (!careCanvas?.length) return null;
-
     return (
         <div className="space-y-5">
             <p
