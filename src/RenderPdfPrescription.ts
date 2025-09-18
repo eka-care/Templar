@@ -285,6 +285,8 @@ export interface CareCanvas {
     id: string;
     name: string;
     final_image: string;
+    width?: string;
+    height?: string;
 }
 
 export type Ophthalmology = {

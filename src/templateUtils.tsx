@@ -1289,6 +1289,7 @@ export const getSpacingBetweenSections = (
     return spacingAccortingToType?.[spacing_between_sections];
 };
 
+
 export const getBodyHtml = (
     data: RenderPdfPrescription,
     showWaterMark: boolean,
@@ -10504,6 +10505,7 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
     const careCanvas = Array.isArray(data.tool?.careCanvas) ? data.tool?.careCanvas : [];
     const headingColor = config?.render_pdf_config?.care_canvas_heading_color;
     if (!careCanvas?.length) return null;
+
     return (
         <div className="space-y-5">
             <p
@@ -10512,16 +10514,18 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
             >
                 Canvas :
             </p>
-            {careCanvas.map(({ final_image }) => (
-                <div>
+            {careCanvas.map(({ final_image, width, height }) => {
+                const maxWidth = width || '16cm';
+                const maxHeight = height || '16cm';
+                return <div>
                     <div className="flex justify-center">
                         <img
                             src={final_image}
-                            style={{ maxWidth: '100%', maxHeight: '100%', margin: '6px auto' }}
+                            style={{ maxWidth: maxWidth, maxHeight: maxHeight, margin: '6px auto' }}
                         />
                     </div>
                 </div>
-            ))}
+            })}
         </div>
     );
 };
