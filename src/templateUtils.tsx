@@ -10512,16 +10512,18 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
             >
                 Canvas :
             </p>
-            {careCanvas.map(({ final_image }) => (
-                <div>
+            {careCanvas.map(({ final_image, width, height }) => {
+                const maxWidth = width || '16cm';
+                const maxHeight = height || '16cm';
+                return <div>
                     <div className="flex justify-center">
                         <img
                             src={final_image}
-                            style={{ maxWidth: '100%', maxHeight: '100%', margin: '6px auto' }}
+                            style={{ maxWidth: maxWidth, maxHeight: maxHeight, margin: '6px auto' }}
                         />
                     </div>
                 </div>
-            ))}
+            })}
         </div>
     );
 };
