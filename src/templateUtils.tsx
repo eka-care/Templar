@@ -1,4 +1,12 @@
-import moment from 'moment-timezone';
+import { Moment } from 'moment';
+
+let moment: Moment;
+try {
+    moment = require('moment-timezone');
+} catch (e) {
+    moment = require('moment');
+}
+
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import React, { Fragment } from 'react';
