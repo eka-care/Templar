@@ -870,9 +870,11 @@ export const getCustomFooterHtml = (
                                 <span>
                                     PRESCRIPTION AUTHORIZED BY{' '}
                                     {(d.actor?.name || '-').toUpperCase()} ON{' '}
-                                    {moment()
-                                        .tz(d?.timeZone || 'Asia/Calcutta')
-                                        .format('DD MMM YYYY hh:mm a') || ''}{' '}
+                                    {moment(
+                                        formatDateInTimeZone({
+                                            timeZone: d?.timeZone || 'Asia/Calcutta',
+                                        }),
+                                    ).format('DD MMM YYYY hh:mm a') || ''}{' '}
                                     {timeZoneInfo}
                                 </span>
                                 <span>
@@ -6421,9 +6423,12 @@ export const getVisitDateHtml = (
                 color: dateColor,
             }}
         >
-            {moment(d.dateEnd || d.date || '')
-                .tz(d?.timeZone || 'Asia/Calcutta')
-                .format('DD/MM/YYYY, HH:mm') || ''}{' '}
+            {moment(
+                formatDateInTimeZone({
+                    date: d.dateEnd || d.date || '',
+                    timeZone: d?.timeZone || 'Asia/Calcutta',
+                }),
+            ).format('DD/MM/YYYY, HH:mm') || ''}{' '}
             {timeZoneInfo}
         </p>
     ) : null;
@@ -7114,7 +7119,12 @@ const renderInjectionRow = (
                                 {injection?.frequency?.time_split?.map((time) => (
                                     <div className="flex flex-col">
                                         <span>
-                                            {moment(time.timing).tz(timeZoneInfo).format('hh:mm A')}
+                                            {moment(
+                                                formatDateInTimeZone({
+                                                    date: time.timing?.toString(),
+                                                    timeZone: timeZoneInfo,
+                                                }),
+                                            ).format('hh:mm A')}
                                         </span>
                                         {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                     </div>
@@ -7131,7 +7141,12 @@ const renderInjectionRow = (
                             {injection?.frequency?.time_split?.map((time) => (
                                 <div className="flex flex-col">
                                     <span>
-                                        {moment(time.timing).tz(timeZoneInfo).format('hh:mm A')}
+                                        {moment(
+                                            formatDateInTimeZone({
+                                                date: time.timing?.toString(),
+                                                timeZone: timeZoneInfo,
+                                            }),
+                                        ).format('hh:mm A')}
                                     </span>
                                     {time?.custom ? -(<span>{time?.custom}</span>) : null}
                                 </div>
@@ -7250,9 +7265,12 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time.timing)
-                                                .tz(timeZoneInfo || 'Asia/Calcutta')
-                                                .format('hh:mm A')}
+                                            {moment(
+                                                formatDateInTimeZone({
+                                                    date: time.timing?.toString(),
+                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                }),
+                                            ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
@@ -7307,9 +7325,12 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time.timing)
-                                                .tz(timeZoneInfo || 'Asia/Calcutta')
-                                                .format('hh:mm A')}
+                                            {moment(
+                                                formatDateInTimeZone({
+                                                    date: time.timing?.toString(),
+                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                }),
+                                            ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
@@ -7366,9 +7387,12 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                         <>
                                             {' '}
                                             {index === 0 ? '[ at ' : ''}
-                                            {moment(time.timing)
-                                                .tz(timeZoneInfo || 'Asia/Calcutta')
-                                                .format('hh:mm A')}
+                                            {moment(
+                                                formatDateInTimeZone({
+                                                    date: time.timing?.toString(),
+                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                }),
+                                            ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
                                             {time?.custom ? ` - ${time?.custom}` : null}
                                             {index !== array.length - 1 ? ',' : ''}
@@ -8376,9 +8400,14 @@ export const getInjections1Html = (
                                                         <>
                                                             {' '}
                                                             {index === 0 ? '[ at ' : ''}
-                                                            {moment(time.timing)
-                                                                .tz(timeZoneInfo || 'Asia/Calcutta')
-                                                                .format('hh:mm A')}
+                                                            {moment(
+                                                                formatDateInTimeZone({
+                                                                    date: time.timing?.toString(),
+                                                                    timeZone:
+                                                                        timeZoneInfo ||
+                                                                        'Asia/Calcutta',
+                                                                }),
+                                                            ).format('hh:mm A')}
                                                             {` ${timeZoneInfo}`}{' '}
                                                             {time?.custom
                                                                 ? ` - ${time?.custom}`
@@ -8518,12 +8547,14 @@ export const getInjections1Html = (
                                                             <>
                                                                 {' '}
                                                                 {index === 0 ? '[ at ' : ''}
-                                                                {moment(time.timing)
-                                                                    .tz(
-                                                                        timeZoneInfo ||
+                                                                {moment(
+                                                                    formatDateInTimeZone({
+                                                                        date: time.timing?.toString(),
+                                                                        timeZone:
+                                                                            timeZoneInfo ||
                                                                             'Asia/Calcutta',
-                                                                    )
-                                                                    .format('hh:mm A')}
+                                                                    }),
+                                                                ).format('hh:mm A')}
                                                                 {` ${timeZoneInfo}`}{' '}
                                                                 {time?.custom
                                                                     ? ` - ${time?.custom}`
@@ -8907,9 +8938,14 @@ export const getInjections2Html = (
                                                     (time, timeIdx, array) => (
                                                         <span key={`time-${timeIdx}`}>
                                                             {timeIdx === 0 ? '[ at ' : ''}
-                                                            {moment(time.timing)
-                                                                .tz(timeZoneInfo || 'Asia/Calcutta')
-                                                                .format('hh:mm A')}
+                                                            {moment(
+                                                                formatDateInTimeZone({
+                                                                    date: time.timing?.toString(),
+                                                                    timeZone:
+                                                                        timeZoneInfo ||
+                                                                        'Asia/Calcutta',
+                                                                }),
+                                                            ).format('hh:mm A')}
                                                             {` ${timeZoneInfo}`}{' '}
                                                             {time?.custom
                                                                 ? ` - ${time?.custom}`
@@ -9078,12 +9114,14 @@ export const getInjections2Html = (
                                                                 <>
                                                                     {' '}
                                                                     {index === 0 ? '[ at ' : ''}
-                                                                    {moment(time.timing)
-                                                                        .tz(
-                                                                            timeZoneInfo ||
+                                                                    {moment(
+                                                                        formatDateInTimeZone({
+                                                                            date: time.timing?.toString(),
+                                                                            timeZone:
+                                                                                timeZoneInfo ||
                                                                                 'Asia/Calcutta',
-                                                                        )
-                                                                        .format('hh:mm A')}
+                                                                        }),
+                                                                    ).format('hh:mm A')}
                                                                     {` ${timeZoneInfo}`}{' '}
                                                                     {time?.custom
                                                                         ? ` - ${time?.custom}`
@@ -9517,12 +9555,14 @@ export const getInjections3Html = (
                                                                         {timeIdx === 0
                                                                             ? '[ at '
                                                                             : ''}
-                                                                        {moment(time.timing)
-                                                                            .tz(
-                                                                                timeZoneInfo ||
+                                                                        {moment(
+                                                                            formatDateInTimeZone({
+                                                                                date: time.timing?.toString(),
+                                                                                timeZone:
+                                                                                    timeZoneInfo ||
                                                                                     'Asia/Calcutta',
-                                                                            )
-                                                                            .format('hh:mm A')}
+                                                                            }),
+                                                                        ).format('hh:mm A')}
                                                                         {` ${timeZoneInfo}`}{' '}
                                                                         {time?.custom
                                                                             ? ` - ${time?.custom}`
@@ -9727,14 +9767,16 @@ export const getInjections3Html = (
                                                                                 {timeIdx === 0
                                                                                     ? '[ at '
                                                                                     : ''}
-                                                                                {moment(time.timing)
-                                                                                    .tz(
-                                                                                        timeZoneInfo ||
-                                                                                            'Asia/Calcutta',
-                                                                                    )
-                                                                                    .format(
-                                                                                        'hh:mm A',
-                                                                                    )}
+                                                                                {moment(
+                                                                                    formatDateInTimeZone(
+                                                                                        {
+                                                                                            date: time.timing?.toString(),
+                                                                                            timeZone:
+                                                                                                timeZoneInfo ||
+                                                                                                'Asia/Calcutta',
+                                                                                        },
+                                                                                    ),
+                                                                                ).format('hh:mm A')}
                                                                                 {` ${timeZoneInfo}`}{' '}
                                                                                 {time?.custom
                                                                                     ? ` - ${time?.custom}`
@@ -10163,12 +10205,14 @@ export const getInjections4Html = (
                                                                         {timeIdx === 0
                                                                             ? '[ at '
                                                                             : ''}
-                                                                        {moment(time.timing)
-                                                                            .tz(
-                                                                                timeZoneInfo ||
+                                                                        {moment(
+                                                                            formatDateInTimeZone({
+                                                                                date: time.timing?.toString(),
+                                                                                timeZone:
+                                                                                    timeZoneInfo ||
                                                                                     'Asia/Calcutta',
-                                                                            )
-                                                                            .format('hh:mm A')}
+                                                                            }),
+                                                                        ).format('hh:mm A')}
                                                                         {` ${timeZoneInfo}`}{' '}
                                                                         {time?.custom
                                                                             ? ` - ${time?.custom}`
@@ -10383,12 +10427,16 @@ export const getInjections4Html = (
                                                                             {timeIdx === 0
                                                                                 ? '[ at '
                                                                                 : ''}
-                                                                            {moment(time.timing)
-                                                                                .tz(
-                                                                                    timeZoneInfo ||
-                                                                                        'Asia/Calcutta',
-                                                                                )
-                                                                                .format('hh:mm A')}
+                                                                            {moment(
+                                                                                formatDateInTimeZone(
+                                                                                    {
+                                                                                        date: time.timing?.toString(),
+                                                                                        timeZone:
+                                                                                            timeZoneInfo ||
+                                                                                            'Asia/Calcutta',
+                                                                                    },
+                                                                                ),
+                                                                            ).format('hh:mm A')}
                                                                             {` ${timeZoneInfo}`}{' '}
                                                                             {time?.custom
                                                                                 ? ` - ${time?.custom}`
@@ -10521,14 +10569,20 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
             {careCanvas.map(({ final_image, width, height }) => {
                 const maxWidth = width || '16cm';
                 const maxHeight = height || '16cm';
-                return <div>
-                    <div className="flex justify-center">
-                        <img
-                            src={final_image}
-                            style={{ maxWidth: maxWidth, maxHeight: maxHeight, margin: '6px auto' }}
-                        />
+                return (
+                    <div>
+                        <div className="flex justify-center">
+                            <img
+                                src={final_image}
+                                style={{
+                                    maxWidth: maxWidth,
+                                    maxHeight: maxHeight,
+                                    margin: '6px auto',
+                                }}
+                            />
+                        </div>
                     </div>
-                </div>
+                );
             })}
         </div>
     );
