@@ -1,11 +1,4 @@
-import { Moment } from 'moment';
-
-let moment: Moment;
-try {
-    moment = require('moment-timezone');
-} catch (e) {
-    moment = require('moment');
-}
+import moment from 'moment-timezone';
 
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
@@ -36,6 +29,7 @@ import {
 import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
+import { formatDateInTimeZone } from './dateutils';
 
 const Utility = {
     parseHTMLToStringForPipeSeperated: (html: string): string => {
@@ -1738,9 +1732,9 @@ export const getFooterHtml = (
                 >
                     <span>
                         PRESCRIPTION AUTHORIZED BY {(d.actor?.name || '-').toUpperCase()} ON{' '}
-                        {moment()
-                            .tz(d?.timeZone || 'Asia/Calcutta')
-                            .format('DD MMM YYYY hh:mm a') || ''}{' '}
+                        {moment(
+                            formatDateInTimeZone({ timeZone: d?.timeZone || 'Asia/Calcutta' }),
+                        ).format('DD MMM YYYY hh:mm a') || ''}{' '}
                         {timeZoneInfo}
                     </span>
                     <span>(THIS IS A COMPUTER GENERATED REPORT. SIGNATURE IS NOT REQUIRED.)</span>
@@ -6385,9 +6379,12 @@ export const getVisitDateHtml = (
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d.date || '')
-                    .tz(d?.timeZone || 'Asia/Calcutta')
-                    .format('DD/MM/YYYY') || ''}{' '}
+                {moment(
+                    formatDateInTimeZone({
+                        date: d.dateEnd || d.date || '',
+                        timeZone: d?.timeZone || 'Asia/Calcutta',
+                    }),
+                ).format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
                 {timeZoneInfo}
             </p>
         );
@@ -6404,9 +6401,12 @@ export const getVisitDateHtml = (
                     color: dateColor,
                 }}
             >
-                {moment(d.dateEnd || d.date || '')
-                    .tz(d?.timeZone || 'Asia/Calcutta')
-                    .format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
+                {moment(
+                    formatDateInTimeZone({
+                        date: d.dateEnd || d.date || '',
+                        timeZone: d?.timeZone || 'Asia/Calcutta',
+                    }),
+                ).format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
                 {timeZoneInfo}
             </p>
         );
@@ -6523,26 +6523,24 @@ export const getPatientDetailsHtml = (
     );
 };
 
-const getTimeZoneInfo = (
-    timeZone: string = 'Asia/Calcutta',
+function getTimeZoneInfo(
+    timeZone: string = 'Asia/Kolkata',
 ): {
     abbreviation: string;
-    utcOffset: string;
-} => {
-    // Get the current date
-    const date = moment();
+} {
+    const now = new Date();
 
-    // Get the abbreviation for the timezone
-    const abbreviation = date.tz(timeZone).format('z');
+    // Get abbreviation (short form, e.g., IST, PST)
+    const abbreviation =
+        new Intl.DateTimeFormat('en-US', {
+            timeZone,
+            timeZoneName: 'short',
+        })
+            .formatToParts(now)
+            .find((part) => part.type === 'timeZoneName')?.value || '';
 
-    // Get the UTC offset for the timezone
-    const utcOffset = date.tz(timeZone).format('Z');
-
-    return {
-        abbreviation: abbreviation,
-        utcOffset: utcOffset,
-    };
-};
+    return { abbreviation };
+}
 
 export const getDentalExaminationsHtml = (
     d: RenderPdfPrescription,
