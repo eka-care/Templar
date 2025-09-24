@@ -1482,12 +1482,12 @@ export const getBodyHtml = (
                         )(data, config?.render_pdf_config as TemplateConfig)}
                     </div>
                     {getProceduresHtmls(data, config, sectionNameConfig?.['procedures'])}
+                    {getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
                 </>
             )}
             {!isFollowupAndAdvicesEnabled &&
                 !isFollowupEnabled &&
                 getIpdAdmissionHtml(data, config)}
-            {getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
         </div>
     );
 };
@@ -10558,7 +10558,7 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
 export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV2, sectionName?: string) => {
     const careCanvas = Array.isArray(data.tool?.careCanvas) ? data.tool?.careCanvas : [];
     const headingColor = config?.render_pdf_config?.care_canvas_heading_color;
-    if (!careCanvas?.length) return null;
+    if (!careCanvas?.length) return;
     return (
         <div className="space-y-5">
             <p
