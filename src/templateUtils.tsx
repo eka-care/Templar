@@ -7268,7 +7268,7 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                             {moment(
                                                 formatDateInTimeZone({
                                                     date: time.timing?.toString(),
-                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                    timeZone: data.timeZone || 'Asia/Calcutta',
                                                 }),
                                             ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
@@ -7328,7 +7328,7 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                             {moment(
                                                 formatDateInTimeZone({
                                                     date: time.timing?.toString(),
-                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                    timeZone: data.timeZone || 'Asia/Calcutta',
                                                 }),
                                             ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
@@ -7390,7 +7390,7 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
                                             {moment(
                                                 formatDateInTimeZone({
                                                     date: time.timing?.toString(),
-                                                    timeZone: timeZoneInfo || 'Asia/Calcutta',
+                                                    timeZone: data.timeZone || 'Asia/Calcutta',
                                                 }),
                                             ).format('hh:mm A')}
                                             {` ${timeZoneInfo}`}{' '}
@@ -8404,7 +8404,7 @@ export const getInjections1Html = (
                                                                 formatDateInTimeZone({
                                                                     date: time.timing?.toString(),
                                                                     timeZone:
-                                                                        timeZoneInfo ||
+                                                                        d.timeZone ||
                                                                         'Asia/Calcutta',
                                                                 }),
                                                             ).format('hh:mm A')}
@@ -8551,7 +8551,7 @@ export const getInjections1Html = (
                                                                     formatDateInTimeZone({
                                                                         date: time.timing?.toString(),
                                                                         timeZone:
-                                                                            timeZoneInfo ||
+                                                                            d.timeZone ||
                                                                             'Asia/Calcutta',
                                                                     }),
                                                                 ).format('hh:mm A')}
@@ -8942,7 +8942,7 @@ export const getInjections2Html = (
                                                                 formatDateInTimeZone({
                                                                     date: time.timing?.toString(),
                                                                     timeZone:
-                                                                        timeZoneInfo ||
+                                                                        d.timeZone ||
                                                                         'Asia/Calcutta',
                                                                 }),
                                                             ).format('hh:mm A')}
@@ -9118,7 +9118,7 @@ export const getInjections2Html = (
                                                                         formatDateInTimeZone({
                                                                             date: time.timing?.toString(),
                                                                             timeZone:
-                                                                                timeZoneInfo ||
+                                                                                d.timeZone ||
                                                                                 'Asia/Calcutta',
                                                                         }),
                                                                     ).format('hh:mm A')}
@@ -9559,7 +9559,7 @@ export const getInjections3Html = (
                                                                             formatDateInTimeZone({
                                                                                 date: time.timing?.toString(),
                                                                                 timeZone:
-                                                                                    timeZoneInfo ||
+                                                                                    d.timeZone ||
                                                                                     'Asia/Calcutta',
                                                                             }),
                                                                         ).format('hh:mm A')}
@@ -9772,7 +9772,7 @@ export const getInjections3Html = (
                                                                                         {
                                                                                             date: time.timing?.toString(),
                                                                                             timeZone:
-                                                                                                timeZoneInfo ||
+                                                                                                d.timeZone ||
                                                                                                 'Asia/Calcutta',
                                                                                         },
                                                                                     ),
@@ -10209,7 +10209,7 @@ export const getInjections4Html = (
                                                                             formatDateInTimeZone({
                                                                                 date: time.timing?.toString(),
                                                                                 timeZone:
-                                                                                    timeZoneInfo ||
+                                                                                    d.timeZone ||
                                                                                     'Asia/Calcutta',
                                                                             }),
                                                                         ).format('hh:mm A')}
@@ -10432,7 +10432,7 @@ export const getInjections4Html = (
                                                                                     {
                                                                                         date: time.timing?.toString(),
                                                                                         timeZone:
-                                                                                            timeZoneInfo ||
+                                                                                            d.timeZone ||
                                                                                             'Asia/Calcutta',
                                                                                     },
                                                                                 ),
