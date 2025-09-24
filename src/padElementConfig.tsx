@@ -8,27 +8,19 @@ import {
     getDoubleColumnMedications,
     getExaminationFindingsHtml,
     getFollowupHtml,
-    getGrowthChartVitalsHtml,
-    getInjections1Html,
-    getInjections2Html,
-    getInjections3Html,
-    getInjections4Html,
-    getInjectionsHtml,
-    getInjectionsLineHtml,
+    getGrowthChartVitalsHtml, getInjectionsLineHtml,
     getInvestigativeReadingsHtml,
     getLabTestsHtml,
     getMedications1Html,
     getNotesHtml,
     getOphthalmologyHtml,
-    getPmhHtml,
-    getProceduresHtml,
-    getProceduresHtmls,
+    getPmhHtml, getProceduresHtmls,
     getReferredToHtml,
     getSymptomsHtml,
     getVitalsHtml,
     injectionsFormatToTableMapping,
     isDoubleColumnElementVisible,
-    medicationFormatToTableMapping,
+    medicationFormatToTableMapping
 } from './templateUtils';
 
 export const padElements = (
@@ -154,7 +146,7 @@ export const padElements = (
         case 'opAutoRefraction':
             return getOphthalmologyHtml(data, 'opAutoRefraction', config);
         case 'procedures':
-            return getProceduresHtmls(data, config);
+            return getProceduresHtmls(data, config, sectionNameConfig?.['procedures']);
         default:
             return;
     }

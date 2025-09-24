@@ -1477,7 +1477,7 @@ export const getBodyHtml = (
                             ] || (() => getInjectionsLineHtml(data))
                         )(data, config?.render_pdf_config as TemplateConfig)}
                     </div>
-                    {getProceduresHtmls(data, config)}
+                    {getProceduresHtmls(data, config, sectionNameConfig?.['procedures'])}
                 </>
             )}
             {!isFollowupAndAdvicesEnabled &&
@@ -7460,6 +7460,7 @@ export const getProceduresHtml = (d: RenderPdfPrescription): JSX.Element | undef
 export const getProceduresHtmls = (
     d: RenderPdfPrescription,
     config: TemplateV2,
+    sectionName?: string,
 ): JSX.Element | undefined => {
     const procedures = d.tool?.procedures;
     const isBullets = config?.render_pdf_config?.bullets_config?.['procedures'];
@@ -7480,7 +7481,7 @@ export const getProceduresHtmls = (
                 style={{ color: headingColor }}
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
             >
-                PROCEDURES :
+                {sectionName || "PROCEDURES"} :
             </span>
 
             {isBullets ? (
