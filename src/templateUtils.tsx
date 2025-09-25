@@ -1482,12 +1482,12 @@ export const getBodyHtml = (
                         )(data, config?.render_pdf_config as TemplateConfig)}
                     </div>
                     {getProceduresHtmls(data, config, sectionNameConfig?.['procedures'])}
+                    {getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
                 </>
             )}
             {!isFollowupAndAdvicesEnabled &&
                 !isFollowupEnabled &&
                 getIpdAdmissionHtml(data, config)}
-            {getCareCanvasHtml(data, config)}
         </div>
     );
 };
@@ -10555,17 +10555,17 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
     );
 };
 
-export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV2) => {
+export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV2, sectionName?: string) => {
     const careCanvas = Array.isArray(data.tool?.careCanvas) ? data.tool?.careCanvas : [];
     const headingColor = config?.render_pdf_config?.care_canvas_heading_color;
-    if (!careCanvas?.length) return null;
+    if (!careCanvas?.length) return;
     return (
         <div className="space-y-5">
             <p
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
                 style={{ color: headingColor }}
             >
-                Canvas :
+                {sectionName || "Canvas"} :
             </p>
             {careCanvas.map(({ final_image, width, height }) => {
                 const maxWidth = width || '16cm';
