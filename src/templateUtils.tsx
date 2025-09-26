@@ -6386,7 +6386,7 @@ export const getVisitDateHtml = (
                         date: d.dateEnd || d.date || '',
                         timeZone: d?.timeZone || 'Asia/Calcutta',
                     }),
-                ).format('dddd, MMMM D, YYYY h:mm A') || ''}{' '}
+                ).format('DD/MM/YYYY') || ''}{' '}
                 {timeZoneInfo}
             </p>
         );
