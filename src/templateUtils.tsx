@@ -1324,6 +1324,7 @@ export const getBodyHtml = (
     const isFollowupAndAdvicesEnabled = filteredPadConfig?.find((i) => i.id === 'followup-advices')
         ?.isShown;
     const isFollowupEnabled = filteredPadConfig?.find((i) => i.id === 'followup')?.isShown;
+    const isCareCanvasNotPresentInPadConfig = padConfig && padConfig.findIndex((i) => i.id === 'careCanvas') === -1;
 
     return (
         <div className="space-y-2 text-11 prescription-template" id="body-click">
@@ -1488,6 +1489,7 @@ export const getBodyHtml = (
             {!isFollowupAndAdvicesEnabled &&
                 !isFollowupEnabled &&
                 getIpdAdmissionHtml(data, config)}
+            {isCareCanvasNotPresentInPadConfig && getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
         </div>
     );
 };
