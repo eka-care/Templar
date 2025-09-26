@@ -2,7 +2,6 @@ import { SectionNameConfig } from './types';
 import { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
 import {
     getAdvicesHtml,
-    getCareCanvasHtml,
     getDentalExaminationsHtml,
     getDentalProceduresHtml,
     getDiagnosisHtml,
@@ -148,8 +147,6 @@ export const padElements = (
             return getOphthalmologyHtml(data, 'opAutoRefraction', config);
         case 'procedures':
             return getProceduresHtmls(data, config, sectionNameConfig?.['procedures']);
-        case 'careCanvas':
-            return getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas']);
         default:
             return;
     }
