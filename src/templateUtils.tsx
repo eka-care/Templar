@@ -6217,7 +6217,7 @@ export const getGrowthChartVitalsHtml = (
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
                 style={{ color: headingColor }}
             >
-                GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FANTON]' : `[WHO/IAP]`} :
+                GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FENTON]' : `[WHO/IAP]`} :
             </span>
 
             <ul className="ml-36">
