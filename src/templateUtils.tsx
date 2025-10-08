@@ -1324,7 +1324,8 @@ export const getBodyHtml = (
     const isFollowupAndAdvicesEnabled = filteredPadConfig?.find((i) => i.id === 'followup-advices')
         ?.isShown;
     const isFollowupEnabled = filteredPadConfig?.find((i) => i.id === 'followup')?.isShown;
-    const isCareCanvasNotPresentInPadConfig = padConfig && padConfig.findIndex((i) => i.id === 'careCanvas') === -1;
+    const isCareCanvasNotPresentInPadConfig =
+        padConfig && padConfig.findIndex((i) => i.id === 'careCanvas') === -1;
 
     return (
         <div className="space-y-2 text-11 prescription-template" id="body-click">
@@ -1489,7 +1490,8 @@ export const getBodyHtml = (
             {!isFollowupAndAdvicesEnabled &&
                 !isFollowupEnabled &&
                 getIpdAdmissionHtml(data, config)}
-            {isCareCanvasNotPresentInPadConfig && getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
+            {isCareCanvasNotPresentInPadConfig &&
+                getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
         </div>
     );
 };
@@ -7513,7 +7515,7 @@ export const getProceduresHtmls = (
                 style={{ color: headingColor }}
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
             >
-                {sectionName || "PROCEDURES"} :
+                {sectionName || 'PROCEDURES'} :
             </span>
 
             {isBullets ? (
@@ -8454,11 +8456,95 @@ export const getInjections1Html = (
                                         <td
                                             style={{ borderColor, width: `4%` }}
                                             className="bold p-4 border medication-table-border-color text-center"
-                                        ></td>
+                                        >
+                                            {inj?.taperingDoseTitleDisplay
+                                                ? `${taperIndex}+ 1` + 'T'
+                                                : ''}
+                                        </td>
                                         <td
                                             style={{ borderColor, width: `${medicationWidth}%` }}
                                             className="p-4 border medication-table-border-color"
-                                        ></td>
+                                        >
+                                            {inj?.taperingDoseTitleDisplay ? (
+                                                ''
+                                            ) : render_pdf_config?.make_generic_name_as_primary ? (
+                                                <>
+                                                    <span
+                                                        className={`bold ${
+                                                            render_pdf_config?.injections_name_in_capital
+                                                                ? 'uppercase'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {inj?.generic_name
+                                                            ? `${inj?.generic_name} `
+                                                            : ''}
+                                                    </span>
+                                                    <br />
+                                                    <span>{inj?.name}</span>
+                                                    {inj?.added_drug?.map((drug) => (
+                                                        <>
+                                                            {' + '}
+
+                                                            <br />
+                                                            <span
+                                                                className={`bold ${
+                                                                    render_pdf_config?.injections_name_in_capital
+                                                                        ? 'uppercase'
+                                                                        : ''
+                                                                }`}
+                                                            >
+                                                                {drug.generic_name
+                                                                    ? ` (${drug.generic_name})`
+                                                                    : null}
+                                                            </span>
+                                                            <br />
+                                                            <span>
+                                                                {drug.name ? ` ${drug.name}` : null}
+                                                            </span>
+                                                        </>
+                                                    ))}{' '}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span
+                                                        className={`bold ${
+                                                            render_pdf_config?.injections_name_in_capital
+                                                                ? 'uppercase'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {inj?.name}{' '}
+                                                    </span>
+                                                    <br />
+                                                    <span>
+                                                        {inj?.generic_name
+                                                            ? `${inj?.generic_name} `
+                                                            : ''}
+                                                    </span>
+
+                                                    {inj?.added_drug?.map((drug) => (
+                                                        <>
+                                                            {' + '}
+                                                            <br />
+                                                            <span
+                                                                className={`bold ${
+                                                                    render_pdf_config?.injections_name_in_capital
+                                                                        ? 'uppercase'
+                                                                        : ''
+                                                                }`}
+                                                            >
+                                                                {drug.name ? ` ${drug.name}` : null}
+                                                            </span>
+                                                            <br />
+                                                            {drug.generic_name
+                                                                ? ` (${drug.generic_name})`
+                                                                : null}
+                                                        </>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </td>
                                         {showColumns['dose'] && (
                                             <td
                                                 style={{
@@ -9014,14 +9100,102 @@ export const getInjections2Html = (
                                             <td
                                                 style={{ borderColor, width: `4%` }}
                                                 className="bold p-4 border medication-table-border-color text-center"
-                                            ></td>
+                                            >
+                                                {inj?.taperingDoseTitleDisplay
+                                                    ? `${taperIndex}+ 1` + 'T'
+                                                    : ''}
+                                            </td>
                                             <td
                                                 style={{
                                                     borderColor,
                                                     width: `${medicationWidth}%`,
                                                 }}
                                                 className="p-4 border medication-table-border-color"
-                                            ></td>
+                                            >
+                                                {inj?.taperingDoseTitleDisplay ? (
+                                                    ''
+                                                ) : render_pdf_config?.make_generic_name_as_primary ? (
+                                                    <>
+                                                        <span
+                                                            className={`bold ${
+                                                                render_pdf_config?.injections_name_in_capital
+                                                                    ? 'uppercase'
+                                                                    : ''
+                                                            }`}
+                                                        >
+                                                            {inj?.generic_name
+                                                                ? `${inj?.generic_name} `
+                                                                : ''}
+                                                        </span>
+                                                        <br />
+                                                        <span>{inj?.name}</span>
+                                                        {inj?.added_drug?.map((drug) => (
+                                                            <>
+                                                                {' + '}
+
+                                                                <br />
+                                                                <span
+                                                                    className={`bold ${
+                                                                        render_pdf_config?.injections_name_in_capital
+                                                                            ? 'uppercase'
+                                                                            : ''
+                                                                    }`}
+                                                                >
+                                                                    {drug.generic_name
+                                                                        ? ` (${drug.generic_name})`
+                                                                        : null}
+                                                                </span>
+                                                                <br />
+                                                                <span>
+                                                                    {drug.name
+                                                                        ? ` ${drug.name}`
+                                                                        : null}
+                                                                </span>
+                                                            </>
+                                                        ))}{' '}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span
+                                                            className={`bold ${
+                                                                render_pdf_config?.injections_name_in_capital
+                                                                    ? 'uppercase'
+                                                                    : ''
+                                                            }`}
+                                                        >
+                                                            {inj?.name}{' '}
+                                                        </span>
+                                                        <br />
+                                                        <span>
+                                                            {inj?.generic_name
+                                                                ? `${inj?.generic_name} `
+                                                                : ''}
+                                                        </span>
+
+                                                        {inj?.added_drug?.map((drug) => (
+                                                            <>
+                                                                {' + '}
+                                                                <br />
+                                                                <span
+                                                                    className={`bold ${
+                                                                        render_pdf_config?.injections_name_in_capital
+                                                                            ? 'uppercase'
+                                                                            : ''
+                                                                    }`}
+                                                                >
+                                                                    {drug.name
+                                                                        ? ` ${drug.name}`
+                                                                        : null}
+                                                                </span>
+                                                                <br />
+                                                                {drug.generic_name
+                                                                    ? ` (${drug.generic_name})`
+                                                                    : null}
+                                                            </>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            </td>
                                             {showColumns['dose'] && (
                                                 <td
                                                     style={{
@@ -9635,9 +9809,95 @@ export const getInjections3Html = (
                                             }`}
                                         >
                                             <td style={{ width: `4%` }} className="p-4 text-center">
-                                                {''}
+                                                {inj?.taperingDoseTitleDisplay
+                                                    ? `${TaperIndex}+ 1` + 'T'
+                                                    : ''}
                                             </td>
-                                            <td style={{ width: `${medicationWidth}%` }}>{''}</td>
+                                            <td style={{ width: `${medicationWidth}%` }}>
+                                                {inj?.taperingDoseTitleDisplay ? (
+                                                    ''
+                                                ) : render_pdf_config?.make_generic_name_as_primary ? (
+                                                    <>
+                                                        <span
+                                                            className={`bold ${
+                                                                render_pdf_config?.injections_name_in_capital
+                                                                    ? 'uppercase'
+                                                                    : ''
+                                                            }`}
+                                                        >
+                                                            {inj?.generic_name
+                                                                ? `${inj?.generic_name} `
+                                                                : ''}
+                                                        </span>
+                                                        <br />
+                                                        <span>{inj?.name}</span>
+                                                        {inj?.added_drug?.map((drug) => (
+                                                            <>
+                                                                {' + '}
+
+                                                                <br />
+                                                                <span
+                                                                    className={`bold ${
+                                                                        render_pdf_config?.injections_name_in_capital
+                                                                            ? 'uppercase'
+                                                                            : ''
+                                                                    }`}
+                                                                >
+                                                                    {drug.generic_name
+                                                                        ? ` (${drug.generic_name})`
+                                                                        : null}
+                                                                </span>
+                                                                <br />
+                                                                <span>
+                                                                    {drug.name
+                                                                        ? ` ${drug.name}`
+                                                                        : null}
+                                                                </span>
+                                                            </>
+                                                        ))}{' '}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span
+                                                            className={`bold ${
+                                                                render_pdf_config?.injections_name_in_capital
+                                                                    ? 'uppercase'
+                                                                    : ''
+                                                            }`}
+                                                        >
+                                                            {inj?.name}{' '}
+                                                        </span>
+                                                        <br />
+                                                        <span>
+                                                            {inj?.generic_name
+                                                                ? `${inj?.generic_name} `
+                                                                : ''}
+                                                        </span>
+
+                                                        {inj?.added_drug?.map((drug) => (
+                                                            <>
+                                                                {' + '}
+                                                                <br />
+                                                                <span
+                                                                    className={`bold ${
+                                                                        render_pdf_config?.injections_name_in_capital
+                                                                            ? 'uppercase'
+                                                                            : ''
+                                                                    }`}
+                                                                >
+                                                                    {drug.name
+                                                                        ? ` ${drug.name}`
+                                                                        : null}
+                                                                </span>
+                                                                <br />
+                                                                {drug.generic_name
+                                                                    ? ` (${drug.generic_name})`
+                                                                    : null}
+                                                            </>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            </td>
 
                                             {Object.keys(injOptions3.injIdToNameMapping)
                                                 .map((key) => {
@@ -10290,13 +10550,93 @@ export const getInjections4Html = (
                                             style={{ width: `4%` }}
                                             className="bold p-4 text-center"
                                         >
-                                            {''}
+                                            {inj?.taperingDoseTitleDisplay
+                                                ? `${taperIndex}+ 1` + 'T'
+                                                : ''}
                                         </td>
                                         <td
                                             style={{ width: `${medicationWidth}%` }}
                                             className="p-4"
                                         >
-                                            {''}
+                                            {inj?.taperingDoseTitleDisplay ? (
+                                                ''
+                                            ) : render_pdf_config?.make_generic_name_as_primary ? (
+                                                <>
+                                                    <span
+                                                        className={`bold ${
+                                                            render_pdf_config?.injections_name_in_capital
+                                                                ? 'uppercase'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {inj?.generic_name
+                                                            ? `${inj?.generic_name} `
+                                                            : ''}
+                                                    </span>
+                                                    <br />
+                                                    <span>{inj?.name}</span>
+                                                    {inj?.added_drug?.map((drug) => (
+                                                        <>
+                                                            {' + '}
+
+                                                            <br />
+                                                            <span
+                                                                className={`bold ${
+                                                                    render_pdf_config?.injections_name_in_capital
+                                                                        ? 'uppercase'
+                                                                        : ''
+                                                                }`}
+                                                            >
+                                                                {drug.generic_name
+                                                                    ? ` (${drug.generic_name})`
+                                                                    : null}
+                                                            </span>
+                                                            <br />
+                                                            <span>
+                                                                {drug.name ? ` ${drug.name}` : null}
+                                                            </span>
+                                                        </>
+                                                    ))}{' '}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span
+                                                        className={`bold ${
+                                                            render_pdf_config?.injections_name_in_capital
+                                                                ? 'uppercase'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {inj?.name}{' '}
+                                                    </span>
+                                                    <br />
+                                                    <span>
+                                                        {inj?.generic_name
+                                                            ? `${inj?.generic_name} `
+                                                            : ''}
+                                                    </span>
+
+                                                    {inj?.added_drug?.map((drug) => (
+                                                        <>
+                                                            {' + '}
+                                                            <br />
+                                                            <span
+                                                                className={`bold ${
+                                                                    render_pdf_config?.injections_name_in_capital
+                                                                        ? 'uppercase'
+                                                                        : ''
+                                                                }`}
+                                                            >
+                                                                {drug.name ? ` ${drug.name}` : null}
+                                                            </span>
+                                                            <br />
+                                                            {drug.generic_name
+                                                                ? ` (${drug.generic_name})`
+                                                                : null}
+                                                        </>
+                                                    ))}
+                                                </>
+                                            )}
                                         </td>
 
                                         {Object.keys(injOptions4.injIdToNameMapping)
@@ -10557,7 +10897,11 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
     );
 };
 
-export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV2, sectionName?: string) => {
+export const getCareCanvasHtml = (
+    data: RenderPdfPrescription,
+    config: TemplateV2,
+    sectionName?: string,
+) => {
     const careCanvas = Array.isArray(data.tool?.careCanvas) ? data.tool?.careCanvas : [];
     const headingColor = config?.render_pdf_config?.care_canvas_heading_color;
     if (!careCanvas?.length) return;
@@ -10567,7 +10911,7 @@ export const getCareCanvasHtml = (data: RenderPdfPrescription, config: TemplateV
                 className="uppercase text-darwin-accent-symptoms-blue-800 bold"
                 style={{ color: headingColor }}
             >
-                {sectionName || "Canvas"} :
+                {sectionName || 'Canvas'} :
             </p>
             {careCanvas.map(({ final_image, width, height }) => {
                 const maxWidth = width || '16cm';
