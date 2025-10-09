@@ -4871,7 +4871,7 @@ export const getAdvicesHtml = (
                                         color: propertiesColor,
                                     }}
                                     dangerouslySetInnerHTML={{
-                                        __html: advice?.text || advice?.parsedText || '',
+                                        __html: advice?.parsedText || advice?.text || '',
                                     }}
                                 />
                                 <div className="font-700">
@@ -4907,7 +4907,7 @@ export const getAdvicesHtml = (
                                     language === 'mr' || language === 'hi' ? 'text-13' : ''
                                 }`}
                                 dangerouslySetInnerHTML={{
-                                    __html: advice?.text || advice?.parsedText || '',
+                                    __html: advice?.parsedText || advice?.text || '',
                                 }}
                                 style={{
                                     color: propertiesColor,
