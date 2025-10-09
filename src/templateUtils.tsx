@@ -962,13 +962,20 @@ export const getHeaderHtml = (
                             </p>
                         </div>
                     </div>
-                    {render_pdf_config?.floating_patient_details &&
-                        config &&
-                        d &&
-                        getRepitivePtDetails(d, config, ptFormFields)}
-                    {rxLocalConfig?.header_border && (
-                        <div className="border-b border-darwin-neutral-500"></div>
-                    )}
+                    <div
+                        style={{
+                            marginLeft: render_pdf_config?.header_left_margin,
+                            marginRight: render_pdf_config?.header_right_margin,
+                        }}
+                    >
+                        {render_pdf_config?.floating_patient_details &&
+                            config &&
+                            d &&
+                            getRepitivePtDetails(d, config, ptFormFields)}
+                        {rxLocalConfig?.header_border && (
+                            <div className="border-b border-darwin-neutral-500"></div>
+                        )}
+                    </div>
                 </div>
             ) : (
                 <div style={{ height: render_pdf_config?.header_height || 'auto' }}>
@@ -1012,13 +1019,20 @@ export const getHeaderHtml = (
                             </p>
                         </div>
                     </div>
-                    {render_pdf_config?.floating_patient_details &&
-                        config &&
-                        d &&
-                        getRepitivePtDetails(d, config, ptFormFields)}
-                    {rxLocalConfig?.header_border && (
-                        <div className="border-b border-darwin-neutral-500"></div>
-                    )}
+                    <div
+                        style={{
+                            marginLeft: render_pdf_config?.header_left_margin,
+                            marginRight: render_pdf_config?.header_right_margin,
+                        }}
+                    >
+                        {render_pdf_config?.floating_patient_details &&
+                            config &&
+                            d &&
+                            getRepitivePtDetails(d, config, ptFormFields)}
+                        {rxLocalConfig?.header_border && (
+                            <div className="border-b border-darwin-neutral-500"></div>
+                        )}
+                    </div>
                 </div>
             )}
         </>
@@ -1190,14 +1204,7 @@ export const getRepitivePtDetails = (
                     </div>
                 </div>
                 {/* if ther details are reqd not just name and primay dets reloadd */}
-                <div
-                    style={{
-                        // fontSize: '0.68rem',
-                        marginLeft: config?.render_pdf_config?.header_left_margin,
-                        marginRight: config?.render_pdf_config?.header_right_margin,
-                    }}
-                    className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
-                >
+                <div className="flex flex-col space-x-4 justify-between header-bottom-border text-11">
                     {getFormDataHtml(d, config, ptFormFields, true)}
                     {config?.render_pdf_config?.patient_form_below_border ? (
                         <div
@@ -1257,14 +1264,7 @@ export const getRepitivePtDetails = (
                     {getVisitDateHtml(d, config)}
                 </div>
             </div>
-            <div
-                style={{
-                    // fontSize: '0.68rem',
-                    marginLeft: config?.render_pdf_config?.header_left_margin,
-                    marginRight: config?.render_pdf_config?.header_right_margin,
-                }}
-                className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
-            >
+            <div className="flex flex-col space-x-4 justify-between header-bottom-border text-11">
                 {getFormDataHtml(d, config, ptFormFields, true)}
                 {config?.render_pdf_config?.patient_form_below_border ? (
                     <div
