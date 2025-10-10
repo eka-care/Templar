@@ -385,6 +385,7 @@ export interface InjectionsEntity {
     tapering_dose?: InjectionsEntity[];
     added_drug?: InjectionsEntity[];
     actual_name?: string;
+    taperingDoseTitleDisplay?: boolean;
 }
 
 export interface Surface {
