@@ -671,22 +671,29 @@ export const getCustomHeaderHtml = (
         <>
             {render_pdf_config?.header_img === 'no-header' &&
             render_pdf_config?.floating_patient_details ? (
-                <div
-                    style={{
-                        display: 'flex !important',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-end !important',
-                        marginTop: render_pdf_config?.header_top_margin,
-                        // marginBottom: render_pdf_config?.header_bottom_margin,
-                        marginLeft: render_pdf_config?.header_left_margin,
-                        marginRight: render_pdf_config?.header_right_margin,
-                        border: rxLocalConfig?.header_border && header_img ? '1px solid black' : '',
-                        height: render_pdf_config?.header_height || 'auto',
-                    }}
-                >
-                    {rxLocalConfig?.header_border && (
-                        <div className="border-b border-darwin-neutral-500"></div>
-                    )}
+                <>
+                    <div
+                        style={{
+                            display: 'flex !important',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end !important',
+                            marginTop: render_pdf_config?.header_top_margin,
+                            // marginBottom: render_pdf_config?.header_bottom_margin,
+                            marginLeft: render_pdf_config?.header_left_margin,
+                            marginRight: render_pdf_config?.header_right_margin,
+                            border:
+                                rxLocalConfig?.header_border && header_img ? '1px solid black' : '',
+                            height: render_pdf_config?.header_height || 'auto',
+                        }}
+                    >
+                        {rxLocalConfig?.header_border && (
+                            <div className="border-b border-darwin-neutral-500"></div>
+                        )}
+
+                        {rxLocalConfig?.header_border && (
+                            <div className="border-b border-darwin-neutral-500"></div>
+                        )}
+                    </div>
                     <div id={HEADER_CONTAINER}>
                         <div>
                             {render_pdf_config?.floating_patient_details &&
@@ -695,11 +702,7 @@ export const getCustomHeaderHtml = (
                                 getRepitivePtDetails(d, config, ptFormFields)}
                         </div>
                     </div>
-
-                    {rxLocalConfig?.header_border && (
-                        <div className="border-b border-darwin-neutral-500"></div>
-                    )}
-                </div>
+                </>
             ) : (
                 <>
                     {rxLocalConfig?.header_border && (
@@ -719,24 +722,24 @@ export const getCustomHeaderHtml = (
                         id={HEADER_CONTAINER}
                     >
                         {header_img && <img src={header_img} width={'100%'} />}
-                        <div
-                            style={
-                                {
-                                    // marginLeft: `-${render_pdf_config?.margin_left}`,
-                                    // marginRight: `-${render_pdf_config?.margin_right}`,
-                                }
-                            }
-                        >
-                            {render_pdf_config?.floating_patient_details &&
-                                config &&
-                                d &&
-                                getRepitivePtDetails(d, config, ptFormFields)}
-                        </div>
                     </div>
 
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
+                    <div
+                        style={
+                            {
+                                // marginLeft: `-${render_pdf_config?.margin_left}`,
+                                // marginRight: `-${render_pdf_config?.margin_right}`,
+                            }
+                        }
+                    >
+                        {render_pdf_config?.floating_patient_details &&
+                            config &&
+                            d &&
+                            getRepitivePtDetails(d, config, ptFormFields)}
+                    </div>
                 </>
             )}
         </>
@@ -963,10 +966,10 @@ export const getHeaderHtml = (
                         </div>
                     </div>
                     <div
-                        style={{
-                            marginLeft: render_pdf_config?.header_left_margin,
-                            marginRight: render_pdf_config?.header_right_margin,
-                        }}
+                    // style={{
+                    //     marginLeft: render_pdf_config?.header_left_margin,
+                    //     marginRight: render_pdf_config?.header_right_margin,
+                    // }}
                     >
                         {render_pdf_config?.floating_patient_details &&
                             config &&
@@ -1020,10 +1023,10 @@ export const getHeaderHtml = (
                         </div>
                     </div>
                     <div
-                        style={{
-                            marginLeft: render_pdf_config?.header_left_margin,
-                            marginRight: render_pdf_config?.header_right_margin,
-                        }}
+                    // style={{
+                    //     marginLeft: render_pdf_config?.header_left_margin,
+                    //     marginRight: render_pdf_config?.header_right_margin,
+                    // }}
                     >
                         {render_pdf_config?.floating_patient_details &&
                             config &&
