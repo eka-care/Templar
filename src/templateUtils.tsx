@@ -683,7 +683,6 @@ export const getCustomHeaderHtml = (
                             marginRight: render_pdf_config?.header_right_margin,
                             border:
                                 rxLocalConfig?.header_border && header_img ? '1px solid black' : '',
-                            height: render_pdf_config?.header_height || 'auto',
                         }}
                     >
                         {rxLocalConfig?.header_border && (
