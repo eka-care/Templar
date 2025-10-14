@@ -671,7 +671,12 @@ export const getCustomHeaderHtml = (
         <>
             {render_pdf_config?.header_img === 'no-header' &&
             render_pdf_config?.floating_patient_details ? (
-                <div style={{ height: render_pdf_config?.header_height || 'auto' }}>
+                <div
+                    style={{
+                        height: render_pdf_config?.header_height || 'auto',
+                        borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
+                    }}
+                >
                     <div
                         style={{
                             display: 'flex !important',
@@ -688,10 +693,6 @@ export const getCustomHeaderHtml = (
                         {rxLocalConfig?.header_border && (
                             <div className="border-b border-darwin-neutral-500"></div>
                         )}
-
-                        {rxLocalConfig?.header_border && (
-                            <div className="border-b border-darwin-neutral-500"></div>
-                        )}
                     </div>
                     <div id={HEADER_CONTAINER}>
                         <div>
@@ -703,7 +704,12 @@ export const getCustomHeaderHtml = (
                     </div>
                 </div>
             ) : (
-                <div style={{ height: render_pdf_config?.header_height || 'auto' }}>
+                <div
+                    style={{
+                        height: render_pdf_config?.header_height || 'auto',
+                        borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
+                    }}
+                >
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -715,7 +721,6 @@ export const getCustomHeaderHtml = (
                             marginRight: render_pdf_config?.header_right_margin,
                             border:
                                 rxLocalConfig?.header_border && header_img ? '1px solid black' : '',
-                            // height: render_pdf_config?.header_height || 'auto',
                             // backgroundColor: 'black',
                         }}
                         id={HEADER_CONTAINER}
@@ -723,22 +728,10 @@ export const getCustomHeaderHtml = (
                         {header_img && <img src={header_img} width={'100%'} />}
                     </div>
 
-                    {rxLocalConfig?.header_border && (
-                        <div className="border-b border-darwin-neutral-500"></div>
-                    )}
-                    <div
-                        style={
-                            {
-                                // marginLeft: `-${render_pdf_config?.margin_left}`,
-                                // marginRight: `-${render_pdf_config?.margin_right}`,
-                            }
-                        }
-                    >
-                        {render_pdf_config?.floating_patient_details &&
-                            config &&
-                            d &&
-                            getRepitivePtDetails(d, config, ptFormFields)}
-                    </div>
+                    {render_pdf_config?.floating_patient_details &&
+                        config &&
+                        d &&
+                        getRepitivePtDetails(d, config, ptFormFields)}
                 </div>
             )}
         </>
@@ -964,23 +957,21 @@ export const getHeaderHtml = (
                             </p>
                         </div>
                     </div>
-                    <div
-                    // style={{
-                    //     marginLeft: render_pdf_config?.header_left_margin,
-                    //     marginRight: render_pdf_config?.header_right_margin,
-                    // }}
-                    >
-                        {render_pdf_config?.floating_patient_details &&
-                            config &&
-                            d &&
-                            getRepitivePtDetails(d, config, ptFormFields)}
-                        {rxLocalConfig?.header_border && (
-                            <div className="border-b border-darwin-neutral-500"></div>
-                        )}
-                    </div>
+                    {render_pdf_config?.floating_patient_details &&
+                        config &&
+                        d &&
+                        getRepitivePtDetails(d, config, ptFormFields)}
+                    {rxLocalConfig?.header_border && (
+                        <div className="border-b border-darwin-neutral-500"></div>
+                    )}
                 </div>
             ) : (
-                <div style={{ height: render_pdf_config?.header_height || 'auto' }}>
+                <div
+                    style={{
+                        height: render_pdf_config?.header_height || 'auto',
+                        borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
+                    }}
+                >
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -1021,20 +1012,10 @@ export const getHeaderHtml = (
                             </p>
                         </div>
                     </div>
-                    <div
-                    // style={{
-                    //     marginLeft: render_pdf_config?.header_left_margin,
-                    //     marginRight: render_pdf_config?.header_right_margin,
-                    // }}
-                    >
-                        {render_pdf_config?.floating_patient_details &&
-                            config &&
-                            d &&
-                            getRepitivePtDetails(d, config, ptFormFields)}
-                        {rxLocalConfig?.header_border && (
-                            <div className="border-b border-darwin-neutral-500"></div>
-                        )}
-                    </div>
+                    {render_pdf_config?.floating_patient_details &&
+                        config &&
+                        d &&
+                        getRepitivePtDetails(d, config, ptFormFields)}
                 </div>
             )}
         </>
