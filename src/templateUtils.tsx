@@ -834,10 +834,21 @@ export const getCustomFooterHtml = (
 
                             <div className="flex items-end flex-col">
                                 {show_signature && (
-                                    <img
-                                        src={docProfile?.profile?.professional?.signature}
-                                        className="max-w-92 h-60 object-fit-contain"
+                                    <div
+                                        style={{
+                                            width: '100%',
+                                            maxWidth: '5.75rem', // max-w-92
+                                            height: '3.75rem', // h-60
+                                            backgroundImage: `url(${docProfile?.profile?.professional?.signature})`,
+                                            backgroundSize: 'contain',
+                                            backgroundPosition: 'center',
+                                            backgroundRepeat: 'no-repeat',
+                                        }}
                                     />
+                                    // <img
+                                    //     src={docProfile?.profile?.professional?.signature}
+                                    //     className="max-w-92 h-60 object-fit-contain"
+                                    // />
                                 )}
                                 {show_name_in_signature && (
                                     <p
