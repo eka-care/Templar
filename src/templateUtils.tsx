@@ -838,7 +838,7 @@ export const getCustomFooterHtml = (
                                         style={{
                                             width: '100%',
                                             maxWidth: '5.75rem', // same as max-w-92
-                                            height: '3.8rem', // same as h-60
+                                            height: '3.75rem', // same as h-60
                                             position: 'relative',
                                             overflow: 'hidden',
                                             paddingBottom: '2px',
