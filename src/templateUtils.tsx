@@ -677,7 +677,8 @@ export const getCustomHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
-                {console.log("inside custom header with image : ", render_pdf_config?.header_img)}
+                {console.log("inside custom header with image 1 : ", render_pdf_config?.header_img)}
+                {console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",config, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)}
                     <div
                         style={{
                             display: 'flex !important',
@@ -711,7 +712,8 @@ export const getCustomHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
-                {console.log("inside custom header with image : ", render_pdf_config?.header_img)}
+                {console.log("inside custom header with image 2 : ", render_pdf_config?.header_img)}
+                {console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",config, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -951,7 +953,8 @@ export const getHeaderHtml = (
                         height: render_pdf_config?.header_height || 'auto',
                     }}
                 >
-                {console.log("inside header with image : ", render_pdf_config?.header_img)}
+                {console.log("inside header with image 3 : ", render_pdf_config?.header_img)}
+                {console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",config, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -1000,7 +1003,8 @@ export const getHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
-                    {console.log("inside header with image : ", render_pdf_config?.header_img)}
+                    {console.log("inside header with image 4 : ", render_pdf_config?.header_img)}
+                    {console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",config, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
