@@ -1720,10 +1720,35 @@ export const getFooterHtml = (
                 )}
 
                 <div className="flex items-end flex-col">
-                    <img
-                        src={docProfile?.profile?.professional?.signature}
-                        className="max-w-92 h-60 object-fit-contain"
-                    />
+                    <div
+                        style={{
+                            width: '100%',
+                            maxWidth: '5.75rem', // same as max-w-92
+                            height: '3.75rem', // same as h-60
+                            position: 'relative',
+                            overflow: 'hidden',
+                            paddingBottom: '2px',
+                            boxSizing: 'border-box',
+                        }}
+                    >
+                        <img
+                            src={docProfile?.profile?.professional?.signature}
+                            alt="Doctor Signature"
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                margin: 'auto',
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                width: 'auto',
+                                height: 'auto',
+                                display: 'block',
+                            }}
+                        />
+                    </div>
                     <p
                         className="bold"
                         style={{
