@@ -931,7 +931,6 @@ export const getHeaderHtml = (
     const clinic =
         docProfile?.profile?.professional?.clinics?.find((clinic) => clinic._id === activeClinic) ||
         docProfile?.profile?.professional?.clinics?.[0];
-
     return (
         <>
             {render_pdf_config?.header_img === 'no-header' &&
@@ -10976,6 +10975,8 @@ export const getHeader = (
     data?: RenderPdfPrescription,
     rxConfig?: TemplateV2,
 ): JSX.Element => {
+    if(render_pdf_config === undefined)
+        render_pdf_config= rxConfig[0];
     console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",rxConfig, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)
     if (render_pdf_config?.header_img) {
         return getCustomHeaderHtml(
