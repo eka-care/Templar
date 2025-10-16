@@ -677,6 +677,7 @@ export const getCustomHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
+                {console.log("inside custom header with image : ", render_pdf_config?.header_img)}
                     <div
                         style={{
                             display: 'flex !important',
@@ -710,6 +711,7 @@ export const getCustomHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
+                {console.log("inside custom header with image : ", render_pdf_config?.header_img)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -949,6 +951,7 @@ export const getHeaderHtml = (
                         height: render_pdf_config?.header_height || 'auto',
                     }}
                 >
+                {console.log("inside header with image : ", render_pdf_config?.header_img)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -997,6 +1000,7 @@ export const getHeaderHtml = (
                         borderBottom: rxLocalConfig?.header_border ? '1px solid black' : '',
                     }}
                 >
+                    {console.log("inside header with image : ", render_pdf_config?.header_img)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -10968,6 +10972,7 @@ export const getHeader = (
     data?: RenderPdfPrescription,
     rxConfig?: TemplateV2,
 ): JSX.Element => {
+    console.log("vishesh ... inside getHeader with config : ", "rxConfig : ",rxConfig, "rxLocalConfig: ", rxLocalConfig, 'renderpdfConfig : ', render_pdf_config)
     if (render_pdf_config?.header_img) {
         return getCustomHeaderHtml(
             render_pdf_config,
