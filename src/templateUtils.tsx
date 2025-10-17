@@ -119,6 +119,24 @@ export const getHeadHtml = (
                 display: flex;
             }
             
+            .govind {
+                list-style: none;
+                margin-left: 2.25rem;
+            }
+
+            .govind li::before {
+                content: "•";
+                color: black;
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: -1em;
+                font-size: 1.2em;  /* custom size which i think matches the view */
+            }
+
+            .inline-block {
+                display: inline-block
+            }
             .justify-between {
                 justify-content: space-between;
             }
@@ -4948,12 +4966,12 @@ export const getAdvicesHtml = (
             >
                 {sectionName || 'ADVICE'} :
             </p>
-            <ul className="ml-36">
+            <ul className="govind">
                 {advices?.map((advice) => {
                     return (
                         <li>
                             <span
-                                className={`whitespace-preline flex flex-col tiny-mce ${
+                                className={`whitespace-preline tiny-mce inline-block ${
                                     language === 'mr' || language === 'hi' ? 'text-13' : ''
                                 }`}
                                 dangerouslySetInnerHTML={{
@@ -5234,10 +5252,10 @@ export const getSymptomsHtml = (
                 {sectionName || 'Symptoms'} :
             </span>
             {isBullets ? (
-                <ul className="ml-36 list-outside list-disc">
+                <ul className="govind list-outside">
                     {symptoms?.values?.map((sym) => {
                         return (
-                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.symptoms_name_in_unbold
@@ -5366,10 +5384,10 @@ export const getDiagnosisHtml = (
                 {sectionName || 'DIAGNOSIS'} :
             </span>
             {isBullets ? (
-                <ul className="ml-36 list-outside list-disc">
+                <ul className="govind list-outside">
                     {diagnosis?.values?.map((diag) => {
                         return (
-                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.diagnosis_name_in_unbold
