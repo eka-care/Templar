@@ -119,6 +119,25 @@ export const getHeadHtml = (
                 display: flex;
             }
             
+         .govind > li::before { 
+                content: "•";
+                color: black;
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: -1em;
+                font-size: 1.2em;
+            }
+
+            /* for nested */
+            .govind ul {
+                list-style: disc;  /* what about empty circles, squares? */
+                margin-left: 1.5em;
+            }
+
+            .inline-block {
+                display: inline-block
+            }
             .justify-between {
                 justify-content: space-between;
             }
@@ -4608,12 +4627,12 @@ export const getDyformHtml = (d: RenderPdfPrescription, id: string, config: Temp
                 >
                     {selectedDyForm?.name || ''} :
                 </p>
-                <ul className="text-darwin-neutral-1000 list-disc ml-36 space-y-6">
+                <ul className="text-darwin-neutral-1000 list-disc govind space-y-6">
                     {selectedDyForm?.elements?.map((ele) => {
                         return (
                             <li>
                                 <div className="">
-                                    <span className="flex items-start space-x-8">
+                                    <span className="inline-block">
                                         <div className="flex items-center space-x-4">
                                             <span
                                                 className={`dyform-title-color ${
@@ -4740,7 +4759,7 @@ export const getReferredToHtml = (
                             {sectionName || 'REFERRED TO'} :{' '}
                         </span>
                     )}
-                    <ul className="ml-36">
+                    <ul className="govind">
                         {referredTo?.ref_doc_details &&
                             referredTo?.ref_doc_details?.length > 0 &&
                             referredTo?.ref_doc_details.map((ref, index) => (
@@ -4948,12 +4967,12 @@ export const getAdvicesHtml = (
             >
                 {sectionName || 'ADVICE'} :
             </p>
-            <ul className="ml-36">
+            <ul className="govind">
                 {advices?.map((advice) => {
                     return (
                         <li>
                             <span
-                                className={`whitespace-preline flex flex-col tiny-mce ${
+                                className={`whitespace-preline tiny-mce inline-block ${
                                     language === 'mr' || language === 'hi' ? 'text-13' : ''
                                 }`}
                                 dangerouslySetInnerHTML={{
@@ -5036,10 +5055,10 @@ export const getLabTestsHtml = (
                 {sectionName || 'PRESCRIBED LAB TESTS'} :{' '}
             </span>
             {isBullets ? (
-                <ul className="ml-36">
+                <ul className="govind">
                     {labTests?.map((labTest) => {
                         return (
-                            <li className="">
+                            <li className="inline-block">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.lab_tests_name_in_unbold
@@ -5234,10 +5253,10 @@ export const getSymptomsHtml = (
                 {sectionName || 'Symptoms'} :
             </span>
             {isBullets ? (
-                <ul className="ml-36 list-outside list-disc">
+                <ul className="govind list-outside list-disc">
                     {symptoms?.values?.map((sym) => {
                         return (
-                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.symptoms_name_in_unbold
@@ -5366,10 +5385,10 @@ export const getDiagnosisHtml = (
                 {sectionName || 'DIAGNOSIS'} :
             </span>
             {isBullets ? (
-                <ul className="ml-36 list-outside list-disc">
+                <ul className="govind list-outside list-disc">
                     {diagnosis?.values?.map((diag) => {
                         return (
-                            <li className="flex flex-wrap items-start gap-x-1 list-disc">
+                            <li className="">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.diagnosis_name_in_unbold
@@ -5543,10 +5562,10 @@ export const getPmhHtml = (
                 {mhData?.name} :
             </span>
             {isBullets ? (
-                <ul className="ml-36">
+                <ul className="govind">
                     {mhData?.values?.map((mh) => {
                         return (
-                            <li className="">
+                            <li className="inline-block">
                                 <span
                                     className={`${
                                         config?.render_pdf_config?.medical_history_name_in_unbold
@@ -5636,10 +5655,10 @@ export const getExaminationFindingsHtml = (
             </span>
 
             {isBullets ? (
-                <ul className="ml-36">
+                <ul className="govind">
                     {examintionFindings?.map((examination) => {
                         return (
-                            <li className="">
+                            <li className="inline-block">
                                 <span
                                     className={`${
                                         config?.render_pdf_config
@@ -5963,10 +5982,10 @@ export const getInvestigativeReadingsHtml = (
                     {sectionName || 'INVESTIGATIVE READINGS'} :
                 </span>
 
-                <ul className="ml-36">
+                <ul className="govind">
                     {labVitals?.map((labVital) => {
                         return (
-                            <li className="">
+                            <li className="inline-block">
                                 {labVital?.dt && (
                                     <span
                                         style={{
@@ -6117,10 +6136,10 @@ export const getVitalsHtml = (
             </span>
 
             {isBullets ? (
-                <ul className="ml-36">
+                <ul className="govind">
                     {vitals?.map((vital) => {
                         return (
-                            <li className="">
+                            <li className="inline-block">
                                 <span
                                     className={`uppercase ${
                                         config?.render_pdf_config?.vitals_in_unbold ? '' : 'bold'
@@ -6272,10 +6291,10 @@ export const getGrowthChartVitalsHtml = (
                 GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FENTON]' : `[WHO/IAP]`} :
             </span>
 
-            <ul className="ml-36">
+            <ul className="govind">
                 {gcVitals?.map((vital) => {
                     return (
-                        <li className="">
+                        <li className="inline-block">
                             <span className={`uppercase bold`} style={{ color: keyColor }}>
                                 {vital?.name || ''}
                             </span>
@@ -7273,9 +7292,9 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
             <p className="uppercase text-darwin-accent-symptoms-blue-800 bold">Injections :</p>
             {injections.map((injection) => {
                 return (
-                    <ul className="ml-36">
+                    <ul className="govind">
                         {injection?.added_drug && injection?.added_drug.length > 0 ? (
-                            <li>
+                            <li className='inline-block'>
                                 <u>
                                     <span className="bold">{injection?.name}</span>{' '}
                                     {injection?.generic_name
@@ -7569,9 +7588,9 @@ export const getProceduresHtmls = (
             </span>
 
             {isBullets ? (
-                <ul className="ml-36">
+                <ul className="govind">
                     {procedures.map((procedure) => (
-                        <li className="">
+                        <li className="inline-block">
                             <span
                                 className={`uppercase ${
                                     config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
