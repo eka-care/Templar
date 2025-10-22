@@ -829,14 +829,35 @@ export const getCustomFooterHtml = (
                             </div>
 
                             {attachment_image && (
-                                <div>
+                                <div
+                                    style={{
+                                        width: '12.5rem',
+                                        height: '7.5rem',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        paddingBottom: '2px',
+                                        boxSizing: 'border-box',
+                                    }}
+                                >
                                     <img
                                         src={attachment_image}
-                                        className="max-w-200 h-120 object-fit-contain"
+                                        alt="Attachment"
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            margin: 'auto',
+                                            maxWidth: '100%',
+                                            maxHeight: '100%',
+                                            width: 'auto',
+                                            height: 'auto',
+                                            display: 'block',
+                                        }}
                                     />
                                 </div>
                             )}
-
                             <div className="flex items-end flex-col">
                                 {show_signature && (
                                     <div
@@ -1727,11 +1748,36 @@ export const getFooterHtml = (
                         className="w-72"
                     />
                 </div>
+
                 {renderPdfConfig?.attachment_image && (
-                    <div className="w-200 h-120 flex items-center justify-center">
+                    <div
+                        style={{
+                            width: '12.5rem',
+                            height: '7.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            boxSizing: 'border-box',
+                        }}
+                    >
                         <img
                             src={renderPdfConfig?.attachment_image}
-                            className="max-w-200 h-120 object-fit-contain"
+                            alt="Attachment"
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                margin: 'auto',
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                width: 'auto',
+                                height: 'auto',
+                                display: 'block',
+                            }}
                         />
                     </div>
                 )}
