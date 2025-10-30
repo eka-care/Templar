@@ -74,6 +74,7 @@ export const fontFamily = {
     ta: "'Hind Madurai', sans-serif",
     ml: "'Poppins', sans-serif",
     as: "'Poppins', sans-serif",
+    or: "'Poppins', sans-serif",
 };
 
 export const getHeadHtml = (
