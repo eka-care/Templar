@@ -28,7 +28,20 @@ export interface RenderPdfPrescription {
     };
     translate?: {
         flag: boolean;
-        lang: 'en' | 'hi' | 'gu' | 'te' | 'mr' | 'kn' | 'pa' | 'bn' | 'ta' | 'ml' | 'as';
+        lang:
+            | 'en'
+            | 'hi'
+            | 'gu'
+            | 'te'
+            | 'mr'
+            | 'kn'
+            | 'pa'
+            | 'bn'
+            | 'ta'
+            | 'ml'
+            | 'as'
+            | 'or'
+            | 'ml';
         advices?: boolean;
         medications?: boolean;
         injections?: boolean;
