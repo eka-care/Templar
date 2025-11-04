@@ -860,7 +860,7 @@ export const getCustomFooterHtml = (
                                 </div>
                             )}
                             <div className="flex items-end flex-col">
-                                {show_signature && (
+                                {show_signature && docProfile?.profile?.professional?.signature && (
                                     <div
                                         style={{
                                             width: '100%',
@@ -1795,23 +1795,25 @@ export const getFooterHtml = (
                             boxSizing: 'border-box',
                         }}
                     >
-                        <img
-                            src={docProfile?.profile?.professional?.signature}
-                            alt="Doctor Signature"
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                margin: 'auto',
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                                width: 'auto',
-                                height: 'auto',
-                                display: 'block',
-                            }}
-                        />
+                        {docProfile?.profile?.professional?.signature && (
+                            <img
+                                src={docProfile?.profile?.professional?.signature}
+                                alt="Doctor Signature"
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    margin: 'auto',
+                                    maxWidth: '100%',
+                                    maxHeight: '100%',
+                                    width: 'auto',
+                                    height: 'auto',
+                                    display: 'block',
+                                }}
+                            />
+                        )}
                     </div>
                     <p
                         className="bold"
