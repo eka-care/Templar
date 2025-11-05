@@ -1,21 +1,26 @@
-name: Bump superprojects on merge
+name: Bump superprojects on main updates
 
 on:
-  # Run only when PRs into these branches are closed (merged or not)
+  # Run whenever main moves (direct push or merged PR)
+  push:
+    branches: [ main ]
+
+  # Also run on PR close (for backward compatibility)
   pull_request:
-    branches: [ main, templar-auto-bump ]
+    branches: [ main ]
     types: [ closed ]
 
 jobs:
   bump-superprojects:
-    # proceed only if the PR was actually merged
-    if: github.event.pull_request.merged == true
+    # run on push OR on merged PRs only
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
     env:
       OWNER: ${{ github.repository_owner }}
       SUBMODULE_PATH: src/Templar
-      # use the merge commit SHA (works for merge/squash/rebase merges)
-      NEW_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+      # Determine correct SHA based on event
+      NEW_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged && github.event.pull_request.merge_commit_sha || github.sha }}
+
     strategy:
       matrix:
         include:
@@ -27,7 +32,9 @@ jobs:
     steps:
       - name: Debug info
         run: |
-          echo "Merged into: ${{ github.event.pull_request.base.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref_name }}"
+          echo "Base (PR only): ${{ github.event.pull_request.base.ref }}"
           echo "Using NEW_SHA: $NEW_SHA"
           echo "Target superproject: $OWNER/${{ matrix.repo }} (base=${{ matrix.base }})"
 
@@ -49,7 +56,7 @@ jobs:
           git config -f .gitmodules submodule.${{ env.SUBMODULE_PATH }}.branch main || true
           git add .gitmodules || true
 
-      - name: Move submodule to merged Templar commit
+      - name: Move submodule to latest Templar commit
         run: |
           pushd "${SUBMODULE_PATH}"
           git fetch origin
