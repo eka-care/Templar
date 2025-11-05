@@ -1,0 +1,82 @@
+name: Bump superprojects on merge
+
+on:
+  # Run only when PRs into these branches are closed (merged or not)
+  pull_request:
+    branches: [ main, templar-auto-bump ]
+    types: [ closed ]
+
+jobs:
+  bump-superprojects:
+    # proceed only if the PR was actually merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    env:
+      OWNER: ${{ github.repository_owner }}
+      SUBMODULE_PATH: src/Templar
+      # use the merge commit SHA (works for merge/squash/rebase merges)
+      NEW_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+    strategy:
+      matrix:
+        include:
+          - repo: stetho
+            base: master
+          - repo: rafale
+            base: main
+
+    steps:
+      - name: Debug info
+        run: |
+          echo "Merged into: ${{ github.event.pull_request.base.ref }}"
+          echo "Using NEW_SHA: $NEW_SHA"
+          echo "Target superproject: $OWNER/${{ matrix.repo }} (base=${{ matrix.base }})"
+
+      - name: Checkout superproject
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.OWNER }}/${{ matrix.repo }}
+          token: ${{ secrets.SUPERPROJECT_PAT }}
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure Git
+        run: |
+          git config user.name "templar-bot"
+          git config user.email "templar-bot@users.noreply.github.com"
+
+      - name: Ensure submodule tracks main (idempotent)
+        run: |
+          git config -f .gitmodules submodule.${{ env.SUBMODULE_PATH }}.branch main || true
+          git add .gitmodules || true
+
+      - name: Move submodule to merged Templar commit
+        run: |
+          pushd "${SUBMODULE_PATH}"
+          git fetch origin
+          git checkout "$NEW_SHA"
+          popd
+          git add "${SUBMODULE_PATH}"
+
+      - name: Skip if no change
+        id: maybe_change
+        run: |
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR in ${{ env.OWNER }}/${{ matrix.repo }}
+        if: steps.maybe_change.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.SUPERPROJECT_PAT }}
+          commit-message: "chore(submodule): bump templar to ${{ env.NEW_SHA }}"
+          title: "Bump templar submodule to ${{ env.NEW_SHA }} (src/Templar)"
+          body: |
+            Automated PR from Templar: update `src/Templar` to commit `${{ env.NEW_SHA }}`.
+          base: ${{ matrix.base }}
+          branch: "templar-bump-${{ env.NEW_SHA }}"
+          labels: |
+            submodule
+            templar
