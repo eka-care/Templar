@@ -6350,7 +6350,10 @@ export const getFormDataHtml = (
     }
 
     const commonFormData = d?.patient?.formData?.filter(
-        (fd) => fd.key === 'uhid' || ptFormFields?.some((ptf) => ptf.key === fd.key),
+        (fd) =>
+            fd.key === 'uhid' ||
+            fd.key === 'abha' ||
+            ptFormFields?.some((ptf) => ptf.key === fd.key),
     );
 
     if (!commonFormData?.length) {
