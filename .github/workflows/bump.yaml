@@ -1,0 +1,106 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop, templar-auto-bump ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build package with Vite
+        run: npm run build
+      - name: Check build outputs
+        run: |
+          ls -la dist/
+          test -f dist/Templar.js
+          test -f dist/Templar.esm.js
+          test -f dist/Templar.d.ts
+      - name: Test package
+        run: node test-build.js
+
+  bump-superprojects:
+    if: |
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/templar-auto-bump'
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - repo: ${{ github.repository_owner }}/stetho
+            base: master
+          - repo: ${{ github.repository_owner }}/rafale
+            base: main
+    env:
+      SUBMODULE_PATH: src/templar
+
+    steps:
+      - name: Debug trigger
+        run: echo "Triggered by $GITHUB_REF"
+
+      - name: Checkout superproject
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.target.repo }}
+          token: ${{ secrets.SUPERPROJECT_PAT }}
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure Git
+        run: |
+          git config user.name "templar-bot"
+          git config user.email "templar-bot@users.noreply.github.com"
+
+      - name: Ensure submodule tracks main (idempotent)
+        run: |
+          git config -f .gitmodules submodule.${{ env.SUBMODULE_PATH }}.branch main || true
+          git add .gitmodules || true
+
+      - name: Move submodule to this Templar commit
+        env:
+          NEW_SHA: ${{ github.sha }}
+        run: |
+          pushd "${{ env.SUBMODULE_PATH }}"
+          git fetch origin
+          git checkout "$NEW_SHA"
+          popd
+          git add "${{ env.SUBMODULE_PATH }}"
+
+      - name: Skip if nothing changed
+        id: maybe_change
+        run: |
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR in ${{ matrix.target.repo }}
+        if: steps.maybe_change.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.SUPERPROJECT_PAT }}
+          commit-message: "chore(submodule): bump templar to ${{ github.sha }}"
+          title: "Bump templar submodule to ${{ github.sha }} (src/templar)"
+          body: |
+            Automated PR from Templar: update `src/templar` to commit `${{ github.sha }}`.
+          base: ${{ matrix.target.base }}
+          branch: "templar-bump-${{ github.sha }}"
+          labels: |
+            submodule
+            templar
