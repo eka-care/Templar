@@ -1,53 +1,21 @@
-name: Build and Test
+name: Bump superprojects on merge
 
 on:
-  push:
-    branches: [ main, develop, templar-auto-bump ]
+  # Run only when PRs into these branches are closed (merged or not)
   pull_request:
-    branches: [ main ]
+    branches: [ main, templar-auto-bump ]
+    types: [ closed ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build package with Vite
-        run: npm run build
-
-      - name: Check build outputs
-        run: |
-          ls -la dist/
-          test -f dist/Templar.js
-          test -f dist/Templar.d.ts
-          # Optional: warn (don’t fail) if ESM isn’t emitted
-          test -f dist/Templar.esm.js || echo "Note: ESM bundle not emitted (UMD-only build)."
-
-      - name: Test package
-        run: node test-build.js
-
   bump-superprojects:
-    if: |
-      github.ref == 'refs/heads/main' ||
-      github.ref == 'refs/heads/templar-auto-bump'
-    needs: build
+    # proceed only if the PR was actually merged
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
       OWNER: ${{ github.repository_owner }}
       SUBMODULE_PATH: src/templar
+      # use the merge commit SHA (works for merge/squash/rebase merges)
+      NEW_SHA: ${{ github.event.pull_request.merge_commit_sha }}
     strategy:
       matrix:
         include:
@@ -57,8 +25,11 @@ jobs:
             base: main
 
     steps:
-      - name: Debug trigger
-        run: echo "Triggered by $GITHUB_REF for $OWNER/${{ matrix.repo }}"
+      - name: Debug info
+        run: |
+          echo "Merged into: ${{ github.event.pull_request.base.ref }}"
+          echo "Using NEW_SHA: $NEW_SHA"
+          echo "Target superproject: $OWNER/${{ matrix.repo }} (base=${{ matrix.base }})"
 
       - name: Checkout superproject
         uses: actions/checkout@v4
@@ -78,17 +49,15 @@ jobs:
           git config -f .gitmodules submodule.${{ env.SUBMODULE_PATH }}.branch main || true
           git add .gitmodules || true
 
-      - name: Move submodule to this Templar commit
-        env:
-          NEW_SHA: ${{ github.sha }}
+      - name: Move submodule to merged Templar commit
         run: |
-          pushd "${{ env.SUBMODULE_PATH }}"
+          pushd "${SUBMODULE_PATH}"
           git fetch origin
           git checkout "$NEW_SHA"
           popd
-          git add "${{ env.SUBMODULE_PATH }}"
+          git add "${SUBMODULE_PATH}"
 
-      - name: Skip if nothing changed
+      - name: Skip if no change
         id: maybe_change
         run: |
           if git diff --cached --quiet; then
@@ -102,12 +71,12 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.SUPERPROJECT_PAT }}
-          commit-message: "chore(submodule): bump templar to ${{ github.sha }}"
-          title: "Bump templar submodule to ${{ github.sha }} (src/templar)"
+          commit-message: "chore(submodule): bump templar to ${{ env.NEW_SHA }}"
+          title: "Bump templar submodule to ${{ env.NEW_SHA }} (src/templar)"
           body: |
-            Automated PR from Templar: update `src/templar` to commit `${{ github.sha }}`.
+            Automated PR from Templar: update `src/templar` to commit `${{ env.NEW_SHA }}`.
           base: ${{ matrix.base }}
-          branch: "templar-bump-${{ github.sha }}"
+          branch: "templar-bump-${{ env.NEW_SHA }}"
           labels: |
             submodule
             templar
