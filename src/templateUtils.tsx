@@ -1853,6 +1853,7 @@ export const getFooterHtml = (
     );
 };
 //here we go
+//remove it
 export const getDoubleColumnMedications = (
     d: RenderPdfPrescription,
     render_pdf_config?: TemplateConfig,
