@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OWNER: ${{ github.repository_owner }}
-      SUBMODULE_PATH: src/templar
+      SUBMODULE_PATH: src/Templar
       # use the merge commit SHA (works for merge/squash/rebase merges)
       NEW_SHA: ${{ github.event.pull_request.merge_commit_sha }}
     strategy:
@@ -72,9 +72,9 @@ jobs:
         with:
           token: ${{ secrets.SUPERPROJECT_PAT }}
           commit-message: "chore(submodule): bump templar to ${{ env.NEW_SHA }}"
-          title: "Bump templar submodule to ${{ env.NEW_SHA }} (src/templar)"
+          title: "Bump templar submodule to ${{ env.NEW_SHA }} (src/Templar)"
           body: |
-            Automated PR from Templar: update `src/templar` to commit `${{ env.NEW_SHA }}`.
+            Automated PR from Templar: update `src/Templar` to commit `${{ env.NEW_SHA }}`.
           base: ${{ matrix.base }}
           branch: "templar-bump-${{ env.NEW_SHA }}"
           labels: |
