@@ -30,6 +30,7 @@ import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
 import { formatDateInTimeZone } from './dateutils';
+import { generateGrowthChart } from './GrowthChart/getGrowthChartsPrint';
 
 const Utility = {
     parseHTMLToStringForPipeSeperated: (html: string): string => {
@@ -941,7 +942,110 @@ export const getCustomFooterHtml = (
         </>
     );
 };
+export async function processAsync(
+    data: RenderPdfPrescription,
+    config?: TemplateV2,
+): Promise<JSX.Element> {
+    const gender = data?.patient?.profile?.personal?.gender;
 
+    return <></>;
+}
+
+export async function getGrowthChartsHtml(
+    renderPdfData: RenderPdfPrescription,
+    templateV2: TemplateV2,
+) {
+    try {
+        const tool = renderPdfData?.tool ?? {};
+        const patient = renderPdfData?.patient ?? {};
+        const dob = patient?.profile?.personal?.age?.dob ?? new Date().toISOString();
+        const sex = (patient?.profile?.personal?.gender ?? 'M').toUpperCase().startsWith('F')
+            ? 'F'
+            : 'M';
+
+        // ------------------------------
+        // 1️⃣ Build vitals dataset
+        // ------------------------------
+        const vitals = tool?.medicalHistory?.vitals ?? tool?.medicalHistory?.vitals ?? [];
+        const map = new Map();
+        for (const v of vitals) {
+            const ts = new Date().toISOString(); //v.date ?? new Date().toISOString();
+            const name = (v.name ?? v.dis_name ?? '').toLowerCase();
+            const val = Number(v.value?.qt ?? 0);
+            if (!map.has(ts))
+                map.set(ts, {
+                    ts,
+                    weightKg: undefined,
+                    heightCm: undefined,
+                    ofcCm: undefined,
+                    bmi: undefined,
+                });
+            const entry = map.get(ts);
+            if (name.includes('weight')) entry.weightKg = val;
+            else if (name.includes('height')) entry.heightCm = val;
+            else if (name.includes('occipital') || name.includes('ofc')) entry.ofcCm = val;
+            else if (name.includes('bmi')) entry.bmi = val;
+            map.set(ts, entry);
+        }
+        const vitalsForGenerator = Array.from(map.values());
+
+        // ------------------------------
+        // 2️⃣ Generate all charts (using chartjs-node-canvas backend)
+        // ------------------------------
+        const opts = { width: 1400, height: 800, xUnit: 'months' };
+        const [w, h, o, b] = await Promise.all([
+            generateGrowthChart(vitalsForGenerator, dob, sex, 'weightForAge', {
+                ...opts,
+                title: 'Weight for Age',
+                xUnit: 'months' as const,
+            }),
+            generateGrowthChart(vitalsForGenerator, dob, sex, 'heightForAge', {
+                ...opts,
+                title: 'Height for Age',
+                xUnit: 'months' as const,
+            }),
+            generateGrowthChart(vitalsForGenerator, dob, sex, 'ofcForAge', {
+                ...opts,
+                title: 'OFC for Age',
+                xUnit: 'months' as const,
+            }),
+            generateGrowthChart(vitalsForGenerator, dob, sex, 'bmiForAge', {
+                ...opts,
+                title: 'BMI for Age',
+                xUnit: 'months' as const,
+            }),
+        ]);
+
+        // Convert base64 buffers to full data URLs
+        const toDataUrl = (r: { base64?: string }) =>
+            r?.base64?.startsWith('data:') ? r.base64 : `data:image/png;base64,${r?.base64 ?? ''}`;
+
+        const weightImg = toDataUrl(w);
+        const heightImg = toDataUrl(h);
+        const ofcImg = toDataUrl(o);
+        const bmiImg = toDataUrl(b);
+
+        // ------------------------------
+        // 3️⃣ Construct HTML block
+        // ------------------------------
+        const html = `
+        <div style="padding:12px;font-family:Arial,Helvetica,sans-serif;color:#222;">
+          <h3 style="margin:0 0 8px 0;">Growth Charts</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;">
+            <img src="${weightImg}" alt="Weight for Age" style="width:49%;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;" />
+            <img src="${heightImg}" alt="Height for Age" style="width:49%;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;" />
+            <img src="${ofcImg}" alt="OFC for Age" style="width:49%;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;" />
+            <img src="${bmiImg}" alt="BMI for Age" style="width:49%;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;" />
+          </div>
+        </div>
+      `;
+
+        return html;
+    } catch (err) {
+        console.error('Error generating growth chart HTML:', err);
+        return `<div style="color:red;">Error generating growth charts</div>`;
+    }
+}
 export const getHeaderHtml = (
     docProfile: DoctorProfile,
     ptFormFields?: DFormEntity[],
@@ -1435,6 +1539,8 @@ export const getBodyHtml = (
                             getGrowthChartVitalsHtml(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
                             getGrowthChartVitalsHtml(data, config)}
+                        {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
+                            processAsync(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'symptoms') &&
                             getSymptomsHtml(data, config, sectionNameConfig?.['symptoms'])}
                         {isDoubleColumnElementVisible(
