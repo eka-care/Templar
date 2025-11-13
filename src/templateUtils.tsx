@@ -6197,30 +6197,30 @@ export const getVitalsHtml = (
                 <table
                     className="border-collapse border medication-table-border-color w-full"
                     style={{
-                        maxWidth: isExtraLarge ? 650 : 550,
+                        maxWidth: 650,
                     }}
                 >
                     <thead>
                         <tr className="text-11">
                             <th
                                 className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                style={{ width: '8%' }}
+                                style={{ width: '4%' }}
                             ></th>
                             <th
                                 className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                style={{ width: '30%' }}
+                                style={{ width: '40%' }}
                             >
                                 Vital
                             </th>
                             <th
                                 className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                style={{ width: '25%' }}
+                                style={{ width: '20%' }}
                             >
                                 Observation
                             </th>
                             <th
                                 className="border medication-table-border-color medication-title-color bold text-center p-4"
-                                style={{ width: '37%' }}
+                                style={{ width: '36%' }}
                             >
                                 Biological Reference Interval
                             </th>
