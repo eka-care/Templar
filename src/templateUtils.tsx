@@ -30,7 +30,6 @@ import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
 import { formatDateInTimeZone } from './dateutils';
-import { generateGrowthChartsJsx } from '../../../src/components/common/growthChartsRenderer';
 
 const Utility = {
     parseHTMLToStringForPipeSeperated: (html: string): string => {
