@@ -30,6 +30,7 @@ import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
 import { padElements } from './padElementConfig';
 import { formatDateInTimeZone } from './dateutils';
+import { generateGrowthChartsJsx } from '../../../src/components/common/growthChartsRenderer';
 
 const Utility = {
     parseHTMLToStringForPipeSeperated: (html: string): string => {
@@ -1346,6 +1347,7 @@ export const getBodyHtml = (
     config: TemplateV2,
     ptFormFields: DFormEntity[],
     flavour: Flavour,
+    gcData?: any,
 ): JSX.Element => {
     const padConfig = config?.render_pdf_body_config?.pad_elements_config;
 
@@ -1402,7 +1404,7 @@ export const getBodyHtml = (
             )}
 
             {isDoubleColumn
-                ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig)
+                ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig, gcData)
                 : null}
             {padConfig ? (
                 <div className={`${spacing}`}>
@@ -1421,6 +1423,7 @@ export const getBodyHtml = (
                                     sectionNameConfig,
                                     false,
                                     elementsInDoubleColumn,
+                                    gcData,
                                 ) || getDyformHtml(data, item.id, config)
                             );
                         })
@@ -1433,6 +1436,16 @@ export const getBodyHtml = (
                             getVitalsHtml(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
                             getGrowthChartVitalsHtml(data, config)}
+                        {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
+                            (gcData ? (
+                                <div
+                                    className="growth-chart-images"
+                                    dangerouslySetInnerHTML={{ __html: gcData }}
+                                />
+                            ) : null)}
+
+                        {/* {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
+                            getGrowthChartsImage(gcData)} */}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
                             getGrowthChartVitalsHtml(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'symptoms') &&
@@ -1564,15 +1577,17 @@ export const doubleColumnsHtml = (
     config: TemplateV2,
     doubleColumnConfig: ColumnConfig,
     sectionNameConfig?: SectionNameConfig,
+    gcData?: string,
 ): JSX.Element | null => {
     const leftComponentNonEmptyElements =
         doubleColumnConfig?.left?.filter((key) =>
-            padElements(data, key, config, sectionNameConfig),
+            padElements(data, key, config, sectionNameConfig, undefined, undefined, gcData),
         ) || [];
 
     const rightComponentNonEmptyElements =
-        doubleColumnConfig?.right?.filter((key) =>
-            padElements(data, key, config, sectionNameConfig),
+        doubleColumnConfig?.right?.filter(
+            (key) =>
+                padElements(data, key, config, sectionNameConfig, undefined, undefined, gcData), //see if red here
         ) || [];
 
     if (leftComponentNonEmptyElements?.length <= 0 && rightComponentNonEmptyElements?.length <= 0) {
@@ -1668,6 +1683,8 @@ export const doubleColumnsHtml = (
                                               config,
                                               sectionNameConfig,
                                               true,
+                                              undefined,
+                                              gcData,
                                           )
                                         : null}
                                 </div>
@@ -6334,6 +6351,24 @@ export const getGrowthChartVitalsHtml = (
                 })}
             </ul>
         </div>
+    );
+};
+
+export const getGrowthChartsImage = (gcData: string): JSX.Element | undefined => {
+    if (!gcData) {
+        return;
+    }
+
+    return (
+        <>
+            {/* <div
+            className="growth-chart-images"
+            dangerouslySetInnerHTML={{
+                __html: gcData,
+            }}
+        ></div> */}
+            {gcData}
+        </>
     );
 };
 
@@ -11052,6 +11087,20 @@ export const getCareCanvasHtml = (
         </div>
     );
 };
+
+// export async function getGrowthChartsHtml(
+//     gcData: any,
+// ) {
+//     try {
+//         console.log(
+//             '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ getGrowthChartsHTML triggered ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+//         );
+//         const jsx = await generateGrowthChartsJsx(renderPdfData, null);
+//         return <>what shit is this now!!!!!!!!</>;
+//     } catch (err) {
+//         console.error(err);
+//     }
+// }
 
 export const getHeader = (
     docProfile: DoctorProfile,

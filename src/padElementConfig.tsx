@@ -9,19 +9,22 @@ import {
     getDoubleColumnMedications,
     getExaminationFindingsHtml,
     getFollowupHtml,
-    getGrowthChartVitalsHtml, getInjectionsLineHtml,
+    getGrowthChartsImage,
+    getGrowthChartVitalsHtml,
+    getInjectionsLineHtml,
     getInvestigativeReadingsHtml,
     getLabTestsHtml,
     getMedications1Html,
     getNotesHtml,
     getOphthalmologyHtml,
-    getPmhHtml, getProceduresHtmls,
+    getPmhHtml,
+    getProceduresHtmls,
     getReferredToHtml,
     getSymptomsHtml,
     getVitalsHtml,
     injectionsFormatToTableMapping,
     isDoubleColumnElementVisible,
-    medicationFormatToTableMapping
+    medicationFormatToTableMapping,
 } from './templateUtils';
 
 export const padElements = (
@@ -31,6 +34,7 @@ export const padElements = (
     sectionNameConfig: SectionNameConfig | undefined,
     isDoubleColumn?: boolean,
     elementsInDoubleColumn?: Set<string>,
+    gcData?: any,
 ): JSX.Element | undefined => {
     switch (elementId) {
         case 'symptoms':
@@ -82,6 +86,13 @@ export const padElements = (
                 <div>
                     {getVitalsHtml(data, config)}
                     {getGrowthChartVitalsHtml(data, config)}
+                    {gcData ? (
+                        <div
+                            className="growth-chart-images"
+                            dangerouslySetInnerHTML={{ __html: gcData }}
+                        />
+                    ) : null}
+                    {/* {getGrowthChartsImage(gcData)} */}
                 </div>
             );
 
