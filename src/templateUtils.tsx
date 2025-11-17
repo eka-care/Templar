@@ -1434,19 +1434,7 @@ export const getBodyHtml = (
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
                             getVitalsHtml(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            getGrowthChartVitalsHtml(data, config)}
-                        {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            (gcData ? (
-                                <div
-                                    className="growth-chart-images"
-                                    dangerouslySetInnerHTML={{ __html: gcData }}
-                                />
-                            ) : null)}
-
-                        {/* {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            getGrowthChartsImage(gcData)} */}
-                        {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            getGrowthChartVitalsHtml(data, config)}
+                            getGrowthChartVitalsHtml(data, config, gcData)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'symptoms') &&
                             getSymptomsHtml(data, config, sectionNameConfig?.['symptoms'])}
                         {isDoubleColumnElementVisible(
@@ -6318,12 +6306,14 @@ export const getVitalsHtml = (
 export const getGrowthChartVitalsHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
+    gcData: JSX.Element | undefined,
 ): JSX.Element | undefined => {
     const gcVitals = d.tool?.medicalHistory?.growthChartVitals?.chartValues;
     const gcChartType = d.tool?.medicalHistory?.growthChartVitals?.chartType;
     const headingColor = config?.render_pdf_config?.growth_chart_heading_color;
     const keyColor = config?.render_pdf_config?.growth_chart_name_color;
     const propertyColor = config?.render_pdf_config?.growth_chart_properties_color;
+    const chartEnabled = config?.render_pdf_config?.growth_chart_image_display;
     if (!gcVitals?.length) {
         return;
     }
@@ -6336,19 +6326,27 @@ export const getGrowthChartVitalsHtml = (
             >
                 GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FENTON]' : `[WHO/IAP]`} :
             </span>
-
-            <ul className="ml-36">
-                {gcVitals?.map((vital) => {
-                    return (
-                        <li className="">
-                            <span className={`uppercase bold`} style={{ color: keyColor }}>
-                                {vital?.name || ''}
-                            </span>
-                            : <span style={{ color: propertyColor }}>{vital?.value}</span>
-                        </li>
-                    );
-                })}
-            </ul>
+            {chartEnabled ? (
+                gcData ? (
+                    <div
+                        className="growth-chart-images"
+                        dangerouslySetInnerHTML={{ __html: gcData }}
+                    />
+                ) : null
+            ) : (
+                <ul className="ml-36">
+                    {gcVitals?.map((vital) => {
+                        return (
+                            <li className="">
+                                <span className={`uppercase bold`} style={{ color: keyColor }}>
+                                    {vital?.name || ''}
+                                </span>
+                                : <span style={{ color: propertyColor }}>{vital?.value}</span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
         </div>
     );
 };

@@ -817,6 +817,7 @@ export interface TemplateConfig {
     growth_chart_properties_color?: string;
     care_canvas_heading_color?: string;
     medical_history_status_display?: string;
+    growth_chart_image_display?: boolean;
     __v2?: boolean;
 }
 

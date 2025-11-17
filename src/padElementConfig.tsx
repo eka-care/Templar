@@ -85,14 +85,7 @@ export const padElements = (
             return (
                 <div>
                     {getVitalsHtml(data, config)}
-                    {getGrowthChartVitalsHtml(data, config)}
-                    {gcData ? (
-                        <div
-                            className="growth-chart-images"
-                            dangerouslySetInnerHTML={{ __html: gcData }}
-                        />
-                    ) : null}
-                    {/* {getGrowthChartsImage(gcData)} */}
+                    {getGrowthChartVitalsHtml(data, config, gcData)}
                 </div>
             );
 
