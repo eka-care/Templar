@@ -49,7 +49,12 @@ export interface RenderPdfPrescription {
     growthCharts?: GrowthChartData[];
 }
 export interface GrowthChartData {
-    chartType: 'weight-for-age' | 'height-for-age' | 'ofc-for-age' | 'bmi-for-age';
+    chartType:
+        | 'weight-for-age'
+        | 'height-for-age'
+        | 'ofc-for-age'
+        | 'bmi-for-age'
+        | 'weight-for-height';
     chartConfig: {
         data: {
             labels?: number[];
