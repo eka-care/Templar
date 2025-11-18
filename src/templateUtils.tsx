@@ -11089,20 +11089,6 @@ export const getCareCanvasHtml = (
     );
 };
 
-// export async function getGrowthChartsHtml(
-//     gcData: any,
-// ) {
-//     try {
-//         console.log(
-//             '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ getGrowthChartsHTML triggered ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
-//         );
-//         const jsx = await generateGrowthChartsJsx(renderPdfData, null);
-//         return <>what shit is this now!!!!!!!!</>;
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-
 export const getHeader = (
     docProfile: DoctorProfile,
     ptFormFields?: DFormEntity[],
