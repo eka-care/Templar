@@ -6314,6 +6314,7 @@ export const getGrowthChartVitalsHtml = (
     const keyColor = config?.render_pdf_config?.growth_chart_name_color;
     const propertyColor = config?.render_pdf_config?.growth_chart_properties_color;
     const chartEnabled = config?.render_pdf_config?.growth_chart_image_display;
+    const statsDisabled = config?.render_pdf_config?.growth_chart_stats_disabled;
     if (!gcVitals?.length) {
         return;
     }
@@ -6334,6 +6335,9 @@ export const getGrowthChartVitalsHtml = (
                     />
                 ) : null
             ) : (
+                <></>
+            )}
+            {!statsDisabled && (
                 <ul className="ml-36">
                     {gcVitals?.map((vital) => {
                         return (

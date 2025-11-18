@@ -823,6 +823,7 @@ export interface TemplateConfig {
     care_canvas_heading_color?: string;
     medical_history_status_display?: string;
     growth_chart_image_display?: boolean;
+    growth_chart_stats_disabled?: boolean;
     __v2?: boolean;
 }
 
