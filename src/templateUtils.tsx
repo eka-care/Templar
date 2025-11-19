@@ -5850,10 +5850,16 @@ export const getInvestigativeReadingsHtml = (
                     <tbody>
                         {allNames?.map((name, idx) => (
                             <tr className="text-11" key={name}>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td
+                                    style={{ width: serialWidth }}
+                                    className="p-4 border medication-table-border-color text-center"
+                                >
                                     {idx + 1}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: nameWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     <span
                                         className={`${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -5869,6 +5875,7 @@ export const getInvestigativeReadingsHtml = (
                                     return (
                                         <td
                                             key={dt}
+                                            style={{ width: dateColWidth }}
                                             className="p-4 border medication-table-border-color text-left align-middle"
                                         >
                                             {reading ? (
@@ -5960,10 +5967,16 @@ export const getInvestigativeReadingsHtml = (
                     <tbody>
                         {labVitals?.map((labVital, idx) => (
                             <tr className="text-11" key={`${labVital?.name}-${idx}`}>
-                                <td className="p-4 border medication-table-border-color text-center">
+                                <td
+                                    style={{ width: serialWidth }}
+                                    className="p-4 border medication-table-border-color text-center"
+                                >
                                     {idx + 1}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: nameWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     <span
                                         className={`${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -5974,16 +5987,28 @@ export const getInvestigativeReadingsHtml = (
                                         {labVital?.name || ''}
                                     </span>
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: readingColWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     {labVital?.value} {labVital?.unit?.name}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: interpretationColWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     {labVital?.interpretation?.value || ''}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: dateColWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     {labVital?.dateInString || ''}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-left">
+                                <td
+                                    style={{ width: remarksColWidth }}
+                                    className="p-4 border medication-table-border-color text-left"
+                                >
                                     {labVital?.remark || ''}
                                 </td>
                             </tr>
