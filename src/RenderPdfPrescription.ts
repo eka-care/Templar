@@ -46,6 +46,122 @@ export interface RenderPdfPrescription {
         medications?: boolean;
         injections?: boolean;
     };
+    growthCharts?: GrowthChartData[];
+}
+export interface GrowthChartData {
+    chartType:
+        | 'weight-for-age'
+        | 'height-for-age'
+        | 'ofc-for-age'
+        | 'bmi-for-age'
+        | 'weight-for-height';
+    chartConfig: {
+        data: {
+            labels?: number[];
+            datasets: Array<{
+                label: string | string[];
+                data: Array<{ x: number; y: number } | number>;
+                backgroundColor?: string;
+                borderColor?: string;
+                fill?: boolean;
+                pointRadius?: number;
+                pointHoverRadius?: number;
+                borderWidth?: number;
+                order?: number;
+                pointBackgroundColor?: string | string[];
+                pointBorderColor?: string | string[];
+                pointStyle?: string;
+            }>;
+        };
+        options: {
+            scales: {
+                x: {
+                    type?: string;
+                    min?: number;
+                    max?: number;
+                    ticks?: {
+                        stepSize?: number;
+                        color?: string;
+                        font?: {
+                            weight?: string;
+                            size?: number;
+                        };
+                    };
+                    title?: {
+                        text: string;
+                        color?: string;
+                        font?: {
+                            size?: number;
+                            weight?: string;
+                        };
+                        display?: boolean;
+                    };
+                    grid?: {
+                        display?: boolean;
+                        color?: string;
+                        borderColor?: string;
+                    };
+                };
+                y: {
+                    type?: string;
+                    ticks?: {
+                        stepSize?: number;
+                        color?: string;
+                        font?: {
+                            weight?: string;
+                            size?: number;
+                        };
+                    };
+                    title?: {
+                        text: string;
+                        color?: string;
+                        font?: {
+                            size?: number;
+                            weight?: string;
+                        };
+                        display?: boolean;
+                    };
+                    grid?: {
+                        display?: boolean;
+                        color?: string;
+                        borderColor?: string;
+                    };
+                };
+            };
+            plugins?: {
+                datalabels?: {
+                    color?: string | ((context: any) => string);
+                    anchor?: string;
+                    align?: string | ((context: any) => string);
+                    font?:
+                        | ((context: any) => { size?: number; weight?: string; color?: string })
+                        | {
+                              size?: number;
+                              weight?: string;
+                          };
+                    formatter?: (value: any, context: any) => string;
+                };
+                legend?: {
+                    display?: boolean;
+                };
+            };
+            layout?: {
+                padding?: {
+                    top?: number;
+                    right?: number;
+                    bottom?: number;
+                    left?: number;
+                };
+            };
+            elements?: {
+                line?: {
+                    fill?: boolean;
+                    tension?: number;
+                };
+            };
+            aspectRatio?: number;
+        };
+    };
 }
 
 interface Phone {
@@ -706,6 +822,8 @@ export interface TemplateConfig {
     growth_chart_properties_color?: string;
     care_canvas_heading_color?: string;
     medical_history_status_display?: string;
+    growth_chart_image_display?: boolean;
+    growth_chart_stats_disabled?: boolean;
     __v2?: boolean;
 }
 

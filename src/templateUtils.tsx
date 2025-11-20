@@ -1346,6 +1346,7 @@ export const getBodyHtml = (
     config: TemplateV2,
     ptFormFields: DFormEntity[],
     flavour: Flavour,
+    gcData?: any,
 ): JSX.Element => {
     const padConfig = config?.render_pdf_body_config?.pad_elements_config;
 
@@ -1402,7 +1403,7 @@ export const getBodyHtml = (
             )}
 
             {isDoubleColumn
-                ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig)
+                ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig, gcData)
                 : null}
             {padConfig ? (
                 <div className={`${spacing}`}>
@@ -1421,6 +1422,7 @@ export const getBodyHtml = (
                                     sectionNameConfig,
                                     false,
                                     elementsInDoubleColumn,
+                                    gcData,
                                 ) || getDyformHtml(data, item.id, config)
                             );
                         })
@@ -1432,9 +1434,7 @@ export const getBodyHtml = (
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
                             getVitalsHtml(data, config)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            getGrowthChartVitalsHtml(data, config)}
-                        {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'vitals') &&
-                            getGrowthChartVitalsHtml(data, config)}
+                            getGrowthChartVitalsHtml(data, config, gcData)}
                         {isDoubleColumnElementVisible(config, elementsInDoubleColumn, 'symptoms') &&
                             getSymptomsHtml(data, config, sectionNameConfig?.['symptoms'])}
                         {isDoubleColumnElementVisible(
@@ -1564,15 +1564,17 @@ export const doubleColumnsHtml = (
     config: TemplateV2,
     doubleColumnConfig: ColumnConfig,
     sectionNameConfig?: SectionNameConfig,
+    gcData?: string,
 ): JSX.Element | null => {
     const leftComponentNonEmptyElements =
         doubleColumnConfig?.left?.filter((key) =>
-            padElements(data, key, config, sectionNameConfig),
+            padElements(data, key, config, sectionNameConfig, undefined, undefined, gcData),
         ) || [];
 
     const rightComponentNonEmptyElements =
-        doubleColumnConfig?.right?.filter((key) =>
-            padElements(data, key, config, sectionNameConfig),
+        doubleColumnConfig?.right?.filter(
+            (key) =>
+                padElements(data, key, config, sectionNameConfig, undefined, undefined, gcData), //see if red here
         ) || [];
 
     if (leftComponentNonEmptyElements?.length <= 0 && rightComponentNonEmptyElements?.length <= 0) {
@@ -1668,6 +1670,8 @@ export const doubleColumnsHtml = (
                                               config,
                                               sectionNameConfig,
                                               true,
+                                              undefined,
+                                              gcData,
                                           )
                                         : null}
                                 </div>
@@ -6327,12 +6331,15 @@ export const getVitalsHtml = (
 export const getGrowthChartVitalsHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
+    gcData: JSX.Element | undefined,
 ): JSX.Element | undefined => {
     const gcVitals = d.tool?.medicalHistory?.growthChartVitals?.chartValues;
     const gcChartType = d.tool?.medicalHistory?.growthChartVitals?.chartType;
     const headingColor = config?.render_pdf_config?.growth_chart_heading_color;
     const keyColor = config?.render_pdf_config?.growth_chart_name_color;
     const propertyColor = config?.render_pdf_config?.growth_chart_properties_color;
+    const chartEnabled = config?.render_pdf_config?.growth_chart_image_display;
+    const statsDisabled = config?.render_pdf_config?.growth_chart_stats_disabled;
     if (!gcVitals?.length) {
         return;
     }
@@ -6345,20 +6352,49 @@ export const getGrowthChartVitalsHtml = (
             >
                 GROWTH CHART INDICATORS {gcChartType === 'fanton' ? '[FENTON]' : `[WHO/IAP]`} :
             </span>
-
-            <ul className="ml-36">
-                {gcVitals?.map((vital) => {
-                    return (
-                        <li className="">
-                            <span className={`uppercase bold`} style={{ color: keyColor }}>
-                                {vital?.name || ''}
-                            </span>
-                            : <span style={{ color: propertyColor }}>{vital?.value}</span>
-                        </li>
-                    );
-                })}
-            </ul>
+            {chartEnabled ? (
+                gcData ? (
+                    <div
+                        className="growth-chart-images"
+                        dangerouslySetInnerHTML={{ __html: gcData }}
+                    />
+                ) : null
+            ) : (
+                <></>
+            )}
+            {!statsDisabled && (
+                <ul className="ml-36">
+                    {gcVitals?.map((vital) => {
+                        return (
+                            <li className="">
+                                <span className={`uppercase bold`} style={{ color: keyColor }}>
+                                    {vital?.name || ''}
+                                </span>
+                                : <span style={{ color: propertyColor }}>{vital?.value}</span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
         </div>
+    );
+};
+
+export const getGrowthChartsImage = (gcData: string): JSX.Element | undefined => {
+    if (!gcData) {
+        return;
+    }
+
+    return (
+        <>
+            {/* <div
+            className="growth-chart-images"
+            dangerouslySetInnerHTML={{
+                __html: gcData,
+            }}
+        ></div> */}
+            {gcData}
+        </>
     );
 };
 
