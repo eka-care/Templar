@@ -47,6 +47,9 @@ export interface RenderPdfPrescription {
         injections?: boolean;
     };
     growthCharts?: GrowthChartData[];
+    genericMetaData: {
+        [key: string]: any;
+    };
 }
 export interface GrowthChartData {
     chartType:
