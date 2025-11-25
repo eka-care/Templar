@@ -432,3 +432,8 @@ export interface Procedure {
     date?: string;
     notes?: string;
 }
+
+export interface masssagedAppointmentMetaDataObject {
+    key: string;
+    value: string;
+}

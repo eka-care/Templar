@@ -12,6 +12,7 @@ import {
     DoctorProfile,
     InjectionsEntity,
     Flavour,
+    masssagedAppointmentMetaDataObject,
 } from './types';
 import {
     DEFAULT_CONFIG_ELEMENT_IN_DOUBLE_COLUMNS,
@@ -1347,6 +1348,7 @@ export const getBodyHtml = (
     ptFormFields: DFormEntity[],
     flavour: Flavour,
     gcData?: any,
+    metaData?: masssagedAppointmentMetaDataObject[] | null,
 ): JSX.Element => {
     const padConfig = config?.render_pdf_body_config?.pad_elements_config;
 
@@ -1402,6 +1404,7 @@ export const getBodyHtml = (
                 </>
             )}
 
+            {getAppointmentMetaDataHtml(metaData)}
             {isDoubleColumn
                 ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig, gcData)
                 : null}
@@ -6599,6 +6602,27 @@ export const getVisitDateHtml = (
             {timeZoneInfo}
         </p>
     ) : null;
+};
+
+export const getAppointmentMetaDataHtml = (data: any): JSX.Element => {
+    if (!data) return <></>;
+
+    const items = Array.isArray(data)
+        ? data
+        : Object.entries(data).map(([key, value]) => ({ key, value }));
+
+    if (!items?.length) return <></>;
+
+    return (
+        <span className="mt-8 mb-8">
+            {items.map((it, i) => (
+                <span key={i}>
+                    <strong>{it.key}</strong>: {it.value}
+                    {i < items.length - 1 ? ', ' : ''}
+                </span>
+            ))}
+        </span>
+    );
 };
 
 export const getPatientDetailsHtml = (
