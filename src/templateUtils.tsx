@@ -6614,7 +6614,7 @@ export const getAppointmentMetaDataHtml = (data: any): JSX.Element => {
     if (!items?.length) return <></>;
 
     return (
-        <span className="mt-8 mb-8">
+        <span className="mt-8 mb-8 italic">
             {items.map((it, i) => (
                 <span key={i}>
                     <strong>{it.key}</strong> : {it.value}
