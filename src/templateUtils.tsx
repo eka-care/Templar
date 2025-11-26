@@ -1390,6 +1390,7 @@ export const getBodyHtml = (
                     </div>
                     <div>
                         {getFormDataHtml(data, config, ptFormFields)}
+                        {getAppointmentMetaDataHtml(metaData)}
                         {config?.render_pdf_config?.patient_form_below_border ? (
                             <div
                                 style={{
@@ -1404,7 +1405,6 @@ export const getBodyHtml = (
                 </>
             )}
 
-            {getAppointmentMetaDataHtml(metaData)}
             {isDoubleColumn
                 ? doubleColumnsHtml(data, config, doubleColumnConfig, sectionNameConfig, gcData)
                 : null}
@@ -6617,7 +6617,7 @@ export const getAppointmentMetaDataHtml = (data: any): JSX.Element => {
         <span className="mt-8 mb-8">
             {items.map((it, i) => (
                 <span key={i}>
-                    <strong>{it.key}</strong>: {it.value}
+                    <strong>{it.key}</strong> : {it.value}
                     {i < items.length - 1 ? ', ' : ''}
                 </span>
             ))}
