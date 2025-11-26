@@ -1390,7 +1390,7 @@ export const getBodyHtml = (
                     </div>
                     <div>
                         {getFormDataHtml(data, config, ptFormFields)}
-                        {getAppointmentMetaDataHtml(metaData)}
+                        {getAppointmentMetaDataHtml(metaData!)}
                         {config?.render_pdf_config?.patient_form_below_border ? (
                             <div
                                 style={{
@@ -6604,7 +6604,9 @@ export const getVisitDateHtml = (
     ) : null;
 };
 
-export const getAppointmentMetaDataHtml = (data: any): JSX.Element => {
+export const getAppointmentMetaDataHtml = (
+    data: masssagedAppointmentMetaDataObject[] | null,
+): JSX.Element => {
     if (!data) return <></>;
 
     const items = Array.isArray(data)
