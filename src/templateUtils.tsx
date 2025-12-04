@@ -1911,7 +1911,7 @@ export const getDoubleColumnMedications = (
                             </div>{' '}
                             {med?.generic_name && (
                                 <div className="italic">
-                                    <p className="text-10">{med?.generic_name} </p>
+                                    <p className="text-10 break-all">{med?.generic_name} </p>
                                 </div>
                             )}
                             <div
@@ -2155,7 +2155,7 @@ export const getMedications1Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">{med?.generic_name} </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -2169,7 +2169,7 @@ export const getMedications1Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
+                                                        className={`bold break-all ${
                                                             render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
@@ -2444,7 +2444,7 @@ export const getMedications1Html = (
                                             )}
 
                                             {med?.generic_name ? (
-                                                <p className="text-10">{med?.generic_name} </p>
+                                                <p className="text-10 break-all">{med?.generic_name} </p>
                                             ) : (
                                                 ''
                                             )}
@@ -2458,7 +2458,7 @@ export const getMedications1Html = (
                                         <>
                                             {med?.generic_name ? (
                                                 <p
-                                                    className={`bold ${
+                                                    className={`bold break-word ${
                                                         render_pdf_config?.medication_name_in_capital
                                                             ? 'uppercase'
                                                             : ''
@@ -2818,7 +2818,7 @@ export const getMedications2Html = (
                                                     )}
 
                                                     {med?.generic_name ? (
-                                                        <p className="text-10">
+                                                        <p className="text-10 break-all">
                                                             {med?.generic_name}{' '}
                                                         </p>
                                                     ) : (
@@ -2829,7 +2829,7 @@ export const getMedications2Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
+                                                            className={`bold break-all ${
                                                                 render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
@@ -3119,7 +3119,7 @@ export const getMedications2Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">{med?.generic_name} </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -3128,7 +3128,7 @@ export const getMedications2Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
+                                                        className={`bold break-all ${
                                                             render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
@@ -3502,7 +3502,7 @@ export const getMedications3Html = (
                                                     )}
 
                                                     {med?.generic_name ? (
-                                                        <p className="text-10">
+                                                        <p className="text-10 break-all">
                                                             {med?.generic_name}{' '}
                                                         </p>
                                                     ) : (
@@ -3513,7 +3513,7 @@ export const getMedications3Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
+                                                            className={`bold break-all ${
                                                                 render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
@@ -3774,7 +3774,7 @@ export const getMedications3Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">{med?.generic_name} </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -3783,7 +3783,7 @@ export const getMedications3Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
+                                                        className={`bold break-all ${
                                                             render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
@@ -4156,7 +4156,7 @@ export const getMedications4Html = (
                                                     )}
 
                                                     {med?.generic_name ? (
-                                                        <p className="text-10">
+                                                        <p className="text-10 break-all">
                                                             {med?.generic_name}{' '}
                                                         </p>
                                                     ) : (
@@ -4167,7 +4167,7 @@ export const getMedications4Html = (
                                                 <>
                                                     {med?.generic_name ? (
                                                         <p
-                                                            className={`bold ${
+                                                            className={`bold break-all ${
                                                                 render_pdf_config?.medication_name_in_capital
                                                                     ? 'uppercase'
                                                                     : ''
@@ -4457,7 +4457,7 @@ export const getMedications4Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">{med?.generic_name} </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -4466,7 +4466,7 @@ export const getMedications4Html = (
                                             <>
                                                 {med?.generic_name ? (
                                                     <p
-                                                        className={`bold ${
+                                                        className={`bold break-all ${
                                                             render_pdf_config?.medication_name_in_capital
                                                                 ? 'uppercase'
                                                                 : ''
