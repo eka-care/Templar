@@ -1700,6 +1700,8 @@ export const doubleColumnsHtml = (
                                               config,
                                               sectionNameConfig,
                                               true,
+                                              undefined,
+                                              gcData,
                                           )
                                         : null}
                                 </div>
@@ -2155,7 +2157,9 @@ export const getMedications1Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10 break-all">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">
+                                                        {med?.generic_name}{' '}
+                                                    </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -2444,7 +2448,9 @@ export const getMedications1Html = (
                                             )}
 
                                             {med?.generic_name ? (
-                                                <p className="text-10 break-all">{med?.generic_name} </p>
+                                                <p className="text-10 break-all">
+                                                    {med?.generic_name}{' '}
+                                                </p>
                                             ) : (
                                                 ''
                                             )}
@@ -3119,7 +3125,9 @@ export const getMedications2Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10 break-all">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">
+                                                        {med?.generic_name}{' '}
+                                                    </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -3774,7 +3782,9 @@ export const getMedications3Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10 break-all">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">
+                                                        {med?.generic_name}{' '}
+                                                    </p>
                                                 ) : (
                                                     ''
                                                 )}
@@ -4457,7 +4467,9 @@ export const getMedications4Html = (
                                                 )}
 
                                                 {med?.generic_name ? (
-                                                    <p className="text-10 break-all">{med?.generic_name} </p>
+                                                    <p className="text-10 break-all">
+                                                        {med?.generic_name}{' '}
+                                                    </p>
                                                 ) : (
                                                     ''
                                                 )}
