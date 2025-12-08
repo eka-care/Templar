@@ -6355,7 +6355,7 @@ export const getGrowthChartVitalsHtml = (
     const propertyColor = config?.render_pdf_config?.growth_chart_properties_color;
     const chartEnabled = config?.render_pdf_config?.growth_chart_image_display;
     const statsDisabled = config?.render_pdf_config?.growth_chart_stats_disabled;
-    const vitalsUsedEnabled = true;
+    const vitalsUsedEnabled = config?.render_pdf_config?.show_vitals_used_in_growth_chart;
     if (!gcVitals?.length) {
         return;
     }
@@ -6387,7 +6387,7 @@ export const getGrowthChartVitalsHtml = (
                                     {vital?.name || ''}
                                 </span>
                                 : <span style={{ color: propertyColor }}>{vital?.value}</span>,{' '}
-                                <span>{vital?.vitalsUsed}</span>
+                                {vitalsUsedEnabled && <span>{vital?.vitalsUsed}</span>}
                             </li>
                         );
                     })}

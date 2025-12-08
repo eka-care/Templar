@@ -828,6 +828,7 @@ export interface TemplateConfig {
     medical_history_status_display?: string;
     growth_chart_image_display?: boolean;
     growth_chart_stats_disabled?: boolean;
+    show_vitals_used_in_growth_chart?: boolean;
     __v2?: boolean;
 }
 
