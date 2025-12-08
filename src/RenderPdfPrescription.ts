@@ -303,6 +303,7 @@ interface MedicalHistory {
 interface GrowthChart {
     name: string;
     value: string;
+    vitalsUsed?: string;
 }
 
 type mhDataElement = {
