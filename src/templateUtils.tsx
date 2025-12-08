@@ -6387,7 +6387,11 @@ export const getGrowthChartVitalsHtml = (
                                     {vital?.name || ''}
                                 </span>
                                 : <span style={{ color: propertyColor }}>{vital?.value}</span>,{' '}
-                                {vitalsUsedEnabled && <span>{vital?.vitalsUsed}</span>}
+                                {vitalsUsedEnabled && (
+                                    <span style={{ color: propertyColor }}>
+                                        {vital?.vitalsUsed}
+                                    </span>
+                                )}
                             </li>
                         );
                     })}
