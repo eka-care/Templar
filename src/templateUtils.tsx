@@ -6355,6 +6355,7 @@ export const getGrowthChartVitalsHtml = (
     const propertyColor = config?.render_pdf_config?.growth_chart_properties_color;
     const chartEnabled = config?.render_pdf_config?.growth_chart_image_display;
     const statsDisabled = config?.render_pdf_config?.growth_chart_stats_disabled;
+    const vitalsUsedEnabled = config?.render_pdf_config?.show_vitals_used_in_growth_chart;
     if (!gcVitals?.length) {
         return;
     }
@@ -6385,7 +6386,12 @@ export const getGrowthChartVitalsHtml = (
                                 <span className={`uppercase bold`} style={{ color: keyColor }}>
                                     {vital?.name || ''}
                                 </span>
-                                : <span style={{ color: propertyColor }}>{vital?.value}</span>
+                                : <span style={{ color: propertyColor }}>{vital?.value}</span>,{' '}
+                                {vitalsUsedEnabled && (
+                                    <span style={{ color: propertyColor }}>
+                                        {vital?.vitalsUsed}
+                                    </span>
+                                )}
                             </li>
                         );
                     })}
