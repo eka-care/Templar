@@ -1376,8 +1376,6 @@ export const getBodyHtml = (
     const isFollowupEnabled = filteredPadConfig?.find((i) => i.id === 'followup')?.isShown;
     const isCareCanvasNotPresentInPadConfig =
         padConfig && padConfig.findIndex((i) => i.id === 'careCanvas') === -1;
-    const isVaccinesNotPresentInPadConfig =
-        padConfig && padConfig.findIndex((i) => i.id === 'vaccines') === -1;
 
     return (
         <div className="space-y-2 text-11 prescription-template" id="body-click">
@@ -1510,6 +1508,10 @@ export const getBodyHtml = (
                             elementsInDoubleColumn,
                             'prescriptionNotes',
                         ) && getNotesHtml(data, config, sectionNameConfig?.['prescriptionNotes'])}
+                        <div className="leading-5">
+                            {getPmhHtml(data, 'g-vh', config)}
+                            {getPmhHtml(data, 'd-vh', config)}
+                        </div>
                     </div>
                     {getAdvicesHtml(data, config, sectionNameConfig?.['advices'])}
                     {getFollowupHtml(data, config, sectionNameConfig?.['followup'])}
@@ -1533,7 +1535,6 @@ export const getBodyHtml = (
                     </div>
                     {getProceduresHtmls(data, config, sectionNameConfig?.['procedures'])}
                     {getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
-                    {getVaccinesHtml(data, config)}
                 </>
             )}
             {!isFollowupAndAdvicesEnabled &&
@@ -1541,8 +1542,6 @@ export const getBodyHtml = (
                 getIpdAdmissionHtml(data, config)}
             {isCareCanvasNotPresentInPadConfig &&
                 getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
-            {isVaccinesNotPresentInPadConfig &&
-                getVaccinesHtml(data, config)}
         </div>
     );
 };
@@ -11118,15 +11117,6 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
                 )}
             </div>
         )
-    );
-};
-
-export const getVaccinesHtml = (data: RenderPdfPrescription, config: TemplateV2) => {
-    return (
-        <div className="leading-5">
-            {getPmhHtml(data, 'g-vh', config)}
-            {getPmhHtml(data, 'd-vh', config)}
-        </div>
     );
 };
 
