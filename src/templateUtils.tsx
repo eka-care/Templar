@@ -6386,10 +6386,10 @@ export const getGrowthChartVitalsHtml = (
                                 <span className={`uppercase bold`} style={{ color: keyColor }}>
                                     {vital?.name || ''}
                                 </span>
-                                : <span style={{ color: propertyColor }}>{vital?.value}</span>,{' '}
+                                : <span style={{ color: propertyColor }}>{vital?.value}</span>
                                 {vitalsUsedEnabled && (
                                     <span style={{ color: propertyColor }}>
-                                        {vital?.vitalsUsed}
+                                        ,{vital?.vitalsUsed}
                                     </span>
                                 )}
                             </li>
