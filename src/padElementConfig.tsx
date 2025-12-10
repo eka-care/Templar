@@ -21,6 +21,7 @@ import {
     getProceduresHtmls,
     getReferredToHtml,
     getSymptomsHtml,
+    getVaccinesHtml,
     getVitalsHtml,
     injectionsFormatToTableMapping,
     isDoubleColumnElementVisible,
@@ -103,8 +104,6 @@ export const padElements = (
                     {getPmhHtml(data, 'oa', config)}
                     {getPmhHtml(data, 'pp', config)}
                     {getPmhHtml(data, 'omh', config)}
-                    {getPmhHtml(data, 'd-vh', config)}
-                    {getPmhHtml(data, 'g-vh', config)}
                 </>
             );
         case 'labTests':
@@ -154,6 +153,8 @@ export const padElements = (
             return getProceduresHtmls(data, config, sectionNameConfig?.['procedures']);
         case 'careCanvas':
             return getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas']);
+        case 'vaccines':
+            return getVaccinesHtml(data, config);
         default:
             return;
     }
