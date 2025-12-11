@@ -668,6 +668,7 @@ export const getCustomHeaderHtml = (
     header_img?: string,
     d?: RenderPdfPrescription,
     config?: TemplateV2,
+    metaData?: masssagedAppointmentMetaDataObject[] | null,
 ): JSX.Element => {
     return (
         <>
@@ -694,7 +695,7 @@ export const getCustomHeaderHtml = (
                             {render_pdf_config?.floating_patient_details &&
                                 config &&
                                 d &&
-                                getRepitivePtDetails(d, config, ptFormFields)}
+                                getRepitivePtDetails(d, config, ptFormFields, metaData)}
                         </div>
                     </div>
 
@@ -732,7 +733,7 @@ export const getCustomHeaderHtml = (
                             {render_pdf_config?.floating_patient_details &&
                                 config &&
                                 d &&
-                                getRepitivePtDetails(d, config, ptFormFields)}
+                                getRepitivePtDetails(d, config, ptFormFields, metaData)}
                         </div>
                     </div>
 
@@ -951,6 +952,7 @@ export const getHeaderHtml = (
     activeClinic?: string,
     d?: RenderPdfPrescription,
     config?: TemplateV2,
+    metaData?: masssagedAppointmentMetaDataObject[] | null,
 ): JSX.Element => {
     const clinic =
         docProfile?.profile?.professional?.clinics?.find((clinic) => clinic._id === activeClinic) ||
@@ -1013,7 +1015,7 @@ export const getHeaderHtml = (
                     {render_pdf_config?.floating_patient_details &&
                         config &&
                         d &&
-                        getRepitivePtDetails(d, config, ptFormFields)}
+                        getRepitivePtDetails(d, config, ptFormFields, metaData)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -1063,7 +1065,7 @@ export const getHeaderHtml = (
                     {render_pdf_config?.floating_patient_details &&
                         config &&
                         d &&
-                        getRepitivePtDetails(d, config, ptFormFields)}
+                        getRepitivePtDetails(d, config, ptFormFields, metaData)}
                     {rxLocalConfig?.header_border && (
                         <div className="border-b border-darwin-neutral-500"></div>
                     )}
@@ -1145,6 +1147,7 @@ export const getRepitivePtDetails = (
     d: RenderPdfPrescription,
     config: TemplateV2,
     ptFormFields?: DFormEntity[],
+    metaData?: masssagedAppointmentMetaDataObject[] | null,
 ): JSX.Element => {
     const patientDetailsFormat = config?.render_pdf_config?.patient_details_format;
     const patientDetailsUppercase = config?.render_pdf_config?.patient_details_in_uppercase;
@@ -1247,6 +1250,7 @@ export const getRepitivePtDetails = (
                     className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
                 >
                     {getFormDataHtml(d, config, ptFormFields, true)}
+                    {getAppointmentMetaDataHtml(metaData!)}
                     {config?.render_pdf_config?.patient_form_below_border ? (
                         <div
                             style={{
@@ -1314,6 +1318,7 @@ export const getRepitivePtDetails = (
                 className="flex flex-col space-x-4 justify-between header-bottom-border text-11"
             >
                 {getFormDataHtml(d, config, ptFormFields, true)}
+                {getAppointmentMetaDataHtml(metaData!)}
                 {config?.render_pdf_config?.patient_form_below_border ? (
                     <div
                         style={{
@@ -1541,8 +1546,7 @@ export const getBodyHtml = (
                 getIpdAdmissionHtml(data, config)}
             {isCareCanvasNotPresentInPadConfig &&
                 getCareCanvasHtml(data, config, sectionNameConfig?.['careCanvas'])}
-            {isVaccinesNotPresentInPadConfig &&
-                getVaccinesHtml(data, config)}
+            {isVaccinesNotPresentInPadConfig && getVaccinesHtml(data, config)}
         </div>
     );
 };
