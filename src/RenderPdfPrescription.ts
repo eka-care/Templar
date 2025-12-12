@@ -679,6 +679,7 @@ export interface TemplateConfig {
     lab_vitals_format?: 'date-data' | '';
     advices_format?: 'pipe-seperated' | '';
     patient_form_data_format?: 'pipe-seperated-without-key' | '';
+    show_pt_img?: boolean;
     medication_table_format?:
         | 'quantity-column'
         | 'quantity-column-without-border'

@@ -1391,23 +1391,30 @@ export const getBodyHtml = (
             )}
             {!config?.render_pdf_config?.floating_patient_details && (
                 <>
-                    <div className="flex items-start justify-between italic text-darwin-neutral-1000">
-                        {getPatientDetailsHtml(data, config)}
-                        {getVisitDateHtml(data, config)}
-                    </div>
-                    <div>
-                        {getFormDataHtml(data, config, ptFormFields)}
-                        {getAppointmentMetaDataHtml(metaData!)}
-                        {config?.render_pdf_config?.patient_form_below_border ? (
-                            <div
-                                style={{
-                                    height: '1px',
-                                    width: '100%',
-                                    backgroundColor: '#060606',
-                                    marginBottom: '8px',
-                                }}
-                            ></div>
-                        ) : null}
+                    <div className="flex flex-row">
+                        <div style={{ flex: 1, marginRight: '8px' }}>
+                            <div className="flex items-start justify-between italic text-darwin-neutral-1000">
+                                {getPatientDetailsHtml(data, config)}
+                                {getVisitDateHtml(data, config)}
+                            </div>
+                            <div>
+                                {getFormDataHtml(data, config, ptFormFields)}
+                                {getAppointmentMetaDataHtml(metaData!)}
+                                {config?.render_pdf_config?.patient_form_below_border ? (
+                                    <div
+                                        style={{
+                                            height: '1px',
+                                            width: '100%',
+                                            backgroundColor: '#060606',
+                                            marginBottom: '8px',
+                                        }}
+                                    ></div>
+                                ) : null}
+                            </div>
+                        </div>
+                        {config?.render_pdf_config?.show_pt_img && (
+                            <div style={{ flexShrink: 0 }}>{getPatientImage(data, config)}</div>
+                        )}
                     </div>
                 </>
             )}
@@ -6553,6 +6560,14 @@ export const getFormDataHtml = (
             })}
         </div>
     );
+};
+
+export const getPatientImage = (
+    d: RenderPdfPrescription,
+    config: TemplateV2,
+): JSX.Element | null => {
+    const imgUrl = `https://a.eka.care/user-avatar/${d?.patient?.id}`;
+    return <img src={imgUrl} style={{ maxHeight: '100px', maxWidth: '100px' }} alt="pt img" />;
 };
 
 export const getVisitDateHtml = (
