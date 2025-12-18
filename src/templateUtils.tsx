@@ -85,11 +85,12 @@ export const getHeadHtml = (
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
     fontsUrl: string = '',
+    show_qr_in_footer?: boolean,
 ): string => {
     return `
     
     ${fontsUrl || ''}
-    <script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>
+    ${show_qr_in_footer ? '<script src="/qr-code.js"></script>' : ''}
    
     <style>      
             ${
@@ -799,7 +800,9 @@ export const getCustomFooterHtml = (
                                 margin: '0 auto',
                                 display: 'block',
                             }}
-                        />
+                        >
+                            <img src="/images/eka-logo-dark.png" slot="icon" />
+                        </qr-code>
                     )}
                 </div>
                 <div
@@ -1786,7 +1789,9 @@ export const getFooterHtml = (
                                 margin: '0 auto',
                                 display: 'block',
                             }}
-                        />
+                        >
+                            <img src="/images/eka-logo-dark.png" slot="icon" />
+                        </qr-code>
                     )}
                 </div>
                 <div style={{ flex: 1, marginRight: '8px' }}>
