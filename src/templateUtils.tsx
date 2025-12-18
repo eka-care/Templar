@@ -791,6 +791,7 @@ export const getCustomFooterHtml = (
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0, paddingTop: '1cm' }}>
                     {show_qr_in_footer && (
+                        // @ts-ignore - qr-code is a custom web component
                         <qr-code
                             id="qr"
                             contents={qrUrl}
@@ -802,6 +803,7 @@ export const getCustomFooterHtml = (
                             }}
                         >
                             <img src="/images/eka-logo-dark.png" slot="icon" />
+                            {/* @ts-ignore */}
                         </qr-code>
                     )}
                 </div>
@@ -1780,6 +1782,7 @@ export const getFooterHtml = (
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0 }}>
                     {renderPdfConfig?.show_qr_in_footer && (
+                        // @ts-ignore - qr-code is a custom web component
                         <qr-code
                             id="qr"
                             contents={qrUrl}
@@ -1791,6 +1794,7 @@ export const getFooterHtml = (
                             }}
                         >
                             <img src="/images/eka-logo-dark.png" slot="icon" />
+                            {/* @ts-ignore */}
                         </qr-code>
                     )}
                 </div>
