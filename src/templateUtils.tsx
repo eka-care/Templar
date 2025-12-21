@@ -821,6 +821,7 @@ export const getCustomFooterHtml = (
                                 show_signature ||
                                 show_name_in_signature ||
                                 show_signature_text ||
+                                show_approval_details ||
                                 footer_img)
                                 ? '1px solid black'
                                 : '',
