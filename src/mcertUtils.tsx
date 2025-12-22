@@ -53,6 +53,7 @@ export const getFooterMcert = (
             renderPdfConfig.show_approval_details,
             renderPdfConfig.footer_height,
             renderPdfConfig.floating_footer_details,
+            renderPdfConfig?.show_qr_in_footer,
         );
     }
 

@@ -830,6 +830,7 @@ export interface TemplateConfig {
     growth_chart_image_display?: boolean;
     growth_chart_stats_disabled?: boolean;
     show_vitals_used_in_growth_chart?: boolean;
+    show_qr_in_footer?: boolean;
     __v2?: boolean;
 }
 
