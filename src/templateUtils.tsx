@@ -90,7 +90,11 @@ export const getHeadHtml = (
     return `
     
     ${fontsUrl || ''}
-    ${show_qr_in_footer ? '<script src="/qr-code.js"></script>' : ''}
+    ${
+        show_qr_in_footer
+            ? '<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>'
+            : ''
+    }
    
     <style>      
             ${
@@ -802,7 +806,10 @@ export const getCustomFooterHtml = (
                                 display: 'block',
                             }}
                         >
-                            <img src="/images/eka-logo-dark.png" slot="icon" />
+                            <img
+                                src="https://elixir-dr.eka.care/stetho/main/images/eka-logo-dark.png"
+                                slot="icon"
+                            />
                             {/* @ts-ignore */}
                         </qr-code>
                     )}
