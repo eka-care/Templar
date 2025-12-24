@@ -87,15 +87,12 @@ export const getHeadHtml = (
     showPageBorder?: boolean,
     fontsUrl: string = '',
     show_qr_in_footer?: boolean,
+    qrCodeScriptUrl: string = '/qr-code.js',
 ): string => {
     return `
     
     ${fontsUrl || ''}
-    ${
-        show_qr_in_footer
-            ? '<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>'
-            : ''
-    }
+    ${show_qr_in_footer ? `<script src="${qrCodeScriptUrl}"></script>` : ''}
    
     <style>      
             ${

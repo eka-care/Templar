@@ -67,12 +67,14 @@ export const getHead = ({
     showPageBorder = false,
     fontsUrl = '',
     show_qr_in_footer = false,
+    qrCodeScriptUrl = '/qr-code.js',
 }: {
     language: keyof typeof fontFamily | undefined;
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal';
     showPageBorder?: boolean;
     fontsUrl: string;
     show_qr_in_footer?: boolean;
+    qrCodeScriptUrl?: string;
 }): string => {
-    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl, show_qr_in_footer);
+    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl, show_qr_in_footer, qrCodeScriptUrl);
 };
