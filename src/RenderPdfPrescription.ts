@@ -50,7 +50,14 @@ export interface RenderPdfPrescription {
     genericMetaData: {
         [key: string]: any;
     };
+    care_type?: CARE_TYPE;
 }
+
+export enum CARE_TYPE {
+  OP = "OP",
+  IP = "IP",
+}
+
 export interface GrowthChartData {
     chartType:
         | 'weight-for-age'
@@ -832,6 +839,7 @@ export interface TemplateConfig {
     show_vitals_used_in_growth_chart?: boolean;
     show_qr_in_footer?: boolean;
     __v2?: boolean;
+    hide_rx_date_in_ipd_rx?: boolean;
 }
 
 export type MedicationTableWidth = { [key: string]: number | undefined };
