@@ -28,6 +28,7 @@ import {
     SpacingBetweenSections,
     SeperatorType,
     TemplateConfig,
+    CARE_TYPE,
 } from './RenderPdfPrescription';
 import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
@@ -6657,6 +6658,11 @@ export const getVisitDateHtml = (
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation;
+    
+    const hideRxDate = config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
+    if (hideRxDate) {
+        return null;
+    }
 
     if (config?.render_pdf_config?.date_and_time === 'date' && (d?.dateEnd || d?.date)) {
         return (
