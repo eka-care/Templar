@@ -1220,8 +1220,8 @@ export const getRepitivePtDetails = (
             .filter(Boolean)
             .join(' / ');
 
-        return (
-            <div>
+        const patientDetailsContent = (
+            <>
                 <div
                     className="flex items-start justify-between italic text-darwin-neutral-500 text-13"
                     // style={{ fontSize: '0.68rem' }}
@@ -1241,14 +1241,17 @@ export const getRepitivePtDetails = (
                         className="flex space-x-4 pt-8 flex justify-between header-bottom-border text-13"
                     >
                         <div
-                            style={
-                                patientDetailsUppercase
+                            style={{
+                                ...(patientDetailsUppercase
                                     ? {
                                           textTransform: 'uppercase',
                                           //fontSize: '0.68rem',
                                       }
-                                    : undefined
-                            }
+                                    : {}),
+                                textAlign: 'left',
+                                alignSelf: 'flex-start',
+                                flex: '1 1 auto',
+                            }}
                         >
                             {[
                                 d?.patient?.profile?.personal?.name && (
@@ -1312,6 +1315,22 @@ export const getRepitivePtDetails = (
                         ></div>
                     ) : null}
                 </div>
+            </>
+        );
+
+        return (
+            <div className="flex flex-row">
+                <div
+                    style={{
+                        flex: 1,
+                        marginRight: config?.render_pdf_config?.show_pt_img ? '8px' : '0px',
+                    }}
+                >
+                    {patientDetailsContent}
+                </div>
+                {config?.render_pdf_config?.show_pt_img && (
+                    <div style={{ flexShrink: 0 }}>{getPatientImage(d, config)}</div>
+                )}
             </div>
         );
     }
@@ -1322,18 +1341,21 @@ export const getRepitivePtDetails = (
         mobileNumber,
     ].filter(Boolean);
 
-    return (
-        <div>
+    const patientDetailsContent = (
+        <>
             <div className="flex items-start justify-between italic text-darwin-neutral-500 text-13">
                 <div className="flex space-x-4 pt-8 flex justify-between header-bottom-border text-13">
                     <div
-                        style={
-                            patientDetailsUppercase
+                        style={{
+                            ...(patientDetailsUppercase
                                 ? {
                                       textTransform: 'uppercase',
                                   }
-                                : undefined
-                        }
+                                : {}),
+                            textAlign: 'left',
+                            alignSelf: 'flex-start',
+                            flex: '1 1 auto',
+                        }}
                     >
                         <span
                             className="text-13 bold"
@@ -1380,6 +1402,22 @@ export const getRepitivePtDetails = (
                     ></div>
                 ) : null}
             </div>
+        </>
+    );
+
+    return (
+        <div className="flex flex-row">
+            <div
+                style={{
+                    flex: 1,
+                    marginRight: config?.render_pdf_config?.show_pt_img ? '8px' : '0px',
+                }}
+            >
+                {patientDetailsContent}
+            </div>
+            {config?.render_pdf_config?.show_pt_img && (
+                <div style={{ flexShrink: 0 }}>{getPatientImage(d, config)}</div>
+            )}
         </div>
     );
 };
@@ -6658,8 +6696,9 @@ export const getVisitDateHtml = (
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation;
-    
-    const hideRxDate = config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
+
+    const hideRxDate =
+        config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
     if (hideRxDate) {
         return null;
     }
