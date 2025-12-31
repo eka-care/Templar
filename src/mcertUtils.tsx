@@ -54,8 +54,15 @@ export const getFooterMcert = (
             renderPdfConfig.footer_height,
             renderPdfConfig.floating_footer_details,
             renderPdfConfig?.show_qr_in_footer,
+            true, //from server
         );
     }
 
-    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
+    return getFooterHtml(
+        docProfile,
+        data,
+        rxLocalConfig,
+        renderPdfConfig,
+        true, //from server
+    );
 };

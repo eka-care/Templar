@@ -66,13 +66,11 @@ export const getHead = ({
     sizeType = 'normal',
     showPageBorder = false,
     fontsUrl = '',
-    show_qr_in_footer = false,
 }: {
     language: keyof typeof fontFamily | undefined;
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal';
     showPageBorder?: boolean;
     fontsUrl: string;
-    show_qr_in_footer?: boolean;
 }): string => {
-    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl, show_qr_in_footer);
+    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl);
 };

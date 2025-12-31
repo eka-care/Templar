@@ -779,8 +779,17 @@ export const getCustomFooterHtml = (
     footer_height?: string,
     floating_footer?: boolean,
     show_qr_in_footer?: boolean,
+    fromServer?: boolean,
 ): JSX.Element => {
-    const qrUrl = docProfile
+    const qrUrl = fromServer
+        ? 'https://api.qrserver.com/v1/create-qr-code/?' +
+          'size=100x100&data=' +
+          encodeURIComponent(
+              docProfile
+                  ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                  : '',
+          )
+        : docProfile
         ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
         : '';
     const timeZoneInfo =
@@ -795,25 +804,28 @@ export const getCustomFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0, paddingTop: '1cm' }}>
-                    {show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
-                            <img
-                                src="https://elixir-dr.eka.care/stetho/main/images/eka-logo-dark.png"
-                                slot="icon"
-                            />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
+                    {show_qr_in_footer &&
+                        (fromServer ? (
+                            <img src={qrUrl} alt="QR code" />
+                        ) : (
+                            // @ts-ignore - qr-code is a custom web component
+                            <qr-code
+                                id="qr"
+                                contents={qrUrl}
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    margin: '0 auto',
+                                    display: 'block',
+                                }}
+                            >
+                                <img
+                                    src="https://elixir-dr.eka.care/stetho/main/images/eka-logo-dark.png"
+                                    slot="icon"
+                                />
+                                {/* @ts-ignore */}
+                            </qr-code>
+                        ))}
                 </div>
                 <div
                     style={{
@@ -1154,6 +1166,7 @@ export const getFooter = (
                 undefined,
                 renderPdfConfig.floating_footer_details,
                 renderPdfConfig?.show_qr_in_footer,
+                true, //from server
             )
         ) : (
             <></>
@@ -1185,10 +1198,17 @@ export const getFooter = (
             renderPdfConfig.footer_height,
             renderPdfConfig.floating_footer_details,
             renderPdfConfig?.show_qr_in_footer,
+            true, //from server
         );
     }
 
-    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
+    return getFooterHtml(
+        docProfile,
+        data,
+        rxLocalConfig,
+        renderPdfConfig,
+        true, //from server
+    );
 };
 
 export const getRepitivePtDetails = (
@@ -1779,8 +1799,17 @@ export const getFooterHtml = (
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
     renderPdfConfig?: TemplateConfig,
+    fromServer?: boolean,
 ): JSX.Element => {
-    const qrUrl = docProfile
+    const qrUrl = fromServer
+        ? 'https://api.qrserver.com/v1/create-qr-code/?' +
+          'size=100x100&data=' +
+          encodeURIComponent(
+              docProfile
+                  ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                  : '',
+          )
+        : docProfile
         ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
         : '';
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
@@ -1797,22 +1826,25 @@ export const getFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0 }}>
-                    {renderPdfConfig?.show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
-                            <img src="/images/eka-logo-dark.png" slot="icon" />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
+                    {renderPdfConfig?.show_qr_in_footer &&
+                        (fromServer ? (
+                            <img src={qrUrl} alt="QR code" />
+                        ) : (
+                            // @ts-ignore - qr-code is a custom web component
+                            <qr-code
+                                id="qr"
+                                contents={qrUrl}
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    margin: '0 auto',
+                                    display: 'block',
+                                }}
+                            >
+                                <img src="/images/eka-logo-dark.png" slot="icon" />
+                                {/* @ts-ignore */}
+                            </qr-code>
+                        ))}
                 </div>
                 <div style={{ flex: 1, marginRight: '8px' }}>
                     <div
@@ -6658,8 +6690,9 @@ export const getVisitDateHtml = (
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation;
-    
-    const hideRxDate = config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
+
+    const hideRxDate =
+        config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
     if (hideRxDate) {
         return null;
     }
