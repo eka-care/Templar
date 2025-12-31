@@ -487,18 +487,32 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
       <p class="title">Payment Note</p>
       <div class="invoice-header">
         <div class="invoice-header--top">
-          ${
-              print_receipt_number && (business_receipt_number || receipt_number)
-                  ? `<div class="invoice-header__number">
+          <div class="invoice-header--left">
+            ${
+                print_receipt_number && (business_receipt_number || receipt_number)
+                    ? `<div class="invoice-header__number">
             <span>Receipt No: </span>
             <span>${business_receipt_number || receipt_number}</span>
           </div>`
-                  : ''
-          }
-          <div>
-            <span>Visit Date: </span>
+                    : ''
+            }
+          </div>
+
+      <div class="invoice-header--right">
+      <div>
+            <span class="bold">Visit Date: </span>
             <span>${visit_date}</span>
           </div>
+
+          ${
+              flags.bill_created_at
+                  ? `<div>
+                      <span class="bold">Bill Creation Time: </span>
+                      <span>${data?.bill_created_at}</span>
+                  </div>`
+                  : ''
+          }
+      </div>
         </div>
         <div class="invoice-header--bottom">
           <div>
@@ -525,6 +539,16 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
             <td colspan=2>Grand Total</td>
             <td class="text-align-right">Rs. ${net_amount.toLocaleString('en-IN')}</td>
           </tr>
+             ${
+                 config?.flags?.print_amount_in_words
+                     ? `<tr class="amount-in-words">
+        <td colspan=3 style="padding-top: 0.5rem; font-size: 0.75rem;">
+          <span class='bold'>Amount in words:</span> ${data?.receiptAmountinWords}
+        </td>
+      </tr>`
+                     : ''
+             }
+        
           ${
               print_paymode_split
                   ? `<tr>
