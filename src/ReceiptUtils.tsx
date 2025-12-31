@@ -25,8 +25,15 @@ export type TPdfObject = {
     ageInM?: number;
     gender?: string;
     payment_status: string;
+    bill_created_at?: string;
+    receiptAmountinWords?: string;
 };
 export type TPageSize = 'A4' | 'A5';
+export enum DateAndTimeConfigForReceipt {
+    DATE_ONLY = 'date_only', // default
+    DATE_AND_TIME = 'date_and_time',
+    EXTENDED_DATE_AND_TIME = 'extended_date_and_time',
+}
 
 export interface ReceiptPdfConfig {
     owner_id: string;
@@ -51,6 +58,9 @@ export interface ReceiptPdfConfig {
         quantity_column: 'ALWAYS' | 'IF_APL';
         print_paymode_split: boolean;
         print_transaction_id: boolean;
+        print_amount_in_words: boolean;
+        bill_created_at: boolean;
+        date_and_time: DateAndTimeConfigForReceipt;
     };
     header_image_url?: string;
     footer_image_url?: string;
@@ -264,18 +274,34 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
   <div id="main">
   <div class="invoice-header">
   <div class="invoice-header--top">
+  <div class="invoice-header--left">
     ${
         print_receipt_number && (business_receipt_number || receipt_number)
             ? `<div class="invoice-header__number">
-      <span>Receipt No: </span>
-      <span>${business_receipt_number || receipt_number}</span>
-    </div>`
+          <span>Receipt No: </span>
+          <span>${business_receipt_number || receipt_number}</span>
+        </div>`
             : ''
     }
+  </div>
+  <div class="invoice-header--right">
     <div>
-      <span>Visit Date: </span>
+      <span class='bold'>Visit Date: </span>
       <span>${visit_date}</span>
     </div>
+
+    ${
+        config?.flags?.bill_created_at
+            ? `<div>
+      <span class='bold'>Bill Creation Time: </span>
+      <span>${data?.bill_created_at}</span>
+    </div>
+    
+    `
+            : ''
+    }
+
+  </div>
   </div>
   <div class="invoice-header--bottom">
     <div>
@@ -341,6 +367,15 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
           <td colspan=${colSpan}>Grand Total</td>
           <td class="text-align-right">Rs. ${(net_amount + amount_due).toLocaleString('en-IN')}</td>
         </tr>
+        ${
+            config?.flags?.print_amount_in_words
+                ? `<tr class="amount-in-words">
+        <td colspan=${colSpan + 1} style="padding-top: 0.5rem; font-size: 0.75rem;">
+          <span class='bold'>Amount in words:</span> ${data?.receiptAmountinWords}
+        </td>
+      </tr>`
+                : ''
+        }
         ${
             print_paymode_split
                 ? `<tr>
@@ -662,8 +697,29 @@ export const getPdfCssForReceipt = ({ config, ref_trx_id }: TPdfObject): string 
   line-height: 1.5rem;
 }
 
-.invoice-header--top{
+.bold{
+font-weight: 700
+}
+
+.invoice-header--top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 0.5rem;
+
+}
+
+.invoice-header--left {
+  flex: 0 0 auto;
+}
+
+.invoice-header--right {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: right;
 }
 
 .invoice-header--top, .invoice-header--bottom{
@@ -829,6 +885,9 @@ export const getDefaultPdfConfigForReceipt = (): ReceiptPdfConfig => {
             quantity_column: COLUMN_STATE.ALWAYS,
             print_paymode_split: true,
             print_transaction_id: false,
+            date_and_time: DateAndTimeConfigForReceipt.DATE_ONLY,
+            print_amount_in_words: false,
+            bill_created_at: false,
         },
     };
 };
