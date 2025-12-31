@@ -86,17 +86,10 @@ export const getHeadHtml = (
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
     fontsUrl: string = '',
-    show_qr_in_footer?: boolean,
 ): string => {
     return `
     
     ${fontsUrl || ''}
-    ${
-        show_qr_in_footer
-            ? '<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>'
-            : ''
-    }
-   
     <style>      
             ${
                 !fontsUrl
@@ -780,9 +773,15 @@ export const getCustomFooterHtml = (
     floating_footer?: boolean,
     show_qr_in_footer?: boolean,
 ): JSX.Element => {
-    const qrUrl = docProfile
-        ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
-        : '';
+    const qrUrl =
+        'https://api.qrserver.com/v1/create-qr-code/?' +
+        'size=200x200&data=' +
+        encodeURIComponent(
+            docProfile
+                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                : '',
+        );
+
     const timeZoneInfo =
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
@@ -795,25 +794,7 @@ export const getCustomFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0, paddingTop: '1cm' }}>
-                    {show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
-                            <img
-                                src="https://elixir-dr.eka.care/stetho/main/images/eka-logo-dark.png"
-                                slot="icon"
-                            />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
+                    {true && <img src={qrUrl} alt="QR code" />}
                 </div>
                 <div
                     style={{
@@ -1780,9 +1761,15 @@ export const getFooterHtml = (
     rxLocalConfig?: LocalTemplateConfig,
     renderPdfConfig?: TemplateConfig,
 ): JSX.Element => {
-    const qrUrl = docProfile
-        ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
-        : '';
+    const qrUrl =
+        'https://api.qrserver.com/v1/create-qr-code/?' +
+        'size=200x200&data=' +
+        encodeURIComponent(
+            docProfile
+                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                : '',
+        );
+
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
     const timeZoneInfo =
         d &&
@@ -1796,24 +1783,7 @@ export const getFooterHtml = (
                 <div className="border-b border-darwin-neutral-500"></div>
             )}
             <div className="flex flex-row">
-                <div style={{ flexShrink: 0 }}>
-                    {renderPdfConfig?.show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
-                            <img src="/images/eka-logo-dark.png" slot="icon" />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
-                </div>
+                <div style={{ flexShrink: 0 }}>{true && <img src={qrUrl} alt="QR code" />}</div>
                 <div style={{ flex: 1, marginRight: '8px' }}>
                     <div
                         style={{
@@ -6658,8 +6628,9 @@ export const getVisitDateHtml = (
         d?.timeZone === 'Asia/Calcutta' || d?.timeZone === 'Asia/Kolkata'
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation;
-    
-    const hideRxDate = config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
+
+    const hideRxDate =
+        config?.render_pdf_config?.hide_rx_date_in_ipd_rx && d?.care_type === CARE_TYPE.IP;
     if (hideRxDate) {
         return null;
     }
