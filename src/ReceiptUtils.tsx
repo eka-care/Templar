@@ -505,7 +505,7 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
           </div>
 
           ${
-              flags.bill_created_at
+              flags?.bill_created_at
                   ? `<div>
                       <span class="bold">Bill Creation Time: </span>
                       <span>${data?.bill_created_at}</span>
