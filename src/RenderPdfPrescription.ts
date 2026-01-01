@@ -50,7 +50,14 @@ export interface RenderPdfPrescription {
     genericMetaData: {
         [key: string]: any;
     };
+    care_type?: CARE_TYPE;
 }
+
+export enum CARE_TYPE {
+  OP = "OP",
+  IP = "IP",
+}
+
 export interface GrowthChartData {
     chartType:
         | 'weight-for-age'
@@ -679,6 +686,7 @@ export interface TemplateConfig {
     lab_vitals_format?: 'date-data' | '';
     advices_format?: 'pipe-seperated' | '';
     patient_form_data_format?: 'pipe-seperated-without-key' | '';
+    show_pt_img?: boolean;
     medication_table_format?:
         | 'quantity-column'
         | 'quantity-column-without-border'
@@ -829,7 +837,9 @@ export interface TemplateConfig {
     growth_chart_image_display?: boolean;
     growth_chart_stats_disabled?: boolean;
     show_vitals_used_in_growth_chart?: boolean;
+    show_qr_in_footer?: boolean;
     __v2?: boolean;
+    hide_rx_date_in_ipd_rx?: boolean;
 }
 
 export type MedicationTableWidth = { [key: string]: number | undefined };
