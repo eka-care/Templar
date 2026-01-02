@@ -91,12 +91,6 @@ export const getHeadHtml = (
     return `
     
     ${fontsUrl || ''}
-    ${
-        show_qr_in_footer
-            ? '<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>'
-            : ''
-    }
-   
     <style>      
             ${
                 !fontsUrl
@@ -779,8 +773,18 @@ export const getCustomFooterHtml = (
     footer_height?: string,
     floating_footer?: boolean,
     show_qr_in_footer?: boolean,
+    fromServer?: boolean,
+    qrDataUrl?: string,
 ): JSX.Element => {
-    const qrUrl = docProfile
+    const qrUrl = fromServer
+        ? 'https://api.qrserver.com/v1/create-qr-code/?' +
+          'size=100x100&data=' +
+          encodeURIComponent(
+              docProfile
+                  ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                  : '',
+          )
+        : docProfile
         ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
         : '';
     const timeZoneInfo =
@@ -795,25 +799,22 @@ export const getCustomFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0, paddingTop: '1cm' }}>
-                    {show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
+                    {show_qr_in_footer &&
+                        (fromServer ? (
+                            <img src={qrUrl} alt="QR code" />
+                        ) : qrDataUrl ? (
+                            // Use pre-generated QR code data URL for non-server PDFs
                             <img
-                                src="https://elixir-dr.eka.care/stetho/main/images/eka-logo-dark.png"
-                                slot="icon"
+                                src={qrDataUrl}
+                                alt="QR code"
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    margin: '0 auto',
+                                    display: 'block',
+                                }}
                             />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
+                        ) : null)}
                 </div>
                 <div
                     style={{
@@ -1127,6 +1128,8 @@ export const getFooter = (
     rxLocalConfig?: LocalTemplateConfig,
     renderPdfConfig?: TemplateConfig,
     isHideFooterDetails?: boolean,
+    fromServer?: boolean,
+    qrDataUrl?: string,
 ): JSX.Element => {
     if (renderPdfConfig?.floating_footer) {
         return renderPdfConfig?.floating_footer_details ? (
@@ -1154,6 +1157,8 @@ export const getFooter = (
                 undefined,
                 renderPdfConfig.floating_footer_details,
                 renderPdfConfig?.show_qr_in_footer,
+                fromServer,
+                qrDataUrl,
             )
         ) : (
             <></>
@@ -1185,10 +1190,12 @@ export const getFooter = (
             renderPdfConfig.footer_height,
             renderPdfConfig.floating_footer_details,
             renderPdfConfig?.show_qr_in_footer,
+            fromServer,
+            qrDataUrl,
         );
     }
 
-    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
+    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig, fromServer, qrDataUrl);
 };
 
 export const getRepitivePtDetails = (
@@ -1817,8 +1824,18 @@ export const getFooterHtml = (
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
     renderPdfConfig?: TemplateConfig,
+    fromServer?: boolean,
+    qrDataUrl?: string,
 ): JSX.Element => {
-    const qrUrl = docProfile
+    const qrUrl = fromServer
+        ? 'https://api.qrserver.com/v1/create-qr-code/?' +
+          'size=100x100&data=' +
+          encodeURIComponent(
+              docProfile
+                  ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                  : '',
+          )
+        : docProfile
         ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
         : '';
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
@@ -1835,22 +1852,22 @@ export const getFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0 }}>
-                    {renderPdfConfig?.show_qr_in_footer && (
-                        // @ts-ignore - qr-code is a custom web component
-                        <qr-code
-                            id="qr"
-                            contents={qrUrl}
-                            style={{
-                                width: '100px',
-                                height: '100px',
-                                margin: '0 auto',
-                                display: 'block',
-                            }}
-                        >
-                            <img src="/images/eka-logo-dark.png" slot="icon" />
-                            {/* @ts-ignore */}
-                        </qr-code>
-                    )}
+                    {renderPdfConfig?.show_qr_in_footer &&
+                        (fromServer ? (
+                            <img src={qrUrl} alt="QR code" />
+                        ) : qrDataUrl ? (
+                            // Use pre-generated QR code data URL for non-server PDFs
+                            <img
+                                src={qrDataUrl}
+                                alt="QR code"
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    margin: '0 auto',
+                                    display: 'block',
+                                }}
+                            />
+                        ) : null)}
                 </div>
                 <div style={{ flex: 1, marginRight: '8px' }}>
                     <div
