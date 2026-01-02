@@ -779,7 +779,8 @@ export const getCustomFooterHtml = (
         'size=100x100&margin=6&data=' +
         encodeURIComponent(
             docProfile
-                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}` +
+                      `?utm_source=Rxpdf&utm_medium=qr`
                 : '',
         );
     const timeZoneInfo =
@@ -1804,7 +1805,8 @@ export const getFooterHtml = (
         'size=100x100&margin=6&data=' +
         encodeURIComponent(
             docProfile
-                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
+                ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}` +
+                      `?utm_source=rxPdf&utm_medium=qr`
                 : '',
         );
     const footerDoctorNameColor = renderPdfConfig?.footer_doctor_name_color;
