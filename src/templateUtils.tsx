@@ -776,7 +776,7 @@ export const getCustomFooterHtml = (
 ): JSX.Element => {
     const qrUrl =
         'https://api.qrserver.com/v1/create-qr-code/?' +
-        'size=100x100&margin=6&qzone=4&data=' +
+        'size=100x100&margin=6&data=' +
         encodeURIComponent(
             docProfile
                 ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
@@ -1801,7 +1801,7 @@ export const getFooterHtml = (
 ): JSX.Element => {
     const qrUrl =
         'https://api.qrserver.com/v1/create-qr-code/?' +
-        'size=100x100&margin=6&qzone=4&data=' +
+        'size=100x100&margin=6&data=' +
         encodeURIComponent(
             docProfile
                 ? `https://www.eka.care/doctor/${docProfile?.profile.professional.username}`
