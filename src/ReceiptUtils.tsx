@@ -27,6 +27,7 @@ export type TPdfObject = {
     payment_status: string;
     bill_created_at?: string;
     receiptAmountinWords?: string;
+    totalDiscountOnEntireBill: number;
 };
 export type TPageSize = 'A4' | 'A5';
 export enum DateAndTimeConfigForReceipt {
@@ -363,6 +364,16 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
         </tr>`
                : ''
        }
+
+            ${
+                _showDiscount
+                    ? `<tr>
+          <td colspan=${colSpan}>Total Discount</td>
+          <td class="text-align-right">${data?.totalDiscountOnEntireBill}</td>
+        </tr>`
+                    : ''
+            }
+       
         <tr class="grand-total">
           <td colspan=${colSpan}>Grand Total</td>
           <td class="text-align-right">Rs. ${(net_amount + amount_due).toLocaleString('en-IN')}</td>
