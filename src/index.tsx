@@ -74,5 +74,5 @@ export const getHead = ({
     fontsUrl: string;
     show_qr_in_footer?: boolean;
 }): string => {
-    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl, show_qr_in_footer);
+    return getHeadHtml(language, sizeType, showPageBorder, fontsUrl);
 };
