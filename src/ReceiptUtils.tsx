@@ -27,6 +27,8 @@ export type TPdfObject = {
     payment_status: string;
     bill_created_at?: string;
     receiptAmountinWords?: string;
+    totalDiscountOnEntireBill: number;
+    billCreatedBy?: string;
 };
 export type TPageSize = 'A4' | 'A5';
 export enum DateAndTimeConfigForReceipt {
@@ -61,6 +63,7 @@ export interface ReceiptPdfConfig {
         print_amount_in_words: boolean;
         bill_created_at: boolean;
         date_and_time: DateAndTimeConfigForReceipt;
+        print_bill_created_by: false;
     };
     header_image_url?: string;
     footer_image_url?: string;
@@ -188,6 +191,13 @@ export const getFooterForReceipt = ({
     const { ref_trx_id } = data;
 
     return `<div title="footer" id="footer">
+
+       ${
+           flags?.print_bill_created_by && data?.billCreatedBy
+               ? `<p style="text-align: center; margin-bottom: 8px;">This bill was created by ${data?.billCreatedBy}</p>`
+               : ''
+       }
+  
   ${
       ref_trx_id && flags.print_transaction_id
           ? `<p class="footer_trx_id"><span class="title">Payment ID: </span>${ref_trx_id}</p>`
@@ -363,6 +373,16 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
         </tr>`
                : ''
        }
+
+            ${
+                _showDiscount
+                    ? `<tr>
+          <td colspan=${colSpan}>Total Discount</td>
+          <td class="text-align-right">${data?.totalDiscountOnEntireBill}</td>
+        </tr>`
+                    : ''
+            }
+       
         <tr class="grand-total">
           <td colspan=${colSpan}>Grand Total</td>
           <td class="text-align-right">Rs. ${(net_amount + amount_due).toLocaleString('en-IN')}</td>
@@ -912,6 +932,7 @@ export const getDefaultPdfConfigForReceipt = (): ReceiptPdfConfig => {
             date_and_time: DateAndTimeConfigForReceipt.DATE_ONLY,
             print_amount_in_words: false,
             bill_created_at: false,
+            print_bill_created_by: false,
         },
     };
 };
