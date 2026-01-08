@@ -231,6 +231,10 @@ export const getFooterForReceipt = ({
 </div>`;
 };
 
+export function roundToTwoDecimals(num: number): number {
+    return Math.round(num * 100) / 100;
+}
+
 export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
     const {
         receipt_number,
@@ -253,7 +257,7 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
         false,
     );
 
-    const subTotal = receipt_sku.reduce((acc, sku) => acc + sku.net_amount, 0);
+    const subTotal = roundToTwoDecimals(receipt_sku.reduce((acc, sku) => acc + sku.net_amount, 0));
 
     const isQtyGreaterThanOne = receipt_sku.reduce((acc, sku) => acc || sku.quantity > 1, false);
 
