@@ -181,9 +181,9 @@ interface Phone {
 
 interface FieldsEntity {
     label: string;
-    type: 'string' | 'number' | 'select';
+    type: 'string' | 'number' | 'select' | 'multi_select';
     key: string;
-    value?: number | string;
+    value?: number | string | string[] | { key: string; label: string } | Array<{ key: string; label: string }>;
 }
 
 export interface Patient {
