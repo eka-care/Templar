@@ -27,8 +27,10 @@ export type SectionNameConfig = { [key: string]: string };
 
 export interface DFormEntity {
     label: string;
-    type: 'string' | 'number' | 'select';
+    type: 'string' | 'number' | 'select' | 'multi_select';
     key: string;
+    options?: { key: string; label: string }[];
+    is_mandatory?: boolean;
 }
 
 export type PX_OP_KEYS =
