@@ -6555,6 +6555,30 @@ export const getFormDataHtml = (
                 }
             >
                 {commonFormData?.map((formData, i) => {
+                    let displayValue: string = '';
+                    if (formData.type === 'multi_select' && Array.isArray(formData.value)) {
+                        if (
+                            formData.value.length > 0 &&
+                            typeof formData.value[0] === 'object' &&
+                            'label' in formData.value[0]
+                        ) {
+                            displayValue = (formData.value as Array<{ key: string; label: string }>)
+                                .map((item) => item.label)
+                                .join(' | ');
+                        } else {
+                            displayValue = (formData.value as string[]).join(' | ');
+                        }
+                    } else if (
+                        formData.type === 'select' &&
+                        typeof formData.value === 'object' &&
+                        formData.value !== null &&
+                        'label' in formData.value
+                    ) {
+                        displayValue = (formData.value as { key: string; label: string }).label;
+                    } else {
+                        displayValue = String(formData?.value || '');
+                    }
+
                     return (
                         <>
                             <span
@@ -6563,7 +6587,7 @@ export const getFormDataHtml = (
                                     color: propertiesColor,
                                 }}
                             >
-                                {formData?.value || ''}
+                                {displayValue}
                             </span>
                             {(commonFormData?.length || 0) - 1 === i ? (
                                 <span
@@ -6603,6 +6627,34 @@ export const getFormDataHtml = (
             }
         >
             {commonFormData.map((formData, i) => {
+                // Handle select and multi_select: can be {key, label} or keys
+                let displayValue: string = '';
+                if (formData.type === 'multi_select' && Array.isArray(formData.value)) {
+                    if (
+                        formData.value.length > 0 &&
+                        typeof formData.value[0] === 'object' &&
+                        'label' in formData.value[0]
+                    ) {
+                        // Transformed format: [{key, label}, ...] - show labels
+                        displayValue = (formData.value as Array<{ key: string; label: string }>)
+                            .map((item) => item.label)
+                            .join(', ');
+                    } else {
+                        // Array of keys (backward compatibility) - show keys
+                        displayValue = (formData.value as string[]).join(', ');
+                    }
+                } else if (
+                    formData.type === 'select' &&
+                    typeof formData.value === 'object' &&
+                    formData.value !== null &&
+                    'label' in formData.value
+                ) {
+                    // Transformed format: {key, label} - show label
+                    displayValue = (formData.value as { key: string; label: string }).label;
+                } else {
+                    displayValue = String(formData?.value || '');
+                }
+
                 return (
                     <>
                         <span
@@ -6622,7 +6674,7 @@ export const getFormDataHtml = (
                                 color: propertiesColor,
                             }}
                         >
-                            {formData?.value || ''}
+                            {displayValue}
                         </span>
                         {(commonFormData?.length || 0) - 1 === i ? (
                             <span
