@@ -9,7 +9,7 @@ A TypeScript library that contains the logic to beautify data to PDF HTML, provi
 - 🎨 **Customizable Styling**: Support for custom templates and configurations  
 - ⚡ **TypeScript Support**: Full type safety and IntelliSense support
 - 📦 **Multiple Export Formats**: CommonJS, ESM, and TypeScript definitions
-- 🚀 **Built with Vite**: Fast and modern build process
+- 🚀 **Built with Vite**: Fast and modern build process.
 
 ## Installation
 
