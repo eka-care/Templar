@@ -8,7 +8,7 @@ A TypeScript library that contains the logic to beautify data to PDF HTML, provi
 - 📋 **Header & Footer Generation**: Clean APIs for generating PDF headers and footers
 - 🎨 **Customizable Styling**: Support for custom templates and configurations  
 - ⚡ **TypeScript Support**: Full type safety and IntelliSense support
-- 📦 **Multiple Export Formats**: CommonJS, ESM, and TypeScript definitions
+- 📦 **Multiple Export Formats**: CommonJS, ESM, and TypeScript definitions.
 - 🚀 **Built with Vite**: Fast and modern build process.
 
 ## Installation
