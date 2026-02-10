@@ -1,4 +1,3 @@
-
 import { getHeaderForReceipt, ReceiptPdfConfig } from './ReceiptUtils';
 
 export interface OpdSlipService {
@@ -22,6 +21,7 @@ export interface OpdSlipBodyData {
     uhid?: string;
     time?: string;
     date?: string;
+    patient_mobile?: string;
     doctor_name?: string;
     token?: string;
     services: OpdSlipService[];
@@ -42,17 +42,24 @@ export const getPatientDetails = ({
     gender,
     uhid,
     age,
-}: {
-    name: string;
-    age?: number;
-    gender?: string;
-    uhid?: string;
-}) => {
-    return [name, gender, age, uhid].filter(Boolean);
+    patient_mobile,
+}: Partial<OpdSlipBodyData>) => {
+    return [name, gender, age, uhid, patient_mobile].filter(Boolean);
 };
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
-    const { name, gender, time, doctor_name, token, services, payment_status, age, uhid } = data;
+    const {
+        name,
+        gender,
+        time,
+        doctor_name,
+        token,
+        services,
+        payment_status,
+        age,
+        uhid,
+        patient_mobile,
+    } = data;
 
     return `
         <main id="opd-slip-body" style="padding: 3rem 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
@@ -70,7 +77,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     align-items: center;
     flex-wrap: wrap;
 ">
-    ${getPatientDetails({ name, gender,  age, uhid })
+    ${getPatientDetails({ name, gender, age, uhid, patient_mobile })
         .map(
             (item, index, arr) => `
             <span style="display: flex; align-items: center;">
