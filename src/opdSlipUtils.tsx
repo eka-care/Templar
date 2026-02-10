@@ -16,7 +16,7 @@ export interface OpdSlipHeaderData {
 
 export interface OpdSlipBodyData {
     name: string;
-    age?: number;
+    age?: string;
     gender?: string;
     uhid?: string;
     time?: string;
@@ -44,7 +44,7 @@ export const getPatientDetails = ({
     age,
     patient_mobile,
 }: Partial<OpdSlipBodyData>) => {
-    return [name, gender, age, uhid, patient_mobile].filter(Boolean);
+    return [name, gender, age, patient_mobile, uhid].filter(Boolean);
 };
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
