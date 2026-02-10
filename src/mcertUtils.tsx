@@ -29,6 +29,9 @@ export const getFooterMcert = (
     rxLocalConfig?: LocalTemplateConfig,
     isHideFooterDetails?: boolean,
 ): JSX.Element => {
+    const showQrInFooter =
+        renderPdfConfig === undefined ? true : renderPdfConfig?.show_qr_in_footer;
+
     if (renderPdfConfig?.footer_img) {
         return getCustomFooterHtml(
             docProfile,
@@ -44,18 +47,18 @@ export const getFooterMcert = (
             renderPdfConfig?.show_signature_text,
             renderPdfConfig?.show_page_number,
             renderPdfConfig?.show_prescription_id,
-            renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
-            renderPdfConfig.show_eka_logo,
-            renderPdfConfig.attachment_image,
+            renderPdfConfig?.show_not_valid_for_medical_legal_purpose_message,
+            renderPdfConfig?.show_eka_logo,
+            renderPdfConfig?.attachment_image,
             renderPdfConfig?.footer_doctor_name_color,
             isHideFooterDetails,
             undefined,
-            renderPdfConfig.show_approval_details,
-            renderPdfConfig.footer_height,
-            renderPdfConfig.floating_footer_details,
-            renderPdfConfig?.show_qr_in_footer,
+            renderPdfConfig?.show_approval_details,
+            renderPdfConfig?.footer_height,
+            renderPdfConfig?.floating_footer_details,
+            showQrInFooter,
         );
     }
 
-    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
+    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig, showQrInFooter);
 };
