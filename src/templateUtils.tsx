@@ -1110,6 +1110,9 @@ export const getFooter = (
     renderPdfConfig?: TemplateConfig,
     isHideFooterDetails?: boolean,
 ): JSX.Element => {
+    const showQrInFooter =
+        renderPdfConfig === undefined ? true : renderPdfConfig?.show_qr_in_footer;
+
     if (renderPdfConfig?.floating_footer) {
         return renderPdfConfig?.floating_footer_details ? (
             getCustomFooterHtml(
@@ -1126,16 +1129,16 @@ export const getFooter = (
                 renderPdfConfig?.show_signature_text,
                 renderPdfConfig?.show_page_number,
                 renderPdfConfig?.show_prescription_id,
-                renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
-                renderPdfConfig.show_eka_logo,
-                renderPdfConfig.attachment_image,
+                renderPdfConfig?.show_not_valid_for_medical_legal_purpose_message,
+                renderPdfConfig?.show_eka_logo,
+                renderPdfConfig?.attachment_image,
                 renderPdfConfig?.footer_doctor_name_color,
                 false,
                 true,
-                renderPdfConfig.show_approval_details,
+                renderPdfConfig?.show_approval_details,
                 undefined,
-                renderPdfConfig.floating_footer_details,
-                renderPdfConfig?.show_qr_in_footer,
+                renderPdfConfig?.floating_footer_details,
+                showQrInFooter,
             )
         ) : (
             <></>
@@ -1157,20 +1160,20 @@ export const getFooter = (
             renderPdfConfig?.show_signature_text,
             renderPdfConfig?.show_page_number,
             renderPdfConfig?.show_prescription_id,
-            renderPdfConfig.show_not_valid_for_medical_legal_purpose_message,
-            renderPdfConfig.show_eka_logo,
-            renderPdfConfig.attachment_image,
+            renderPdfConfig?.show_not_valid_for_medical_legal_purpose_message,
+            renderPdfConfig?.show_eka_logo,
+            renderPdfConfig?.attachment_image,
             renderPdfConfig?.footer_doctor_name_color,
             isHideFooterDetails,
             undefined,
-            renderPdfConfig.show_approval_details,
-            renderPdfConfig.footer_height,
-            renderPdfConfig.floating_footer_details,
-            renderPdfConfig?.show_qr_in_footer,
+            renderPdfConfig?.show_approval_details,
+            renderPdfConfig?.footer_height,
+            renderPdfConfig?.floating_footer_details,
+            showQrInFooter,
         );
     }
 
-    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig);
+    return getFooterHtml(docProfile, data, rxLocalConfig, renderPdfConfig, showQrInFooter);
 };
 
 export const getRepitivePtDetails = (
@@ -1799,6 +1802,7 @@ export const getFooterHtml = (
     d: RenderPdfPrescription,
     rxLocalConfig?: LocalTemplateConfig,
     renderPdfConfig?: TemplateConfig,
+    showQrInFooter?: boolean,
 ): JSX.Element => {
     const qrUrl =
         'https://api.qrserver.com/v1/create-qr-code/?' +
@@ -1816,6 +1820,8 @@ export const getFooterHtml = (
             ? ''
             : getTimeZoneInfo(d.timeZone).abbreviation);
 
+    const shouldShowQr = showQrInFooter ?? (renderPdfConfig === undefined ? true : false);
+
     return (
         <>
             {rxLocalConfig?.footer_border && (
@@ -1823,9 +1829,7 @@ export const getFooterHtml = (
             )}
             <div className="flex flex-row">
                 <div style={{ flexShrink: 0 }}>
-                    {renderPdfConfig?.show_qr_in_footer && (
-                        <img className="p-4" src={qrUrl} alt="QR code" />
-                    )}
+                    {shouldShowQr && <img className="p-4" src={qrUrl} alt="QR code" />}
                 </div>
                 <div style={{ flex: 1, marginRight: '8px' }}>
                     <div
