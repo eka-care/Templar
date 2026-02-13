@@ -1,4 +1,4 @@
-import { getHeaderForReceipt, ReceiptPdfConfig } from './ReceiptUtils';
+import { getHeaderForReceipt, ReceiptPdfConfig, TPageSize } from './ReceiptUtils';
 
 export interface OpdSlipService {
     service_name: string;
@@ -229,4 +229,9 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
                     .join('')}
             </div>
         </footer>`;
+};
+
+export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
+    const rootFontSize = pageSize === 'A5' ? '11px' : '16px';
+    return `<style>html { font-size: ${rootFontSize}; }</style>`;
 };
