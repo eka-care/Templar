@@ -93,6 +93,23 @@ export const padElements = (
         case 'diagnosis':
             return getDiagnosisHtml(data, config, sectionNameConfig?.[elementId]);
         case 'medicalHistory':
+            if (data?.tool?.medicalHistory?.patientHistory?.noKnownMedicalHistory) {
+                const headingColor = config?.render_pdf_config?.pmh_heading_color;
+                const sectionName = sectionNameConfig?.[elementId] || 'Medical History';
+                return (
+                    <div className="text-darwin-neutral-1000">
+                        <span
+                            style={{
+                                color: headingColor,
+                            }}
+                            className="text-darwin-accent-symptoms-blue-800 bold"
+                        >
+                            {sectionName} :
+                        </span>
+                        <span className="ml-8">No known medical history</span>
+                    </div>
+                );
+            }
             return (
                 <>
                     {getPmhHtml(data, 'pmh', config)}

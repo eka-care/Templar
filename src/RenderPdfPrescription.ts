@@ -295,6 +295,7 @@ interface PatientHistoryObject {
     pastProcedures: PtGenericObject[];
     otherMedicalHistory: PtGenericObject[];
     familyHistory: PtGenericObject[];
+    noKnownMedicalHistory?: boolean;
 }
 
 interface MedicalHistory {
