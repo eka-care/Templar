@@ -648,6 +648,7 @@ export interface TemplateV2 {
         pad_elements_config?: GeniePadElementsSettingItem[];
         section_name_config?: SectionNameConfig;
         injections_config?: GeniePadElementsSettingItem[];
+        printNoMedicalHistory?: boolean; // Case 2: when true, show "No Significant Medical History" on PDF
     };
 }
 
