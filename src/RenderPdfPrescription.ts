@@ -54,8 +54,8 @@ export interface RenderPdfPrescription {
 }
 
 export enum CARE_TYPE {
-    OP = 'OP',
-    IP = 'IP',
+  OP = "OP",
+  IP = "IP",
 }
 
 export interface GrowthChartData {
@@ -183,12 +183,7 @@ interface FieldsEntity {
     label: string;
     type: 'string' | 'number' | 'select' | 'multi_select';
     key: string;
-    value?:
-        | number
-        | string
-        | string[]
-        | { key: string; label: string }
-        | Array<{ key: string; label: string }>;
+    value?: number | string | string[] | { key: string; label: string } | Array<{ key: string; label: string }>;
 }
 
 export interface Patient {
@@ -300,7 +295,6 @@ interface PatientHistoryObject {
     pastProcedures: PtGenericObject[];
     otherMedicalHistory: PtGenericObject[];
     familyHistory: PtGenericObject[];
-    noKnownMedicalHistory?: boolean;
 }
 
 interface MedicalHistory {
@@ -653,7 +647,6 @@ export interface TemplateV2 {
         pad_elements_config?: GeniePadElementsSettingItem[];
         section_name_config?: SectionNameConfig;
         injections_config?: GeniePadElementsSettingItem[];
-        printNoMedicalHistory?: boolean;
     };
 }
 

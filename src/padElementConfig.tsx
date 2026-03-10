@@ -92,25 +92,7 @@ export const padElements = (
 
         case 'diagnosis':
             return getDiagnosisHtml(data, config, sectionNameConfig?.[elementId]);
-        case 'medicalHistory': {
-            // Show "No Significant Medical History" when flag set and print setting allows
-            const noKnownMH = data?.tool?.medicalHistory?.patientHistory?.noKnownMedicalHistory;
-            const printNoMH = config?.render_pdf_body_config?.printNoMedicalHistory !== false;
-            if (noKnownMH && printNoMH) {
-                const headingColor = config?.render_pdf_config?.pmh_heading_color;
-                const sectionName = sectionNameConfig?.[elementId] || 'Medical History';
-                return (
-                    <div className="text-darwin-neutral-1000">
-                        <span
-                            style={{ color: headingColor }}
-                            className="text-darwin-accent-symptoms-blue-800 bold"
-                        >
-                            {sectionName} :
-                        </span>
-                        <span className="ml-8">No Significant Medical History</span>
-                    </div>
-                );
-            }
+        case 'medicalHistory':
             return (
                 <>
                     {getPmhHtml(data, 'pmh', config)}
@@ -124,7 +106,6 @@ export const padElements = (
                     {getPmhHtml(data, 'omh', config)}
                 </>
             );
-        }
         case 'labTests':
             return getLabTestsHtml(data, config, sectionNameConfig?.[elementId]);
         case 'labVitals':
