@@ -95,7 +95,7 @@ export const padElements = (
         case 'medicalHistory': {
             // Show "No Significant Medical History" when flag set and print setting allows
             const noKnownMH = data?.tool?.medicalHistory?.patientHistory?.noKnownMedicalHistory;
-            const printNoMH = config?.render_pdf_body_config?.printNoMedicalHistory !== false;
+            const printNoMH = config?.render_pdf_body_config?.printNoMedicalHistory;
             if (noKnownMH && printNoMH) {
                 const headingColor = config?.render_pdf_config?.pmh_heading_color;
                 const sectionName = sectionNameConfig?.[elementId] || 'Medical History';
