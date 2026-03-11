@@ -107,7 +107,7 @@ export const padElements = (
                         >
                             {sectionName} :
                         </span>
-                        <span className="ml-8">No Significant Medical History</span>
+                        <span className="ml-8">No Known Significant Medical History</span>
                     </div>
                 );
             }
