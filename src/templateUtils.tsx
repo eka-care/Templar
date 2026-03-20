@@ -924,7 +924,7 @@ export const getCustomFooterHtml = (
                                                 color: footer_doctor_name_color,
                                             }}
                                         >
-                                            Dr. {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                            {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                             {docProfile?.profile?.personal?.name?.l || ''}
                                         </p>
                                     )}
@@ -1022,7 +1022,7 @@ export const getHeaderHtml = (
 
                             <div className="space-y-6 text-left">
                                 <p className="body-1 text-docM-purple-400 bold">
-                                    Dr. {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                    {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                     {docProfile?.profile?.personal?.name?.l || ''}
                                 </p>
                                 <div>
@@ -1072,7 +1072,7 @@ export const getHeaderHtml = (
 
                             <div className="space-y-6 text-left">
                                 <p className="body-1 text-docM-purple-400 bold">
-                                    Dr. {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                    {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                     {docProfile?.profile?.personal?.name?.l || ''}
                                 </p>
                                 <div>
@@ -1932,7 +1932,7 @@ export const getFooterHtml = (
                                     color: footerDoctorNameColor,
                                 }}
                             >
-                                Dr. {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                 {docProfile?.profile?.personal?.name?.l || ''}
                             </p>
                             <span className="whitespace-preline text-right">
