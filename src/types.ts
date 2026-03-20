@@ -210,6 +210,7 @@ export interface Personal {
     gender?: string;
     dob?: string;
     pic?: string;
+    s?: string;
 }
 export interface Name {
     f: string;
