@@ -1223,7 +1223,7 @@ export const getRepitivePtDetails = (
                             }
                         }
                         // id={HEADER_CONTAINER}
-                        className="flex space-x-4 pt-8 flex justify-between header-bottom-border text-13"
+                        className="flex space-x-4 flex justify-between header-bottom-border text-13"
                     >
                         <div
                             style={{
@@ -1329,7 +1329,7 @@ export const getRepitivePtDetails = (
     const patientDetailsContent = (
         <>
             <div className="flex items-start justify-between italic text-darwin-neutral-500 text-13">
-                <div className="flex space-x-4 pt-8 flex justify-between header-bottom-border text-13">
+                <div className="flex space-x-4 flex justify-between header-bottom-border text-13">
                     <div
                         style={{
                             ...(patientDetailsUppercase
