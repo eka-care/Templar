@@ -7240,22 +7240,23 @@ export const getOphthalmologyHtml = (
             });
     });
     const cols = getColumns(type);
-    const colTitleByKey = cols.reduce((acc, c) => {
-        acc[String(c.key)] = c.title;
-        return acc;
-    }, {} as Record<string, string>);
+    const normalizedCols = cols as Array<{ key: string; title: string }>;
+    const colTitleByKey: Record<string, string> = {};
+    for (const c of normalizedCols) {
+        colTitleByKey[String(c.key)] = c.title;
+    }
 
     const sortCols =
         type === 'opPMT' && Array.isArray(config?.render_pdf_body_config?.pmtTableConfig)
-            ? (config.render_pdf_body_config.pmtTableConfig as GeniePadElementsSettingItem[])
+            ? (config?.render_pdf_body_config?.pmtTableConfig as GeniePadElementsSettingItem[])
                   .filter((c) => c.isShown)
                   .map((c) => c.id)
             : type === 'opKReading' &&
               Array.isArray(config?.render_pdf_body_config?.kReadingTableConfig)
-            ? (config.render_pdf_body_config.kReadingTableConfig as GeniePadElementsSettingItem[])
+            ? (config?.render_pdf_body_config?.kReadingTableConfig as GeniePadElementsSettingItem[])
                   .filter((c) => c.isShown)
                   .map((c) => c.id)
-            : cols.map((col) => col.key);
+            : normalizedCols.map((col) => col.key);
     const keysArray = [...allKeys];
     const sortedAllKeys = sortCols.filter((key) => keysArray.includes(key as string));
     const allKeysArray = [...sortedAllKeys];
