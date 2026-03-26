@@ -169,6 +169,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                                   (s, index) => `
                                 <span style="display: flex; align-items: center;">
                                   <span>${s.service_name}</span>
+                                  <span style="margin-left: 0.35rem;">( ₹${s.price} )</span>
                                   ${
                                       index !== services.length - 1
                                           ? `<span style="margin: 0 1.2rem; color: #999;">|</span>`
