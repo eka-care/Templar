@@ -39,7 +39,11 @@ export type PX_OP_KEYS =
     | 'opCurrentSpec'
     | 'opSubjectiveRefraction'
     | 'opAutoRefraction'
-    | 'opFinalPrescription';
+    | 'opFinalPrescription'
+    | 'opLacrimalSyringing'
+    | 'opColorVision'
+    | 'opPMT'
+    | 'opKReading';
 
 export interface OpVision {
     eye?: {
@@ -131,6 +135,79 @@ export interface OpIop {
         id: string;
         value?: string;
         custom?: string;
+    };
+}
+
+export interface OpPMT {
+    eye?: {
+        value?: string;
+    };
+    sph?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+    cyl?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+    axis?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+    add?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+    bcvaDist?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+}
+
+export interface OpKReading {
+    eye?: {
+        value?: string;
+    };
+    k1?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
+    };
+    axisK1?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
+    };
+    k2?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
+    };
+    axisK2?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
+    };
+    cyl?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
+    };
+    axisCyl?: {
+        id: string;
+        value?: string;
+        custom?: string;
+        unit?: string;
     };
 }
 

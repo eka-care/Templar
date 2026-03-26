@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { OpIop, OpSpec, OpVision, PX_OP_KEYS } from './types';
+import { OpIop, OpKReading, OpPMT, OpSpec, OpVision, PX_OP_KEYS } from './types';
 
 export const getColumns = (
     pxKey: PX_OP_KEYS,
@@ -7,7 +7,9 @@ export const getColumns = (
     | { key: keyof Omit<OpVision, 'eye'>; title: string }[]
     | { key: keyof Omit<OpIop, 'eye'>; title: string }[]
     | { key: keyof Omit<OpSpec, 'eye'>; title: string }[]
-    | { key: keyof Omit<OpSpec, 'eye'>; title: string }[] => {
+    | { key: keyof Omit<OpSpec, 'eye'>; title: string }[]
+    | { key: keyof Omit<OpPMT, 'eye'>; title: string }[]
+    | { key: keyof Omit<OpKReading, 'eye'>; title: string }[] => {
     switch (pxKey) {
         case 'opVision':
             return [
@@ -81,6 +83,33 @@ export const getColumns = (
                     title: 'NVA',
                 },
             ];
+        case 'opLacrimalSyringing':
+            return [
+                { key: 'result', title: 'Result' } as any,
+                { key: 'remarks', title: 'Remarks' } as any,
+            ];
+        case 'opColorVision':
+            return [
+                { key: 'result', title: 'Result' } as any,
+                { key: 'remarks', title: 'Remarks' } as any,
+            ];
+        case 'opPMT':
+            return [
+                { key: 'sph', title: 'SPH' } as any,
+                { key: 'cyl', title: 'CYL' } as any,
+                { key: 'axis', title: 'AXIS' } as any,
+                { key: 'add', title: 'ADD' } as any,
+                { key: 'bcvaDist', title: 'BCVA (Dist)' } as any,
+            ];
+        case 'opKReading':
+            return [
+                { key: 'k1', title: 'K1' } as any,
+                { key: 'axisK1', title: 'Axis (K1)' } as any,
+                { key: 'k2', title: 'K2' } as any,
+                { key: 'axisK2', title: 'Axis (K2)' } as any,
+                { key: 'cyl', title: 'CYL' } as any,
+                { key: 'axisCyl', title: 'Axis (CYL)' } as any,
+            ];
     }
 };
 
@@ -91,6 +120,10 @@ export const rxKeyToHeadingMap: { [k in PX_OP_KEYS]: string } = {
     opSubjectiveRefraction: 'Subjective Refraction',
     opAutoRefraction: 'Auto Refraction',
     opFinalPrescription: 'Final Glass Prescription',
+    opLacrimalSyringing: 'Lacrimal Syringing',
+    opColorVision: 'Color Vision',
+    opPMT: 'PMT',
+    opKReading: 'K Reading / Biometry',
 };
 
 export enum LAB_TESTS_FOLLOWUP_TYPE {

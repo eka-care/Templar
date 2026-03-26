@@ -423,9 +423,32 @@ export interface Tool {
     opSubjectiveRefraction: Ophthalmology[];
     opAutoRefraction: Ophthalmology[];
     opFinalPrescription: Ophthalmology[];
+    opLacrimalSyringing: Ophthalmology[];
+    opColorVision: Ophthalmology[];
+    opPMT: Ophthalmology[];
+    opKReading: Ophthalmology[];
+    opEyeExamination?: EyeExaminationRow[];
     procedures?: Procedure[];
     ipdAdmission?: IpdAdmission;
     careCanvas?: CareCanvas[];
+}
+
+export interface EyeExaminationRow {
+    id: string;
+    part?: {
+        id: string;
+        value?: string;
+    };
+    le?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
+    re?: {
+        id: string;
+        value?: string;
+        custom?: string;
+    };
 }
 export interface CareCanvas {
     id: string;
@@ -654,6 +677,9 @@ export interface TemplateV2 {
         section_name_config?: SectionNameConfig;
         injections_config?: GeniePadElementsSettingItem[];
         printNoMedicalHistory?: boolean;
+        pmtTableConfig?: GeniePadElementsSettingItem[];
+        kReadingTableConfig?: GeniePadElementsSettingItem[];
+        eyeExamTableConfig?: GeniePadElementsSettingItem[];
     };
 }
 
