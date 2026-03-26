@@ -95,16 +95,16 @@ export const getadditionalDetailsOfPatient = (
     return mappedFormData
         .map((fd) => {
             let displayValue: string | undefined;
-            if (fd.type === 'multi_select' && Array.isArray(fd.value)) {
+            if (fd?.type === 'multi_select' && Array.isArray(fd?.value)) {
                 displayValue = (fd?.value as FormDataKeyLabel[]).map((v) => v?.label).join(', ');
             } else if (
-                fd.type === 'select' &&
-                typeof fd.value === 'object' &&
-                !Array.isArray(fd.value)
+                fd?.type === 'select' &&
+                typeof fd?.value === 'object' &&
+                !Array.isArray(fd?.value)
             ) {
                 displayValue = (fd?.value as FormDataKeyLabel)?.label;
             } else {
-                displayValue = fd.value != null ? String(fd?.value) : undefined;
+                displayValue = fd?.value != null ? String(fd?.value) : undefined;
             }
 
             return displayValue ? { label: fd?.label, value: displayValue } : null;
