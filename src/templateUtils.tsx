@@ -11444,13 +11444,22 @@ export const getEyeExaminationHtml = (
                 <tbody>
                     {ordered.map((r) => (
                         <tr className="text-11">
-                            <td style={{ borderColor: borderColor }} className="border p-4">
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
                                 {r.part?.value || '-'}
                             </td>
-                            <td style={{ borderColor: borderColor }} className="border p-4">
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
                                 {r.le?.custom || r.le?.value || '-'}
                             </td>
-                            <td style={{ borderColor: borderColor }} className="border p-4">
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
                                 {r.re?.custom || r.re?.value || '-'}
                             </td>
                         </tr>
