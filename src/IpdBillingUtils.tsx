@@ -360,7 +360,11 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
             .filter(Boolean)
             .join(', ');
 
-        const pdfObjForFns = { config, ref_trx_id: undefined } as unknown as TPdfObject;
+        const pdfObjForFns = {
+            config,
+            ref_trx_id: undefined,
+            billCreatedBy: doctorName,
+        } as unknown as TPdfObject;
 
         const headHtml = getPdfCssForReceipt(pdfObjForFns);
         const headerHtml = getHeaderForReceipt({
