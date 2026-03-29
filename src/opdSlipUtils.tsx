@@ -1,5 +1,4 @@
 import { getHeaderForReceipt, ReceiptPdfConfig, TPageSize } from './ReceiptUtils';
-import { FormDataKeyLabel } from '../../utils/formDataTransform';
 
 export interface OpdSlipService {
     service_name: string;
@@ -28,12 +27,6 @@ export interface OpdSlipBodyData {
     services: OpdSlipService[];
     payment_status?: string;
     appointmentStatus?: string; // enums arent present in stetho, they exist only in elixir. stetho still does string BK, string CK.  todo, consolidate these
-    mappedFormData?: Array<{
-        label: string;
-        type: 'string' | 'number' | 'select' | 'multi_select';
-        key: string;
-        value: string | number | FormDataKeyLabel | FormDataKeyLabel[];
-    }>;
 }
 
 export interface OpdSlipFooterData {
@@ -87,31 +80,6 @@ export const getPatientDetails = ({
     ].filter(Boolean) as { label: string; value: string }[];
 };
 
-export const getadditionalDetailsOfPatient = (
-    mappedFormData?: OpdSlipBodyData['mappedFormData'],
-): { label: string; value: string }[] => {
-    if (!mappedFormData?.length) return [];
-
-    return mappedFormData
-        .map((fd) => {
-            let displayValue: string | undefined;
-            if (fd?.type === 'multi_select' && Array.isArray(fd?.value)) {
-                displayValue = (fd?.value as FormDataKeyLabel[]).map((v) => v?.label).join(', ');
-            } else if (
-                fd?.type === 'select' &&
-                typeof fd?.value === 'object' &&
-                !Array.isArray(fd?.value)
-            ) {
-                displayValue = (fd?.value as FormDataKeyLabel)?.label;
-            } else {
-                displayValue = fd?.value != null ? String(fd?.value) : undefined;
-            }
-
-            return displayValue ? { label: fd?.label, value: displayValue } : null;
-        })
-        .filter(Boolean) as { label: string; value: string }[];
-};
-
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const {
         name,
@@ -125,18 +93,13 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         uhid,
         patient_mobile,
         appointmentStatus,
-        mappedFormData,
     } = data;
 
-    const additionalDetailsOfPatient = getadditionalDetailsOfPatient(mappedFormData);
-    const doesPatientAttributesExist = additionalDetailsOfPatient.length > 0;
-
-    return `<main id="opd-slip-body" style="padding: 3rem 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
+    return `
+        <main id="opd-slip-body" style="padding: 3rem 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
 
             <!-- Patient Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: ${
-                doesPatientAttributesExist ? '1rem' : '2rem'
-            }; border-bottom: ${doesPatientAttributesExist ? 'none' : '1.6px solid #e8e8e8'};">
+            <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
                 <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.8rem 0;">PATIENT DETAILS</p>
                 <div style="display: flex; align-items: start; gap: 1.3rem;">
                     ${getPatientDetails({ name, gender, age, uhid, patient_mobile })
@@ -160,30 +123,6 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                         .join('')}
                 </div>
             </section>
-            ${
-                doesPatientAttributesExist
-                    ? `<!-- Additional Details Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
-                <p style="font-size: 0.77rem; letter-spacing: 0.08em; color: #666666; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">Additional Details</p>
-                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0;">
-                    ${additionalDetailsOfPatient
-                        .map(
-                            (item, index, arr) => `
-                            <span style="font-size: 0.65rem; color: #2a2a2a; line-height: 1.6;">
-                                <span style="font-weight: 700;">${item.label}:</span> ${item.value}
-                            </span>
-                            ${
-                                index !== arr.length - 1
-                                    ? `<span style="margin: 0 0.6rem; color: #cccccc; font-size: 0.55rem;">|</span>`
-                                    : ''
-                            }
-                        `,
-                        )
-                        .join('')}
-                </div>
-            </section>`
-                    : ''
-            }
 
             <!-- Appointment Details Section -->
             <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
@@ -230,7 +169,6 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                                   (s, index) => `
                                 <span style="display: flex; align-items: center;">
                                   <span>${s.service_name}</span>
-                                  <span style="margin-left: 0.35rem;">( ₹${s.price} )</span>
                                   ${
                                       index !== services.length - 1
                                           ? `<span style="margin: 0 1.2rem; color: #999;">|</span>`
