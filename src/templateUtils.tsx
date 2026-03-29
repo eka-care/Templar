@@ -29,6 +29,7 @@ import {
     SeperatorType,
     TemplateConfig,
     CARE_TYPE,
+    EyeExaminationRow,
 } from './RenderPdfPrescription';
 import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
 
@@ -924,7 +925,8 @@ export const getCustomFooterHtml = (
                                                 color: footer_doctor_name_color,
                                             }}
                                         >
-                                            {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                            {docProfile?.profile?.personal?.s || 'Dr.'}{' '}
+                                            {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                             {docProfile?.profile?.personal?.name?.l || ''}
                                         </p>
                                     )}
@@ -1022,7 +1024,8 @@ export const getHeaderHtml = (
 
                             <div className="space-y-6 text-left">
                                 <p className="body-1 text-docM-purple-400 bold">
-                                    {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                    {docProfile?.profile?.personal?.s || 'Dr.'}{' '}
+                                    {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                     {docProfile?.profile?.personal?.name?.l || ''}
                                 </p>
                                 <div>
@@ -1072,7 +1075,8 @@ export const getHeaderHtml = (
 
                             <div className="space-y-6 text-left">
                                 <p className="body-1 text-docM-purple-400 bold">
-                                    {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                    {docProfile?.profile?.personal?.s || 'Dr.'}{' '}
+                                    {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                     {docProfile?.profile?.personal?.name?.l || ''}
                                 </p>
                                 <div>
@@ -1932,7 +1936,8 @@ export const getFooterHtml = (
                                     color: footerDoctorNameColor,
                                 }}
                             >
-                                {docProfile?.profile?.personal?.s || 'Dr.'} {docProfile?.profile?.personal?.name?.f || ''}{' '}
+                                {docProfile?.profile?.personal?.s || 'Dr.'}{' '}
+                                {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                 {docProfile?.profile?.personal?.name?.l || ''}
                             </p>
                             <span className="whitespace-preline text-right">
@@ -7235,8 +7240,23 @@ export const getOphthalmologyHtml = (
             });
     });
     const cols = getColumns(type);
+    const normalizedCols = cols as Array<{ key: string; title: string }>;
+    const colTitleByKey: Record<string, string> = {};
+    for (const c of normalizedCols) {
+        colTitleByKey[String(c.key)] = c.title;
+    }
 
-    const sortCols = cols.map((col) => col.key);
+    const sortCols =
+        type === 'opPMT' && Array.isArray(config?.render_pdf_body_config?.pmtTableConfig)
+            ? (config?.render_pdf_body_config?.pmtTableConfig as GeniePadElementsSettingItem[])
+                  .filter((c) => c.isShown)
+                  .map((c) => c.id)
+            : type === 'opKReading' &&
+              Array.isArray(config?.render_pdf_body_config?.kReadingTableConfig)
+            ? (config?.render_pdf_body_config?.kReadingTableConfig as GeniePadElementsSettingItem[])
+                  .filter((c) => c.isShown)
+                  .map((c) => c.id)
+            : normalizedCols.map((col) => col.key);
     const keysArray = [...allKeys];
     const sortedAllKeys = sortCols.filter((key) => keysArray.includes(key as string));
     const allKeysArray = [...sortedAllKeys];
@@ -7249,6 +7269,13 @@ export const getOphthalmologyHtml = (
             >
                 {rxKeyToHeadingMap?.[type]} :
             </p>
+
+            {/* todo: to check if we need to show in pdf also */}
+            {type === 'opKReading' ? (
+                <p className="text-11 mb-4">
+                    Normal Range of K1 &amp; K2 values: <b>42.95 D to 44.78 D</b>
+                </p>
+            ) : null}
             <table className="border-collapse border medication-table-border-color w-full">
                 <thead>
                     <tr className="text-11">
@@ -7273,7 +7300,7 @@ export const getOphthalmologyHtml = (
                                         width: `${80 / allKeysArray.length}%`,
                                     }}
                                 >
-                                    {key}
+                                    {colTitleByKey[key as string] || key}
                                 </th>
                             );
                         })}
@@ -11336,6 +11363,109 @@ export const getCareCanvasHtml = (
                     </div>
                 );
             })}
+        </div>
+    );
+};
+
+export const getEyeExaminationHtml = (
+    d: RenderPdfPrescription,
+    type: 'opEyeExamination',
+    config: TemplateV2,
+): JSX.Element | undefined => {
+    const eyeExamData = (d?.tool?.[type] || []) as EyeExaminationRow[];
+    if (!eyeExamData || eyeExamData.length === 0) return;
+
+    const headingColor = config?.render_pdf_config?.opthal_heading_color;
+    const titleBgColor = config?.render_pdf_config?.opthal_table_heading_color;
+    const borderColor = config?.render_pdf_config?.opthal_table_border_color;
+
+    const cfg = (config?.render_pdf_body_config?.eyeExamTableConfig ||
+        []) as GeniePadElementsSettingItem[];
+    const visibleCfg = Array.isArray(cfg) ? cfg.filter((c) => c.isShown) : [];
+
+    const byId = eyeExamData.reduce((acc, r) => {
+        acc[r.id] = r;
+        return acc;
+    }, {} as Record<string, EyeExaminationRow>);
+
+    const ordered = (visibleCfg.length ? visibleCfg.map((c) => byId[c.id]) : eyeExamData)
+        .filter(Boolean)
+        .filter((r) => {
+            const le = r?.le?.custom || r?.le?.value || '';
+            const re = r?.re?.custom || r?.re?.value || '';
+            return Boolean((le || re) && r?.part?.value);
+        });
+
+    if (!ordered.length) return;
+
+    return (
+        <div className="mb-4 text-darwin-neutral-1000">
+            <p
+                className="uppercase text-darwin-accent-symptoms-blue-800 bold"
+                style={{ color: headingColor }}
+            >
+                Eye Examination / Motility :
+            </p>
+            <table className="border-collapse border medication-table-border-color w-full">
+                <thead>
+                    <tr className="text-11">
+                        <th
+                            className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
+                            style={{
+                                borderColor: borderColor,
+                                backgroundColor: titleBgColor,
+                                width: '30%',
+                            }}
+                        >
+                            Parts
+                        </th>
+                        <th
+                            className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
+                            style={{
+                                borderColor: borderColor,
+                                backgroundColor: titleBgColor,
+                                width: '35%',
+                            }}
+                        >
+                            Left Eye
+                        </th>
+                        <th
+                            className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
+                            style={{
+                                borderColor: borderColor,
+                                backgroundColor: titleBgColor,
+                                width: '35%',
+                            }}
+                        >
+                            Right Eye
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {ordered.map((r) => (
+                        <tr className="text-11">
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
+                                {r.part?.value || '-'}
+                            </td>
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
+                                {r.le?.custom || r.le?.value || '-'}
+                            </td>
+                            <td
+                                style={{ borderColor: borderColor }}
+                                className="border p-4 text-center align-middle"
+                            >
+                                {r.re?.custom || r.re?.value || '-'}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };

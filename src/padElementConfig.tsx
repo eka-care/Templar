@@ -17,6 +17,7 @@ import {
     getMedications1Html,
     getNotesHtml,
     getOphthalmologyHtml,
+    getEyeExaminationHtml,
     getPmhHtml,
     getProceduresHtmls,
     getReferredToHtml,
@@ -168,6 +169,16 @@ export const padElements = (
             return getOphthalmologyHtml(data, 'opSubjectiveRefraction', config);
         case 'opAutoRefraction':
             return getOphthalmologyHtml(data, 'opAutoRefraction', config);
+        case 'opLacrimalSyringing':
+            return getOphthalmologyHtml(data, 'opLacrimalSyringing', config);
+        case 'opColorVision':
+            return getOphthalmologyHtml(data, 'opColorVision', config);
+        case 'opPMT':
+            return getOphthalmologyHtml(data, 'opPMT', config);
+        case 'opKReading':
+            return getOphthalmologyHtml(data, 'opKReading', config);
+        case 'opEyeExamination':
+            return getEyeExaminationHtml(data, 'opEyeExamination', config);
         case 'procedures':
             return getProceduresHtmls(data, config, sectionNameConfig?.['procedures']);
         case 'careCanvas':
