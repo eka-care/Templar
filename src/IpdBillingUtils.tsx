@@ -1,15 +1,12 @@
 import moment from 'moment';
-import { ensurePagifyLoaded } from '../../pagifySingeltonInstanceScriptTag';
-import { captureError } from '../../pages/captureError';
-import { track } from '../../tracking';
-import { Data } from '../../api/ipdAdmitPatientsList';
-import { Service } from '../../api/getTreatmentPlans';
-import { Receipt } from '../../api/getTreatmentPlan';
-import { ReceiptPdfConfig as ApiReceiptPdfConfig } from '../../api/getReceiptPdfConfig';
-import { DocProfileResponse } from '../../api/fetchDoctorProfile';
-import { formattedNumber } from '../../pages/utils';
-import { getAgeString } from '../../store/utils';
-import { getIpdConfig } from '../../store/localstorage';
+import type {
+    ApiReceiptPdfConfig,
+    Data,
+    DocProfileResponse,
+    Receipt,
+    Service,
+} from './ipdBillingTypes';
+import { formattedNumber, getAgeString, getIpdConfig } from './ipdBillingHelpers';
 import {
     ReceiptPdfConfig,
     TPdfObject,
@@ -187,9 +184,8 @@ export const getBodyForIpdBilling = ({
                 <td class="text-align-right">&#8377;${formattedNumber(s.mrp || 0)}</td>
                 ${showDiscount ? `<td class="text-align-right">${s.discount || 0}%</td>` : ''}
                 <td class="text-align-right">&#8377;${formattedNumber(s.amount || 0)}</td>
-                <td class="text-align-right">${
-                    s.date ? moment(s.date).format("DD MMM'YY") : '-'
-                }</td>
+                <td class="text-align-right">${s.date ? moment(s.date).format("DD MMM'YY") : '-'
+                    }</td>
             </tr>`,
             )
             .join('');
@@ -280,14 +276,13 @@ export const getBodyForIpdBilling = ({
         </div>
     </div>
 
-    ${
-        leftDetails || rightDetails
+    ${leftDetails || rightDetails
             ? `<div style="display:flex; gap:24px; margin-bottom:1.5rem;">
             <div style="flex:1;">${leftDetails}</div>
             <div style="flex:1; text-align:right;">${rightDetails}</div>
         </div>`
             : ''
-    }
+        }
 
     <table style="table-layout: fixed; width: 100%;">
         <thead>${tableHeader}</thead>
@@ -307,7 +302,6 @@ const renderIpdBillingPdf = async (
     footerHtml: string,
     config: ReceiptPdfConfig,
 ): Promise<void> => {
-    await ensurePagifyLoaded();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.pagify.render({
@@ -323,10 +317,6 @@ const renderIpdBillingPdf = async (
         onPdfReady: async (blobUrl: string) => {
             window.open(blobUrl);
         },
-        onPdfError: (error: string) => {
-            track('ERROR', { on: 'ipdBillingPdfError', error });
-            captureError(new Error(error));
-        },
     });
 };
 
@@ -340,55 +330,47 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
         receipts = [],
     } = input;
 
-    try {
-        const config = buildConfig(apiConfig);
+    const config = buildConfig(apiConfig);
 
-        const doctorName = [
-            'Dr.',
-            docProfile.profile.personal.name.f,
-            docProfile.profile.personal.name.l,
-        ]
-            .filter(Boolean)
-            .join(' ');
+    const doctorName = [
+        'Dr.',
+        docProfile.profile.personal.name.f,
+        docProfile.profile.personal.name.l,
+    ]
+        .filter(Boolean)
+        .join(' ');
 
-        const headerText = docProfile.profile.professional.header_text || '';
-        const clinics = docProfile.profile.professional.clinics || [];
-        const matchedClinic =
-            clinics.find((c) => c._id === config.clinic_id) || clinics[0];
-        const clinicName = matchedClinic?.name || '';
-        const clinicAddress = [matchedClinic?.address?.line1, matchedClinic?.city_name]
-            .filter(Boolean)
-            .join(', ');
+    const headerText = docProfile.profile.professional.header_text || '';
+    const clinics = docProfile.profile.professional.clinics || [];
+    const matchedClinic =
+        clinics.find((c) => c._id === config.clinic_id) || clinics[0];
+    const clinicName = matchedClinic?.name || '';
+    const clinicAddress = [matchedClinic?.address?.line1, matchedClinic?.city_name]
+        .filter(Boolean)
+        .join(', ');
 
-        const pdfObjForFns = {
-            config,
-            ref_trx_id: undefined,
-            billCreatedBy: doctorName,
-        } as unknown as TPdfObject;
+    const pdfObjForFns = {
+        config,
+        ref_trx_id: undefined,
+        billCreatedBy: doctorName,
+    } as unknown as TPdfObject;
 
-        const headHtml = getPdfCssForReceipt(pdfObjForFns);
-        const headerHtml = getHeaderForReceipt({
-            doctorName,
-            headerText,
-            clinicName,
-            clinicAddress,
-            config,
-        });
-        const footerHtml = getFooterForReceipt({ config, data: pdfObjForFns });
-        const contentHtml = getBodyForIpdBilling({
-            item,
-            type,
-            services,
-            receipts,
-            config,
-        });
+    const headHtml = getPdfCssForReceipt(pdfObjForFns);
+    const headerHtml = getHeaderForReceipt({
+        doctorName,
+        headerText,
+        clinicName,
+        clinicAddress,
+        config,
+    });
+    const footerHtml = getFooterForReceipt({ config, data: pdfObjForFns });
+    const contentHtml = getBodyForIpdBilling({
+        item,
+        type,
+        services,
+        receipts,
+        config,
+    });
 
-        await renderIpdBillingPdf(headHtml, headerHtml, contentHtml, footerHtml, config);
-    } catch (error) {
-        captureError(error as Error);
-        track('ERROR', {
-            on: 'generateIpdBillingPdf',
-            error: (error as Error).message,
-        });
-    }
+    await renderIpdBillingPdf(headHtml, headerHtml, contentHtml, footerHtml, config);
 };
