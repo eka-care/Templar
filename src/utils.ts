@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { OpIop, OpKReading, OpPMT, OpSpec, OpVision, PX_OP_KEYS } from './types';
+import { OPHTHAL_TEST_IDS } from './ophthalTestIds';
 
 export const getColumns = (
     pxKey: PX_OP_KEYS,
@@ -95,20 +96,20 @@ export const getColumns = (
             ];
         case 'opPMT':
             return [
-                { key: 'sph', title: 'SPH' } as any,
-                { key: 'cyl', title: 'CYL' } as any,
-                { key: 'axis', title: 'AXIS' } as any,
-                { key: 'add', title: 'ADD' } as any,
-                { key: 'bcvaDist', title: 'BCVA (Dist)' } as any,
+                { key: OPHTHAL_TEST_IDS?.pmt?.right?.sph, title: 'SPH' } as any,
+                { key: OPHTHAL_TEST_IDS?.pmt?.right?.cyl, title: 'CYL' } as any,
+                { key: OPHTHAL_TEST_IDS?.pmt?.right?.axis, title: 'AXIS' } as any,
+                { key: OPHTHAL_TEST_IDS?.pmt?.right?.add, title: 'ADD' } as any,
+                { key: OPHTHAL_TEST_IDS?.pmt?.right?.bcvaDist, title: 'BCVA (Dist)' } as any,
             ];
         case 'opKReading':
             return [
-                { key: 'k1', title: 'K1' } as any,
-                { key: 'axisK1', title: 'Axis (K1)' } as any,
-                { key: 'k2', title: 'K2' } as any,
-                { key: 'axisK2', title: 'Axis (K2)' } as any,
-                { key: 'cyl', title: 'CYL' } as any,
-                { key: 'axisCyl', title: 'Axis (CYL)' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.k1, title: 'K1' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.axisK1, title: 'Axis (K1)' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.k2, title: 'K2' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.axisK2, title: 'Axis (K2)' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.cyl, title: 'CYL' } as any,
+                { key: OPHTHAL_TEST_IDS?.kReading.right.axisCyl, title: 'Axis (CYL)' } as any,
             ];
     }
 };
