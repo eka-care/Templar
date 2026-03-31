@@ -93,6 +93,8 @@ export const getColumns = (
                 { key: 'result', title: 'Result' } as any,
                 { key: 'remarks', title: 'Remarks' } as any,
             ];
+        case 'opPachymetry':
+            return [{ key: 'remarks', title: 'Remarks' } as any];
         case 'opPMT':
             return [
                 { key: 'sph', title: 'SPH' } as any,
@@ -124,6 +126,7 @@ export const rxKeyToHeadingMap: { [k in PX_OP_KEYS]: string } = {
     opColorVision: 'Color Vision',
     opPMT: 'PMT',
     opKReading: 'K Reading / Biometry',
+    opPachymetry: 'Pachymetry',
 };
 
 export enum LAB_TESTS_FOLLOWUP_TYPE {

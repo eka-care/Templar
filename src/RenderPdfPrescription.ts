@@ -427,6 +427,7 @@ export interface Tool {
     opColorVision: Ophthalmology[];
     opPMT: Ophthalmology[];
     opKReading: Ophthalmology[];
+    opPachymetry: Ophthalmology[];
     opEyeExamination?: EyeExaminationRow[];
     procedures?: Procedure[];
     ipdAdmission?: IpdAdmission;

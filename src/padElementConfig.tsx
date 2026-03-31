@@ -177,6 +177,8 @@ export const padElements = (
             return getOphthalmologyHtml(data, 'opPMT', config);
         case 'opKReading':
             return getOphthalmologyHtml(data, 'opKReading', config);
+        case 'opPachymetry':
+            return getOphthalmologyHtml(data, 'opPachymetry', config);
         case 'opEyeExamination':
             return getEyeExaminationHtml(data, 'opEyeExamination', config);
         case 'procedures':

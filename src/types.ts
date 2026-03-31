@@ -43,7 +43,8 @@ export type PX_OP_KEYS =
     | 'opLacrimalSyringing'
     | 'opColorVision'
     | 'opPMT'
-    | 'opKReading';
+    | 'opKReading'
+    | 'opPachymetry';
 
 export interface OpVision {
     eye?: {
