@@ -429,6 +429,7 @@ export interface Tool {
     opKReading: Ophthalmology[];
     opPachymetry: Ophthalmology[];
     opAmslerGrid: Ophthalmology[];
+    opContactLens: Ophthalmology[];
     opEyeExamination?: EyeExaminationRow[];
     procedures?: Procedure[];
     ipdAdmission?: IpdAdmission;
@@ -682,6 +683,7 @@ export interface TemplateV2 {
         pmtTableConfig?: GeniePadElementsSettingItem[];
         kReadingTableConfig?: GeniePadElementsSettingItem[];
         eyeExamTableConfig?: GeniePadElementsSettingItem[];
+        contactLensTableConfig?: GeniePadElementsSettingItem[];
     };
 }
 

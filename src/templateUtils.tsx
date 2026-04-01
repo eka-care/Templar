@@ -7256,6 +7256,11 @@ export const getOphthalmologyHtml = (
             ? (config?.render_pdf_body_config?.kReadingTableConfig as GeniePadElementsSettingItem[])
                   .filter((c) => c.isShown)
                   .map((c) => c.id)
+            : type === 'opContactLens' &&
+              Array.isArray(config?.render_pdf_body_config?.contactLensTableConfig)
+            ? (config?.render_pdf_body_config?.contactLensTableConfig as GeniePadElementsSettingItem[])
+                  .filter((c) => c.isShown)
+                  .map((c) => c.id)
             : normalizedCols.map((col) => col.key);
     const keysArray = [...allKeys];
     const sortedAllKeys = sortCols.filter((key) => keysArray.includes(key as string));
