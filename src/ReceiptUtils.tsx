@@ -29,6 +29,7 @@ export type TPdfObject = {
     receiptAmountinWords?: string;
     totalDiscountOnEntireBill: number;
     billCreatedBy?: string;
+    receiptRemarks?: string;
 };
 export type TPageSize = 'A4' | 'A5';
 export enum DateAndTimeConfigForReceipt {
@@ -248,6 +249,7 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
         amount_due = 0,
         business_receipt_number,
         payment_status,
+        receiptRemarks,
     } = data;
     const { flags } = config;
     const { print_receipt_number, print_paymode_split, discount_column, quantity_column } = flags;
@@ -400,6 +402,11 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
       </tr>`
                 : ''
         }
+        ${`<tr class="receipt-remarks">
+                  <td colspan=${colSpan + 1} style="padding-top: 0.5rem; font-size: 0.75rem;">
+                    <span class='bold'>Receipt Remarks:</span> ${receiptRemarks}
+                  </td>
+          </tr>`}
         ${
             print_paymode_split
                 ? `<tr>
