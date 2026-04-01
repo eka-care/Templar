@@ -93,6 +93,23 @@ export const getColumns = (
                 { key: 'result', title: 'Result' } as any,
                 { key: 'remarks', title: 'Remarks' } as any,
             ];
+        case 'opPachymetry':
+            return [{ key: 'remarks', title: 'Remarks' } as any];
+        case 'opAmslerGrid':
+            return [
+                { key: 'result', title: 'Result' } as any,
+                { key: 'remarks', title: 'Remarks' } as any,
+            ];
+        case 'opContactLens':
+            return [
+                { key: 'bc', title: 'BC' } as any,
+                { key: 'dia', title: 'DIA' } as any,
+                { key: 'sph', title: 'SPH' } as any,
+                { key: 'cyl', title: 'CYL' } as any,
+                { key: 'axis', title: 'AXIS' } as any,
+                { key: 'add', title: 'ADD' } as any,
+                { key: 'lensType', title: 'Lens Type' } as any,
+            ];
         case 'opPMT':
             return [
                 { key: 'sph', title: 'SPH' } as any,
@@ -124,6 +141,9 @@ export const rxKeyToHeadingMap: { [k in PX_OP_KEYS]: string } = {
     opColorVision: 'Color Vision',
     opPMT: 'PMT',
     opKReading: 'K Reading / Biometry',
+    opPachymetry: 'Pachymetry',
+    opAmslerGrid: 'Amsler Grid',
+    opContactLens: 'Contact Lens',
 };
 
 export enum LAB_TESTS_FOLLOWUP_TYPE {
