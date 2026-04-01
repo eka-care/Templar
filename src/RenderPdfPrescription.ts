@@ -428,6 +428,7 @@ export interface Tool {
     opPMT: Ophthalmology[];
     opKReading: Ophthalmology[];
     opPachymetry: Ophthalmology[];
+    opAmslerGrid: Ophthalmology[];
     opEyeExamination?: EyeExaminationRow[];
     procedures?: Procedure[];
     ipdAdmission?: IpdAdmission;

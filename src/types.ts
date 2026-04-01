@@ -44,7 +44,8 @@ export type PX_OP_KEYS =
     | 'opColorVision'
     | 'opPMT'
     | 'opKReading'
-    | 'opPachymetry';
+    | 'opPachymetry'
+    | 'opAmslerGrid';
 
 export interface OpVision {
     eye?: {

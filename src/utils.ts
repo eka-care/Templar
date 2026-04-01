@@ -95,6 +95,11 @@ export const getColumns = (
             ];
         case 'opPachymetry':
             return [{ key: 'remarks', title: 'Remarks' } as any];
+        case 'opAmslerGrid':
+            return [
+                { key: 'result', title: 'Result' } as any,
+                { key: 'remarks', title: 'Remarks' } as any,
+            ];
         case 'opPMT':
             return [
                 { key: 'sph', title: 'SPH' } as any,
@@ -127,6 +132,7 @@ export const rxKeyToHeadingMap: { [k in PX_OP_KEYS]: string } = {
     opPMT: 'PMT',
     opKReading: 'K Reading / Biometry',
     opPachymetry: 'Pachymetry',
+    opAmslerGrid: 'Amsler Grid',
 };
 
 export enum LAB_TESTS_FOLLOWUP_TYPE {
