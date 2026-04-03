@@ -56,9 +56,9 @@ export const getAppointmentDetails = ({
     appointmentStatus,
 }: Partial<OpdSlipBodyData>): { label: string; value: string; valueStyle: string }[] => {
     const defaultValueStyle =
-        'font-size: 0.75rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;';
+        'font-size: 1rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;';
     const tokenValueStyle =
-        'font-size: 1.1rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
+        'font-size: 1.4rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
 
     return [
         time ? { label: 'DATE & TIME', value: time, valueStyle: defaultValueStyle } : null,
@@ -135,72 +135,34 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const additionalDetailsOfPatient = getadditionalDetailsOfPatient(mappedFormData);
     const doesPatientAttributesExist = additionalDetailsOfPatient.length > 0;
 
-    return `<main id="opd-slip-body" style="padding: 3rem 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
+    const patientDetails = getPatientDetails({ name, gender, age, uhid, patient_mobile });
+    if (token) {
+        patientDetails.push({ label: 'TOKEN', value: token });
+    }
+
+    const appointmentDetails = getAppointmentDetails({ time, doctor_name, appointmentStatus });
+
+    const defaultValueStyle =
+        'font-size: 1rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;';
+    const tokenValueStyle =
+        'font-size: 1.4rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
+
+    return `<main id="opd-slip-body" style="padding-bottom: 1.5rem; padding-top: 0rem; padding-right: 2.5rem; padding-left: 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
 
             <!-- Patient Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: ${
-                doesPatientAttributesExist ? '1rem' : '2rem'
-            }; border-bottom: ${doesPatientAttributesExist ? 'none' : '1.6px solid #e8e8e8'};">
-                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.8rem 0;">PATIENT DETAILS</p>
-                <div style="display: flex; align-items: start; gap: 1.3rem;">
-                    ${getPatientDetails({ name, gender, age, uhid, patient_mobile })
+            <section style="margin-bottom: 0.6rem; padding-bottom: 1rem; border-bottom: 1.6px solid #e8e8e8;">
+                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.2rem 0;">PATIENT DETAILS</p>
+                <div style="display: flex; align-items: start; gap: 0.8rem;">
+                    ${patientDetails
                         .map(
                             (item, index, arr) => `
                             <div style="min-width: 0; flex: 1;">
-                                <p style="font-size: 0.6rem; letter-spacing: 0.08em; color: #999999; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">${
+                                <p style="font-size: 0.7rem; letter-spacing: 0.08em; color: #999999; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">${
                                     item.label
                                 }</p>
-                                <p style="font-size: 0.75rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;">${
-                                    item.value
-                                }</p>
-                            </div>
-                            ${
-                                index !== arr.length - 1
-                                    ? `<div style="color: #cccccc; font-size: 1rem; line-height: 1; padding-top: 1rem;">|</div>`
-                                    : ''
-                            }
-                        `,
-                        )
-                        .join('')}
-                </div>
-            </section>
-            ${
-                doesPatientAttributesExist
-                    ? `<!-- Additional Details Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
-                <p style="font-size: 0.77rem; letter-spacing: 0.08em; color: #666666; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">Additional Details</p>
-                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0;">
-                    ${additionalDetailsOfPatient
-                        .map(
-                            (item, index, arr) => `
-                            <span style="font-size: 0.65rem; color: #2a2a2a; line-height: 1.6;">
-                                <span style="font-weight: 700;">${item.label}:</span> ${item.value}
-                            </span>
-                            ${
-                                index !== arr.length - 1
-                                    ? `<span style="margin: 0 0.6rem; color: #cccccc; font-size: 0.55rem;">|</span>`
-                                    : ''
-                            }
-                        `,
-                        )
-                        .join('')}
-                </div>
-            </section>`
-                    : ''
-            }
-
-            <!-- Appointment Details Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
-                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.8rem 0;">Appointment Details</p>
-                <div style="display: flex; align-items: start; gap: 1.3rem;">
-                    ${getAppointmentDetails({ time, doctor_name, token, appointmentStatus })
-                        .map(
-                            (item, index, arr) => `
-                            <div style="min-width: 0; flex: 1;">
-                                <p style="font-size: 0.6rem; letter-spacing: 0.08em; color: #999999; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">${
-                                    item.label
-                                }</p>
-                                <p style="${item.valueStyle}">${item.value}</p>
+                                <p style="${
+                                    item.label === 'TOKEN' ? tokenValueStyle : defaultValueStyle
+                                }">${item.value}</p>
                             </div>
                             ${
                                 index !== arr.length - 1
@@ -213,61 +175,58 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                 </div>
             </section>
 
-            <!-- Services Section -->
-            <section style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1.6px solid #e8e8e8;">
-                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.8rem 0;">Service Details</p>
+            <!-- Appointment & Additional Details Section -->
+           ${`<section style="margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1.6px solid #e8e8e8;">
+    
+            <p style="font-size: 0.8rem; letter-spacing: 0.12em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.6rem 0;">
+                APPOINTMENT & ADDITIONAL DETAILS
+            </p>
+        
+            <div style="
+                display: grid; 
+                grid-template-columns: 1fr 1fr; 
+                column-gap: 1rem; 
+                row-gap: 0.4rem;
+                font-size: 0.8rem;
+                line-height: 1.25;
+            ">
                 
-                ${
-                    services.length > 0
-                        ? `<div style="
-                          font-size: 0.75rem;
-                          color: #2a2a2a;
-                          margin: 0;
-                          font-weight: 500;
-                          line-height: 2;
-                          display: flex;
-                          flex-wrap: wrap;
-                          align-items: center;
-                        ">
-                          ${services
-                              .map(
-                                  (s, index) => `
-                                <span style="display: flex; align-items: center;">
-                                  <span>${s.service_name}</span>
-                                  <span style="margin-left: 0.35rem;">( ₹${s.price} )</span>
-                                  ${
-                                      index !== services.length - 1
-                                          ? `<span style="margin: 0 1.2rem; color: #999;">|</span>`
-                                          : ''
-                                  }
-                                </span>
-                              `,
-                              )
-                              .join('')}
-                        </div>`
-                        : `<p style="
-                          font-size: 0.75rem;
-                          color: #bbbbbb;
-                          margin: 0;
-                          font-weight: 500;
-                          line-height: 1.5;
-                        ">
-                          No services selected
-                        </p>`
-                }                  
+                ${[...appointmentDetails, ...additionalDetailsOfPatient]
+                    .map(
+                        (item) => `
+                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <span style="color: #888888; font-weight: 600;">${item.label}:</span>
+                        <span style="color: #000000; font-weight: 500;"> ${item.value}</span>
+                    </div>
+                `,
+                    )
+                    .join('')}
+            </div>
+        
+        </section>`}
 
-            </section>
-
-            <!-- Payment Section -->
+            <!-- Services & Payment Section -->
             <section>
-                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.8rem 0;">PAYMENT Details</p>
-                <p style="font-size: 0.75rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.5;">
+                <p style="font-size: 0.8rem; color: #2a2a2a; margin: 0 0 0 0; font-weight: 500; line-height: 1;">
+                    <span style="font-weight: 700; margin-right: 1rem;">Services:</span>
                     ${
-                        payment_status
-                            ? `${payment_status}`
-                            : '<span style="color: #bbbbbb;">Not available</span>'
+                        services.length > 0
+                            ? services
+                                  .map(
+                                      (s, index) =>
+                                          `${s.service_name} ( ₹${s.price} )${index !== services.length - 1 ? ' <span style="color: #999;">|</span>' : ''}`,
+                                  )
+                                  .join(' ')
+                            : '<span style="color: #bbbbbb;">No services selected</span>'
                     }
                 </p>
+                ${
+                    payment_status
+                        ? `<p style="font-size: 0.8rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 2;">
+                    <span style="font-weight: 700; margin-right: 1rem;">Payment:</span> ${payment_status}
+                </p>`
+                        : ''
+                }
             </section>
 
         </main>`;
@@ -283,7 +242,7 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
     ].filter(Boolean) as string[];
 
     return `
-        <footer id="opd-slip-footer" style="text-align: center; padding: 2rem 2rem; font-size: 0.8rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em;">
+        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.8rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 1.5rem; left: 0; right: 0;">
             <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
                 ${footerParts
                     .map(
