@@ -402,11 +402,15 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
       </tr>`
                 : ''
         }
-        ${`<tr class="receipt-remarks">
+        ${
+            receiptRemarks
+                ? `<tr class="receipt-remarks">
                   <td colspan=${colSpan + 1} style="padding-top: 0.5rem; font-size: 0.75rem;">
-                    <span class='bold'>Receipt Remarks:</span> ${receiptRemarks}
+                    <span class='bold'>Remarks:</span> ${receiptRemarks}
                   </td>
-          </tr>`}
+          </tr>`
+                : ''
+        }
         ${
             print_paymode_split
                 ? `<tr>
