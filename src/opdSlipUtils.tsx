@@ -84,10 +84,10 @@ export const getPatientDetails = ({
 }: Partial<OpdSlipBodyData>): { label: string; value: string }[] => {
     return [
         name ? { label: 'NAME', value: name } : null,
-        gender ? { label: 'GENDER', value: gender } : null,
-        age ? { label: 'AGE', value: age } : null,
         patient_mobile ? { label: 'PHONE NO.', value: patient_mobile } : null,
         uhid ? { label: 'UHID', value: uhid } : null,
+        gender ? { label: 'GENDER', value: gender } : null,
+        age ? { label: 'AGE', value: age } : null,
     ].filter(Boolean) as { label: string; value: string }[];
 };
 
@@ -115,6 +115,8 @@ export const getadditionalDetailsOfPatient = (
         })
         .filter(Boolean) as { label: string; value: string }[];
 };
+
+const fixedWidthItems = ['GENDER', 'AGE'] as const;
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const {
@@ -145,7 +147,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const defaultValueStyle =
         'font-size: 1rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;';
     const tokenValueStyle =
-        'font-size: 1.4rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
+        'font-size: 1rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
 
     return `<main id="opd-slip-body" style="padding-bottom: 1.5rem; padding-top: 0rem; padding-right: 2.5rem; padding-left: 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
 
@@ -156,7 +158,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                     ${patientDetails
                         .map(
                             (item, index, arr) => `
-                            <div style="min-width: 0; flex: 1;">
+                            <div style="min-width: 0; ${fixedWidthItems.includes(item.label as typeof fixedWidthItems[number]) ? 'flex: 0 0 auto;' : 'flex: 1;'}">
                                 <p style="font-size: 0.7rem; letter-spacing: 0.08em; color: #999999; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">${
                                     item.label
                                 }</p>
