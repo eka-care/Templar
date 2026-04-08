@@ -38,6 +38,10 @@ export interface OpdSlipBodyData {
         key: string;
         value: string | number | FormDataKeyLabel | FormDataKeyLabel[];
     }>;
+    tags?: string[];
+    labels?: string[];
+    partnerMetadata?: Record<string, string>;
+    apt_custom_attributes?: { label: string; value: string }[];
 }
 
 export interface OpdSlipFooterData {
@@ -116,7 +120,7 @@ export const getadditionalDetailsOfPatient = (
         .filter(Boolean) as { label: string; value: string }[];
 };
 
-const fixedWidthItems = ['GENDER', 'AGE'] as const;
+const fixedWidthItems = ['GENDER', 'AGE', 'TOKEN'];
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const {
@@ -130,108 +134,167 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         age,
         uhid,
         patient_mobile,
-        appointmentStatus,
         mappedFormData,
+        tags,
+        labels,
+        partnerMetadata,
+        apt_custom_attributes,
     } = data;
 
-    const additionalDetailsOfPatient = getadditionalDetailsOfPatient(mappedFormData);
-    const doesPatientAttributesExist = additionalDetailsOfPatient.length > 0;
+    const additionalDetailsOfPatient = [
+        ...getadditionalDetailsOfPatient(mappedFormData),
+        ...(apt_custom_attributes ?? []),
+    ];
 
-    const patientDetails = getPatientDetails({ name, gender, age, uhid, patient_mobile });
-    if (token) {
-        patientDetails.push({ label: 'TOKEN', value: token });
-    }
+    const sectionTitleStyle =
+        'font-size: 0.375rem; font-weight: 600; color: rgba(0,0,0,0.6); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
+    const labelStyle =
+        'font-size: 0.375rem; color: rgba(0,0,0,0.5); letter-spacing: 0.0125rem; margin: 0;';
+    const valueStyle = 'font-size: 0.4375rem; font-weight: 700; color: #000000; margin: 0;';
+    const dividerStyle =
+        'width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;';
+    const sectionDivider =
+        '<div style="width: 100%; height: 0.0625rem; background: rgba(0,0,0,0.1); border-radius: 6.25rem;"></div>';
 
-    const appointmentDetails = getAppointmentDetails({ time, doctor_name, appointmentStatus });
+    // --- Row builders for Section 1 ---
+    const patientRow1Items = [
+        name ? { label: 'NAME', value: name } : null,
+        doctor_name ? { label: 'DOCTOR', value: doctor_name } : null,
+        time ? { label: 'DATE & TIME', value: time } : null,
+        payment_status ? { label: 'PAYMENT STATUS', value: payment_status } : null,
 
-    const defaultValueStyle =
-        'font-size: 1rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 1.4;';
-    const tokenValueStyle =
-        'font-size: 1rem; color: #000000; margin: 0; font-weight: 700; line-height: 1.2;';
+        /// MIGHT NEED TO REMOVE THE BELWO
 
-    return `<main id="opd-slip-body" style="padding-bottom: 1.5rem; padding-top: 0rem; padding-right: 2.5rem; padding-left: 2.5rem; background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
+        patient_mobile ? { label: 'PHONE', value: patient_mobile } : null,
+        uhid ? { label: 'UHID', value: uhid } : null,
 
-            <!-- Patient Section -->
-            <section style="margin-bottom: 0.6rem; padding-bottom: 1rem; border-bottom: 1.6px solid #e8e8e8;">
-                <p style="font-size: 0.85rem; letter-spacing: 0.15em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.2rem 0;">PATIENT DETAILS</p>
-                <div style="display: flex; align-items: start; gap: 0.8rem;">
-                    ${patientDetails
-                        .map(
-                            (item, index, arr) => `
-                            <div style="min-width: 0; ${fixedWidthItems.includes(item.label as typeof fixedWidthItems[number]) ? 'flex: 0 0 auto;' : 'flex: 1;'}">
-                                <p style="font-size: 0.7rem; letter-spacing: 0.08em; color: #999999; text-transform: uppercase; font-weight: 600; margin: 0 0 0.5rem 0;">${
-                                    item.label
-                                }</p>
-                                <p style="${
-                                    item.label === 'TOKEN' ? tokenValueStyle : defaultValueStyle
-                                }">${item.value}</p>
+        gender ? { label: 'GENDER', value: gender } : null,
+        age ? { label: 'AGE', value: age } : null,
+        token ? { label: 'TOKEN', value: token } : null,
+    ].filter(Boolean) as { label: string; value: string }[];
+
+    const buildRow = (items: { label: string; value: string }[]): string => {
+        const cells: string[] = [];
+        items.forEach((item, i) => {
+            if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
+            const minWidth = fixedWidthItems.includes(item.label) ? '2.5rem' : '4.688rem';
+            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${minWidth}; max-width: 10rem;">
+            <p style="${labelStyle}">${item.label}</p>
+            <p style="${valueStyle}">${item.value}</p>
+        </div>`);
+        });
+
+        return `<div style="display: flex; align-items: center; gap: 0.375rem; height: 1.5625rem;">${cells.join(
+            '',
+        )}</div>`;
+    };
+
+    const buildThreeColRows = (items: { label: string; value: string }[]): string => {
+        return `
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
+            ${items
+                .map(
+                    (item, index) => `
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            
+                            ${index > 0 ? `<div style="${dividerStyle}"></div>` : ''}
+
+                            <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
+                                <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">
+                                    ${item.label}:
+                                </span>
+                                <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">
+                                    ${item.value}
+                                </span>
                             </div>
-                            ${
-                                index !== arr.length - 1
-                                    ? `<div style="color: #cccccc; font-size: 1rem; line-height: 1; padding-top: 1rem;">|</div>`
-                                    : ''
-                            }
-                        `,
-                        )
-                        .join('')}
-                </div>
-            </section>
 
-            <!-- Appointment & Additional Details Section -->
-           ${`<section style="margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1.6px solid #e8e8e8;">
-    
-            <p style="font-size: 0.8rem; letter-spacing: 0.12em; color: #000000; text-transform: uppercase; font-weight: 700; margin: 0 0 0.6rem 0;">
-                APPOINTMENT & ADDITIONAL DETAILS
-            </p>
-        
-            <div style="
-                display: grid; 
-                grid-template-columns: 1fr 1fr; 
-                column-gap: 1rem; 
-                row-gap: 0.4rem;
-                font-size: 0.8rem;
-                line-height: 1.25;
-            ">
-                
-                ${[...appointmentDetails, ...additionalDetailsOfPatient]
-                    .map(
-                        (item) => `
-                    <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <span style="color: #888888; font-weight: 600;">${item.label}:</span>
-                        <span style="color: #000000; font-weight: 500;"> ${item.value}</span>
-                    </div>
-                `,
-                    )
-                    .join('')}
+                        </div>
+                    `,
+                )
+                .join('')}
+        </div>
+    `;
+    };
+
+    // --- Services pills ---
+    const servicesPills =
+        services.length > 0
+            ? services
+                  .map(
+                      (s) =>
+                          `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; height: 0.875rem;">
+                <span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
+                <span style="font-size: 0.4375rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
+            </div>`,
+                  )
+                  .join('')
+            : '<span style="font-size: 0.4375rem; color: rgba(0,0,0,0.3);">No services selected</span>';
+
+    // --- Tags & Labels section ---
+    const tagsSection =
+        tags?.length || labels?.length
+            ? `
+        <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+            <p style="${sectionTitleStyle}">TAGS &amp; LABELS</p>
+            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                ${tags?.length ? renderTags(tags) : ''}
+                ${labels?.length ? renderLabels(labels) : ''}
             </div>
-        
-        </section>`}
+        </div>
+        ${sectionDivider}`
+            : '';
 
-            <!-- Services & Payment Section -->
-            <section>
-                <p style="font-size: 0.8rem; color: #2a2a2a; margin: 0 0 0 0; font-weight: 500; line-height: 1;">
-                    <span style="font-weight: 700; margin-right: 1rem;">Services:</span>
-                    ${
-                        services.length > 0
-                            ? services
-                                  .map(
-                                      (s, index) =>
-                                          `${s.service_name} ( ₹${s.price} )${index !== services.length - 1 ? ' <span style="color: #999;">|</span>' : ''}`,
-                                  )
-                                  .join(' ')
-                            : '<span style="color: #bbbbbb;">No services selected</span>'
-                    }
-                </p>
-                ${
-                    payment_status
-                        ? `<p style="font-size: 0.8rem; color: #2a2a2a; margin: 0; font-weight: 500; line-height: 2;">
-                    <span style="font-weight: 700; margin-right: 1rem;">Payment:</span> ${payment_status}
-                </p>`
-                        : ''
-                }
-            </section>
+    // --- Partner Metadata section ---
+    const metadataSection =
+        partnerMetadata && Object.keys(partnerMetadata).length
+            ? `
+        <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+            <p style="${sectionTitleStyle}">PARTNER &amp; SYSTEM METADATA</p>
+            ${printMetaDataOfPartnerSystem(partnerMetadata)}
+        </div>`
+            : '';
 
-        </main>`;
+    return `<main id="opd-slip-body" style="padding: 0.75rem 1rem 1.5rem 1rem; background: #ffffff; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
+        <div style="display: flex; flex-direction: column; gap: 0.625rem;">
+
+            <!-- Section 1: Patient & Appointment Details -->
+            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <p style="${sectionTitleStyle}">PATIENT &amp; APPOINTMENT DETAILS</p>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    ${buildRow(patientRow1Items)}
+                    
+                </div>
+            </div>
+            ${sectionDivider}
+
+            <!-- Section 2: Additional Details -->
+            ${
+                additionalDetailsOfPatient.length > 0
+                    ? `
+            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <p style="${sectionTitleStyle}">ADDITIONAL DETAILS</p>
+                ${buildThreeColRows(additionalDetailsOfPatient)}
+            </div>
+            ${sectionDivider}`
+                    : ''
+            }
+
+            <!-- Section 3: Tags & Labels -->
+            ${tagsSection}
+
+            <!-- Section 4: Services -->
+            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
+                <p style="${sectionTitleStyle}">SERVICES</p>
+                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
+                    ${servicesPills}
+                </div>
+            </div>
+
+            <!-- Section 5: Partner & System Metadata -->
+            ${metadataSection ? `${sectionDivider}${metadataSection}` : ''}
+
+        </div>
+    </main>`;
 };
 
 export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
@@ -244,7 +307,7 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
     ].filter(Boolean) as string[];
 
     return `
-        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.8rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 1.5rem; left: 0; right: 0;">
+        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 1.5rem; left: 0; right: 0;">
             <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
                 ${footerParts
                     .map(
@@ -261,4 +324,148 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
 export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
     const rootFontSize = pageSize === 'A5' ? '11px' : '16px';
     return `<style>html { font-size: ${rootFontSize}; }</style>`;
+};
+
+export const getHeaderForReceiptV2 = ({
+    doctorName,
+    headerText,
+    clinicName,
+    config,
+}: {
+    doctorName: string;
+    headerText: string;
+    clinicName: string;
+    clinicAddress: string;
+    config: ReceiptPdfConfig;
+}): string => {
+    const { header_image_url, heights } = config;
+    const { header } = heights;
+    if (header_image_url) {
+        return `
+        <div style="
+          width: 100%;
+          height: ${header}cm;
+          background-image: url('${header_image_url}');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        "></div>
+      `;
+    }
+
+    return `<div id="header" title="header" style="
+        width: 100%;
+        height: 4rem;
+        background: #364257;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        box-sizing: border-box;
+        font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    ">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem; flex: 1; min-width: 0;">
+            <div style="font-size: 0.875rem; font-weight: 700; color: #ffffff; line-height: 1.2;">${clinicName}</div>
+            <div style="font-size: 0.625rem; font-weight: 400; color: rgba(255,255,255,0.7); line-height: 1.2;">${doctorName}${
+        headerText ? ` · ${headerText}` : ''
+    }</div>
+        </div>
+        <div style="
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        ">
+            <span style="font-size: 1rem; color: #364257;">&#x1F9D1;&#x200D;&#x2695;&#xFE0F;</span>
+        </div>
+    </div>`;
+};
+
+export const renderTags = (tags: string[]): string => {
+    if (!tags.length) return '';
+    return `<div style="display: flex; align-items: center; height: 0.875rem;">
+        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Tags:</span>
+        <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
+            ${tags
+                .map(
+                    (t) =>
+                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
+                )
+                .join('')}
+        </div>
+    </div>`;
+};
+
+export const renderLabels = (labels: string[]): string => {
+    if (!labels.length) return '';
+    return `<div style="display: flex; align-items: center; height: 0.875rem;">
+        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Labels:</span>
+        <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
+            ${labels
+                .map(
+                    (l) =>
+                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
+                )
+                .join('')}
+        </div>
+    </div>`;
+};
+
+export const printMetaDataOfPartnerSystem = (data: Record<string, string>): string => {
+    const entries = Object.entries(data);
+    if (!entries.length) return '';
+
+    return `<div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
+        ${entries
+            .map(
+                ([k, v], index) => `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    ${
+                        index > 0
+                            ? `<div style="width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;"></div>`
+                            : ''
+                    }
+                    <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
+                        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">${k}:</span>
+                        <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
+                    </div>
+                </div>`,
+            )
+            .join('')}
+    </div>`;
+
+    // --- old logic (3-per-row with manual chunking) ---
+    // const rows: string[][] = [];
+    // for (let i = 0; i < entries.length; i += 3) {
+    //     rows.push(
+    //         entries.slice(i, i + 3).map(
+    //             ([k, v]) =>
+    //                 `<div style="display: flex; gap: 0.5rem; align-items: center; flex: 1;">
+    //             <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">${k}:</span>
+    //             <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
+    //         </div>`,
+    //         ),
+    //     );
+    // }
+
+    // return rows
+    //     .map((cols) => {
+    //         const cells: string[] = [];
+    //         cols.forEach((col, i) => {
+    //             if (i > 0) {
+    //                 cells.push(
+    //                     `<div style="width: 0.0625rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem;"></div>`,
+    //                 );
+    //             }
+    //             cells.push(col);
+    //         });
+    //         return `<div style="display: flex; align-items: center; height: 0.875rem; gap: 1rem;">${cells.join(
+    //             '',
+    //         )}</div>`;
+    //     })
+    //     .join('');
 };
