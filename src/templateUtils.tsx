@@ -898,9 +898,7 @@ export const getCustomFooterHtml = (
                                                 }}
                                             >
                                                 <img
-                                                    src={
-                                                        docProfile?.profile?.professional?.signature
-                                                    }
+                                                src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
                                                     alt="Doctor Signature"
                                                     style={{
                                                         position: 'absolute',
@@ -1912,7 +1910,7 @@ export const getFooterHtml = (
                             >
                                 {docProfile?.profile?.professional?.signature && (
                                     <img
-                                        src={docProfile?.profile?.professional?.signature}
+                                        src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
                                         alt="Doctor Signature"
                                         style={{
                                             position: 'absolute',
