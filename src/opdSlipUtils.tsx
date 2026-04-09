@@ -156,7 +156,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const itemValueRow1 =
         'font-size: 0.625rem; color: black; font-weight: 600; letter-spacing: 0.0125rem; margin: 0;';
 
-    const valueStyle = 'font-size: 0.4375rem; font-weight: 700; color: #000000; margin: 0;';
+    const valueStyle = 'font-size: 0.5rem; font-weight: 700; color: #000000; margin: 0;';
     const dividerStyle =
         'width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;';
     const sectionDivider =
@@ -242,8 +242,8 @@ const patientRow2Items = [
                   .map(
                       (s) =>
                           `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; height: 0.875rem;">
-                <span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
-                <span style="font-size: 0.4375rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
+                <span style="font-size: 0.5rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
+                <span style="font-size: 0.5rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
             </div>`,
                   )
                   .join('')
@@ -348,12 +348,12 @@ export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
 export const renderTags = (tags: string[]): string => {
     if (!tags.length) return '';
     return `<div style="display: flex; align-items: center; height: 0.875rem;">
-        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Tags:</span>
+        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Tags:</span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${tags
                 .map(
                     (t) =>
-                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
+                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
                 )
                 .join('')}
         </div>
@@ -363,12 +363,12 @@ export const renderTags = (tags: string[]): string => {
 export const renderLabels = (labels: string[]): string => {
     if (!labels.length) return '';
     return `<div style="display: flex; align-items: center; height: 0.875rem;">
-        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Labels:</span>
+        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Labels:</span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${labels
                 .map(
                     (l) =>
-                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
+                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
                 )
                 .join('')}
         </div>
@@ -385,8 +385,8 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
                 ([k, v]) => `
                 <div style="display: flex; align-items: center; border-left: 0.047rem solid rgba(0,0,0,0.1); padding-left: 0.5rem;">
                     <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
-                        <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">${k}:</span>
-                        <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
+                        <span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5);">${k}:</span>
+                        <span style="font-size: 0.5rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
                     </div>
                 </div>`,
             )
