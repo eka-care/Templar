@@ -326,65 +326,6 @@ export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
     return `<style>html { font-size: ${rootFontSize}; }</style>`;
 };
 
-export const getHeaderForReceiptV2 = ({
-    doctorName,
-    headerText,
-    clinicName,
-    config,
-}: {
-    doctorName: string;
-    headerText: string;
-    clinicName: string;
-    clinicAddress: string;
-    config: ReceiptPdfConfig;
-}): string => {
-    const { header_image_url, heights } = config;
-    const { header } = heights;
-    if (header_image_url) {
-        return `
-        <div style="
-          width: 100%;
-          height: ${header}cm;
-          background-image: url('${header_image_url}');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-        "></div>
-      `;
-    }
-
-    return `<div id="header" title="header" style="
-        width: 100%;
-        height: 4rem;
-        background: #364257;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
-        box-sizing: border-box;
-        font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-    ">
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; flex: 1; min-width: 0;">
-            <div style="font-size: 0.875rem; font-weight: 700; color: #ffffff; line-height: 1.2;">${clinicName}</div>
-            <div style="font-size: 0.625rem; font-weight: 400; color: rgba(255,255,255,0.7); line-height: 1.2;">${doctorName}${
-        headerText ? ` · ${headerText}` : ''
-    }</div>
-        </div>
-        <div style="
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background: #eaeaea;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        ">
-            <span style="font-size: 1rem; color: #364257;">&#x1F9D1;&#x200D;&#x2695;&#xFE0F;</span>
-        </div>
-    </div>`;
-};
-
 export const renderTags = (tags: string[]): string => {
     if (!tags.length) return '';
     return `<div style="display: flex; align-items: center; height: 0.875rem;">
