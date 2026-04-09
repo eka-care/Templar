@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { RenderPdfPrescription, TemplateV2 } from './RenderPdfPrescription';
 import { fontFamily, getFooter, getHeader, getHeadHtml } from './templateUtils';
 import { DFormEntity, DoctorProfile, LocalTemplateConfig } from './types';
+export { getRghsBodyHtmlFromTool } from './rghsPdfBodyHtml.js';
 
 // Export all types for consumers
 export type { DFormEntity, DoctorProfile, LocalTemplateConfig } from './types';
