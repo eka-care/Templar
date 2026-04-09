@@ -877,7 +877,7 @@ export interface TemplateConfig {
     show_qr_in_footer?: boolean;
     __v2?: boolean;
     hide_rx_date_in_ipd_rx?: boolean;
-    template_type?: TEMPLATE_TYPE;
+    template_type: TEMPLATE_TYPE;
 }
 
 export enum TEMPLATE_TYPE {
