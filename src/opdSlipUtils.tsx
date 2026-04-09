@@ -403,12 +403,11 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
     const entries = Object.entries(data);
     if (!entries.length) return '';
 
-    // inset 0 is a hack
-    return `<div style="clip-path: inset(0);"><div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; margin-left: -0.047rem;">
+    return `<div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
         ${entries
             .map(
-                ([k, v]) => `
-                <div style="display: flex; align-items: center; border-left: 0.047rem solid rgba(0,0,0,0.1); padding-left: 0.5rem;">
+                ([k, v], index) => `
+                <div style="display: flex; align-items: center; ${index < entries.length - 1 ? 'border-right: 0.047rem solid rgba(0,0,0,0.1); padding-right: 0.5rem;' : ''}">
                     <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
                         <span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5);">${k}:</span>
                         <span style="font-size: 0.5rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
@@ -416,7 +415,7 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
                 </div>`,
             )
             .join('')}
-    </div></div>`;
+    </div>`;
 
     // --- old logic (3-per-row with manual chunking) ---
     // const rows: string[][] = [];
