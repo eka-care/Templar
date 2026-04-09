@@ -121,6 +121,7 @@ export const getadditionalDetailsOfPatient = (
 };
 
 const fixedWidthItems = ['GENDER', 'AGE', 'TOKEN'];
+const fluidItemsWidthInRow1 = ['NAME', 'DOCTOR']; // pt name and doc name to take flex: 1 rest plan on min and max w
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const {
@@ -147,7 +148,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     ];
 
     const sectionTitleStyle =
-        'font-size: 0.375rem; font-weight: 500; color: rgba(0,0,0,0.5); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
+        'font-size: 0.438rem; font-weight: 500; color: rgba(0,0,0,0.5); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
     // const labelStyle =
     //     'font-size: 0.375rem; color: rgba(0,0,0,0.5); letter-spacing: 0.0125rem; margin: 0;';
 
@@ -171,7 +172,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         token ? { label: 'TOKEN', value: token } : null,
     ].filter(Boolean) as { label: string; value: string }[];
 
-const patientRow2Items = [
+    const patientRow2Items = [
         age ? { label: 'AGE', value: age } : null,
         gender ? { label: 'GENDER', value: gender } : null,
         patient_mobile ? { label: 'MOBILE', value: patient_mobile } : null,
@@ -180,19 +181,38 @@ const patientRow2Items = [
 
     const buildRow = (items: { label: string; value: string }[]): string => {
         const cells: string[] = [];
+
         items.forEach((item, i) => {
             if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
+
             const minWidth = '4.688rem';
-            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.35rem; min-width: ${minWidth}; max-width: 13rem;">
-            <p style="${itemKeyRow1}">${item.label}</p>
-            <p style="${itemValueRow1}">${item.value}</p>
-        </div>`);
+            const maxWidth = '13rem';
+            const isFluidWidthItem = fluidItemsWidthInRow1.includes(item.label);
+
+            cells.push(`
+            <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+    
+                min-width: ${isFluidWidthItem ? '0' : minWidth};
+                max-width: ${isFluidWidthItem ? 'none' : maxWidth};
+    
+                flex: ${isFluidWidthItem ? '1 1 0%' : '0 1 auto'};
+            ">
+                <p style="${itemKeyRow1}">${item.label}</p>
+                <p style="${itemValueRow1}">${item.value}</p>
+            </div>`);
         });
 
-        return `<div style="display: flex; align-items: center; gap: 0.45rem; height: 1.5625rem;">${cells.join(
-            '',
-        )}</div>`;
+        return `<div style="
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            height: 1.5625rem;
+        ">${cells.join('')}</div>`;
     };
+
     const buildRowSmaller = (items: { label: string; value: string }[]): string => {
         const cells: string[] = [];
         items.forEach((item, i) => {
@@ -241,20 +261,19 @@ const patientRow2Items = [
             ? services
                   .map(
                       (s) =>
-                          `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; height: 0.875rem;">
+                          `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; min-height: 0.875rem;">
                 <span style="font-size: 0.5rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
                 <span style="font-size: 0.5rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
             </div>`,
                   )
                   .join('')
-            : '<span style="font-size: 0.4375rem; color: rgba(0,0,0,0.3);">No services selected</span>';
+            : '';
 
     // --- Tags & Labels section ---
     const tagsSection =
         tags?.length || labels?.length
             ? `
         <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-            <p style="${sectionTitleStyle}">TAGS &amp; LABELS</p>
             <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                 ${tags?.length ? renderTags(tags) : ''}
                 ${labels?.length ? renderLabels(labels) : ''}
@@ -302,15 +321,20 @@ const patientRow2Items = [
             ${tagsSection}
 
             <!-- Section 4: Services -->
-            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <p style="${sectionTitleStyle}">SERVICES</p>
+            ${
+                services.length > 0
+                    ? `<div style="display: flex; gap: 0.375rem; align-items: flex-start;">
+                <p style="${sectionTitleStyle}; line-height: 0.875rem;">SERVICES: </p>
                 <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
                     ${servicesPills}
                 </div>
             </div>
+            ${metadataSection ? sectionDivider : ''}`
+                    : ''
+            }
 
             <!-- Section 5: Partner & System Metadata -->
-            ${metadataSection ? `${sectionDivider}${metadataSection}` : ''}
+            ${metadataSection}
 
         </div>
     </main>`;
@@ -347,8 +371,8 @@ export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
 
 export const renderTags = (tags: string[]): string => {
     if (!tags.length) return '';
-    return `<div style="display: flex; align-items: center; height: 0.875rem;">
-        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Tags:</span>
+    return `<div style="display: flex; align-items: flex-start; min-height: 0.875rem;">
+        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">TAGS: </span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${tags
                 .map(
@@ -362,8 +386,8 @@ export const renderTags = (tags: string[]): string => {
 
 export const renderLabels = (labels: string[]): string => {
     if (!labels.length) return '';
-    return `<div style="display: flex; align-items: center; height: 0.875rem;">
-        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0;">Labels:</span>
+    return `<div style="display: flex; align-items: flex-start; min-height: 0.875rem;">
+        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">LABELS: </span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${labels
                 .map(
@@ -379,6 +403,7 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
     const entries = Object.entries(data);
     if (!entries.length) return '';
 
+    // inset 0 is a hack
     return `<div style="clip-path: inset(0);"><div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; margin-left: -0.047rem;">
         ${entries
             .map(
@@ -418,7 +443,7 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
     //             }
     //             cells.push(col);
     //         });
-    //         return `<div style="display: flex; align-items: center; height: 0.875rem; gap: 1rem;">${cells.join(
+    //         return `<div style="display: flex; align-items: center; min-height: 0.875rem; gap: 1rem;">${cells.join(
     //             '',
     //         )}</div>`;
     //     })
