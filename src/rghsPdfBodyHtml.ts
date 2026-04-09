@@ -588,14 +588,29 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             : reviewParts[0] || '';
 
     const signatureUrl = docProfile?.profile?.professional?.signature || '';
-    const signatureName = `${docProfile?.profile?.personal?.name?.f || ''} ${docProfile?.profile?.personal?.name?.l || ''
+    const signaturePrefix = getValue(docProfile?.profile?.personal?.s || 'Dr.').trim();
+    const signatureName = `${signaturePrefix} ${docProfile?.profile?.personal?.name?.f || ''} ${docProfile?.profile?.personal?.name?.l || ''
         }`.trim();
+    const signatureText = getValue(docProfile?.profile?.professional?.signature_text).trim();
     const signatureHtml = signatureUrl
-        ? `<img src="${signatureUrl}" alt="signature" style="max-width:85%;max-height:76%;object-fit:contain;display:block;margin-left:34%;margin-top:4%;" />`
+        ? `<img src="${signatureUrl}" alt="signature" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;" />`
+        : '';
+    const signatureTextHtml = signatureText
+        ? `<div style="font-size:10px;line-height:1.2;margin-top:2px;white-space:pre-line;overflow:hidden;">${signatureText}</div>`
         : '';
     const signatureNameHtml = signatureName
-        ? `<div style="font-size:11.5px;line-height:1.2;margin-top:6%;margin-left:34%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${signatureName}</div>`
+        ? `<div style="font-size:11.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;">${signatureName}</div>`
         : '';
+    const signatureLeftHtml = `
+      <div style="display:flex;align-items:center;gap:2px;min-width:0;max-width:68%;overflow:hidden;">
+        <div style="width:5.75rem;height:3.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+          ${signatureHtml}
+        </div>
+        <div style="min-width:0;overflow:hidden;">
+          ${signatureTextHtml}
+        </div>
+      </div>
+    `;
 
     return `
         <div
@@ -808,8 +823,12 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
               text-align:left;
             "
           >
-            ${signatureHtml}
-            ${signatureNameHtml}
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:100%;">
+              ${signatureLeftHtml}
+              <div style="min-width:0;max-width:32%;overflow:hidden;">
+                ${signatureNameHtml}
+              </div>
+            </div>
           </div>
           <div style="display:none;">${tool.language}</div>
         </div>`.trim();
