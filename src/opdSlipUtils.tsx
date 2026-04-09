@@ -147,9 +147,15 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     ];
 
     const sectionTitleStyle =
-        'font-size: 0.375rem; font-weight: 600; color: rgba(0,0,0,0.6); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
-    const labelStyle =
-        'font-size: 0.375rem; color: rgba(0,0,0,0.5); letter-spacing: 0.0125rem; margin: 0;';
+        'font-size: 0.375rem; font-weight: 500; color: rgba(0,0,0,0.5); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
+    // const labelStyle =
+    //     'font-size: 0.375rem; color: rgba(0,0,0,0.5); letter-spacing: 0.0125rem; margin: 0;';
+
+    const itemKeyRow1 =
+        'font-size: 0.5rem; font-weight: 500; color: rgba(0,0,0,0.6); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
+    const itemValueRow1 =
+        'font-size: 0.625rem; color: black; font-weight: 600; letter-spacing: 0.0125rem; margin: 0;';
+
     const valueStyle = 'font-size: 0.4375rem; font-weight: 700; color: #000000; margin: 0;';
     const dividerStyle =
         'width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;';
@@ -162,29 +168,42 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         doctor_name ? { label: 'DOCTOR', value: doctor_name } : null,
         time ? { label: 'DATE & TIME', value: time } : null,
         payment_status ? { label: 'PAYMENT STATUS', value: payment_status } : null,
-
-        /// MIGHT NEED TO REMOVE THE BELWO
-
-        patient_mobile ? { label: 'PHONE', value: patient_mobile } : null,
-        uhid ? { label: 'UHID', value: uhid } : null,
-
-        gender ? { label: 'GENDER', value: gender } : null,
-        age ? { label: 'AGE', value: age } : null,
         token ? { label: 'TOKEN', value: token } : null,
+    ].filter(Boolean) as { label: string; value: string }[];
+
+const patientRow2Items = [
+        age ? { label: 'AGE', value: age } : null,
+        gender ? { label: 'GENDER', value: gender } : null,
+        patient_mobile ? { label: 'MOBILE', value: patient_mobile } : null,
+        uhid ? { label: 'TOKEN', value: uhid } : null,
     ].filter(Boolean) as { label: string; value: string }[];
 
     const buildRow = (items: { label: string; value: string }[]): string => {
         const cells: string[] = [];
         items.forEach((item, i) => {
             if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
-            const minWidth = fixedWidthItems.includes(item.label) ? '2.5rem' : '4.688rem';
-            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${minWidth}; max-width: 10rem;">
-            <p style="${labelStyle}">${item.label}</p>
-            <p style="${valueStyle}">${item.value}</p>
+            const minWidth = '4.688rem';
+            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.35rem; min-width: ${minWidth}; max-width: 13rem;">
+            <p style="${itemKeyRow1}">${item.label}</p>
+            <p style="${itemValueRow1}">${item.value}</p>
         </div>`);
         });
 
-        return `<div style="display: flex; align-items: center; gap: 0.375rem; height: 1.5625rem;">${cells.join(
+        return `<div style="display: flex; align-items: center; gap: 0.45rem; height: 1.5625rem;">${cells.join(
+            '',
+        )}</div>`;
+    };
+    const buildRowSmaller = (items: { label: string; value: string }[]): string => {
+        const cells: string[] = [];
+        items.forEach((item, i) => {
+            if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
+            const minWidth = fixedWidthItems.includes(item.label) ? '1rem' : '4rem';
+            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${minWidth}; max-width: 5rem">
+                <p style="${valueStyle}">${item.value}</p>
+            </div>`);
+        });
+
+        return `<div style="display: flex; align-items: center; gap: 0.5rem; height: 0.5625rem;">${cells.join(
             '',
         )}</div>`;
     };
@@ -260,9 +279,9 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
             <!-- Section 1: Patient & Appointment Details -->
             <div style="display: flex; flex-direction: column; gap: 0.375rem;">
                 <p style="${sectionTitleStyle}">PATIENT &amp; APPOINTMENT DETAILS</p>
-                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
                     ${buildRow(patientRow1Items)}
-                    
+                    ${buildRowSmaller(patientRow2Items)}
                 </div>
             </div>
             ${sectionDivider}
@@ -307,7 +326,7 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
     ].filter(Boolean) as string[];
 
     return `
-        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 1.5rem; left: 0; right: 0;">
+        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 0.5rem; left: 0; right: 0;">
             <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
                 ${footerParts
                     .map(
@@ -360,16 +379,11 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
     const entries = Object.entries(data);
     if (!entries.length) return '';
 
-    return `<div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
+    return `<div style="clip-path: inset(0);"><div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; margin-left: -0.047rem;">
         ${entries
             .map(
-                ([k, v], index) => `
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    ${
-                        index > 0
-                            ? `<div style="width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;"></div>`
-                            : ''
-                    }
+                ([k, v]) => `
+                <div style="display: flex; align-items: center; border-left: 0.047rem solid rgba(0,0,0,0.1); padding-left: 0.5rem;">
                     <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
                         <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">${k}:</span>
                         <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
@@ -377,7 +391,7 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): stri
                 </div>`,
             )
             .join('')}
-    </div>`;
+    </div></div>`;
 
     // --- old logic (3-per-row with manual chunking) ---
     // const rows: string[][] = [];
