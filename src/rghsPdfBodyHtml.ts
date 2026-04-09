@@ -79,6 +79,12 @@ const getTextWidth = (text: string, fontSize: number): number => text.length * f
 const stripHtml = (value: string): string => value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 const getValue = (value: unknown): string =>
     value === undefined || value === null ? '' : String(value);
+const isRenderableItem = (value: string): boolean => {
+    const normalized = value.trim();
+    if (!normalized) return false;
+    // Ignore placeholder-only rows like "-", "--", "—", etc.
+    return !/^[-–—\s]+$/.test(normalized);
+};
 const RGHS_VITAL_IDS = ['v-1365277675', 'lb-1201285132', 'lb-199711567', 'lb-7991006736'];
 
 const getOrdinal = (day: number): string => {
@@ -106,6 +112,7 @@ const computeBulletLayout = (
     maxWidth: number,
     maxHeight: number,
     columnGap = 18,
+    maxLinesPerItem = 1,
 ): BulletLayoutResult => {
     const maxFontSize = 11.5;
     const minFontSize = 8.5;
@@ -117,7 +124,8 @@ const computeBulletLayout = (
 
     for (let font = maxFontSize; font >= minFontSize; font--) {
         const candidateLineHeight = Math.round(font * 1.25);
-        const itemsPerCol = Math.max(1, Math.floor(usableHeight / candidateLineHeight));
+        const itemBlockHeight = candidateLineHeight * maxLinesPerItem;
+        const itemsPerCol = Math.max(1, Math.floor(usableHeight / itemBlockHeight));
         const colCount = Math.max(1, Math.ceil(items.length / itemsPerCol));
         const totalGap = (colCount - 1) * columnGap;
 
@@ -126,7 +134,10 @@ const computeBulletLayout = (
             const start = col * itemsPerCol;
             const end = Math.min(start + itemsPerCol, items.length);
             const colItems = items.slice(start, end);
-            const maxInColumn = colItems.reduce((max, item) => Math.max(max, getTextWidth(item, font)), 0);
+            const maxInColumn = colItems.reduce(
+                (max, item) => Math.max(max, getTextWidth(item, font) / maxLinesPerItem),
+                0,
+            );
             requiredTextWidth += maxInColumn + 16;
         }
 
@@ -142,7 +153,10 @@ const computeBulletLayout = (
         }
     }
 
-    const itemsPerColumn = Math.max(1, Math.floor(usableHeight / selectedLineHeight));
+    const itemsPerColumn = Math.max(
+        1,
+        Math.floor(usableHeight / (selectedLineHeight * maxLinesPerItem)),
+    );
     const allColumns: string[][] = [];
     for (let i = 0; i < items.length; i += itemsPerColumn) {
         allColumns.push(items.slice(i, i + itemsPerColumn));
@@ -152,7 +166,7 @@ const computeBulletLayout = (
     let usedWidth = 0;
     for (let i = 0; i < allColumns.length; i++) {
         const maxTextInColumn = allColumns[i].reduce(
-            (max, item) => Math.max(max, getTextWidth(item, selectedFontSize)),
+            (max, item) => Math.max(max, getTextWidth(item, selectedFontSize) / maxLinesPerItem),
             0,
         );
         const columnWidth = maxTextInColumn + 16;
@@ -452,6 +466,8 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
         uniqueMedicationItems,
         formPositions.medications.width,
         formPositions.medications.height,
+        18,
+        2,
     );
     const medicationColumnsForRender =
         medicationsLayout.fittedColumns.length > 0
@@ -474,7 +490,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             exam?.notes && exam.notes.trim() !== ''
                 ? `${exam.name} (Notes: ${stripHtml(exam.notes)})`
                 : exam.name,
-        ) || [];
+        ).filter((item) => isRenderableItem(getValue(item))) || [];
 
     const diagnosisItems =
         tool?.diagnosis?.map((diagnosis) => {
@@ -497,13 +513,19 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             return details.length > 0
                 ? `${diagnosis?.name} (${details.join(', ')})`
                 : diagnosis?.name;
-        }) || [];
+        }).filter((item) => isRenderableItem(getValue(item))) || [];
 
     const hasExaminationItems = examinationItems.length > 0;
     const hasDiagnosisItems = diagnosisItems.length > 0;
     const useTwoColumns = hasExaminationItems && hasDiagnosisItems;
 
     const examinationDiagnosisColumnGap = 10;
+    // Simple rule: reserve space for section title before fitting list rows.
+    const sectionTitleHeightPx = 26;
+    const examinationDiagnosisContentHeight = Math.max(
+        formPositions.examinationDiagnosis.height - sectionTitleHeightPx,
+        1,
+    );
     const examinationDiagnosisColumnWidth =
         useTwoColumns
             ? (formPositions.examinationDiagnosis.width - examinationDiagnosisColumnGap) / 2
@@ -512,12 +534,14 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
     const examinationLayout = computeBulletLayout(
         examinationItems,
         examinationDiagnosisColumnWidth,
-        formPositions.examinationDiagnosis.height,
+        examinationDiagnosisContentHeight,
+        10,
     );
     const diagnosisLayout = computeBulletLayout(
         diagnosisItems,
         examinationDiagnosisColumnWidth,
-        formPositions.examinationDiagnosis.height,
+        examinationDiagnosisContentHeight,
+        10,
     );
 
     const examinationColumnsForRender =
@@ -527,7 +551,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             const itemsHtml = columnItems
                 .map(
                     (item) =>
-                        `<li style="display:-webkit-box;list-style-type:disc;list-style-position:inside;line-height:${examinationLayout.lineHeight}px;padding-left:2px;font-size:${examinationLayout.fontSize}px;white-space:normal;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${item}</li>`,
+                        `<li style="display:list-item;list-style-type:disc;list-style-position:inside;line-height:${examinationLayout.lineHeight}px;padding-left:2px;font-size:${examinationLayout.fontSize}px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;">${item}</li>`,
                 )
                 .join('');
             return `<ul style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;">${itemsHtml}</ul>`;
@@ -541,7 +565,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             const itemsHtml = columnItems
                 .map(
                     (item) =>
-                        `<li style="display:-webkit-box;list-style-type:disc;list-style-position:inside;line-height:${diagnosisLayout.lineHeight}px;padding-left:2px;font-size:${diagnosisLayout.fontSize}px;white-space:normal;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${item}</li>`,
+                        `<li style="display:list-item;list-style-type:disc;list-style-position:inside;line-height:${diagnosisLayout.lineHeight}px;padding-left:2px;font-size:${diagnosisLayout.fontSize}px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;">${item}</li>`,
                 )
                 .join('');
             return `<ul style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;">${itemsHtml}</ul>`;
@@ -601,16 +625,13 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
     const signatureNameHtml = signatureName
         ? `<div style="font-size:11.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;">${signatureName}</div>`
         : '';
-    const signatureLeftHtml = `
-      <div style="display:flex;align-items:center;gap:2px;min-width:0;max-width:68%;overflow:hidden;">
-        <div style="width:5.75rem;height:3.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-          ${signatureHtml}
-        </div>
-        <div style="min-width:0;overflow:hidden;">
-          ${signatureTextHtml}
-        </div>
-      </div>
-    `;
+    const signatureContentHtml = signatureHtml
+        ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden;">${signatureHtml}</div>`
+        : signatureTextHtml
+            ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden;">${signatureTextHtml}</div>`
+            : signatureNameHtml
+                ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden;">${signatureNameHtml}</div>`
+                : '';
 
     return `
         <div
@@ -707,7 +728,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
               ${hasExaminationItems
             ? `<div style="width:${examinationDiagnosisColumnWidth}px;height:100%;overflow:hidden;">
                 <div style="font-size:11.5px;font-weight:400;line-height:1.2;margin-bottom:2px;">Systemic Examination</div>
-                <div style="height:calc(100% - 16px);overflow:hidden;">
+                <div style="height:calc(100% - ${sectionTitleHeightPx}px);overflow:hidden;">
                   ${examinationColumnHtml}
                 </div>
               </div>`
@@ -716,7 +737,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
               ${hasDiagnosisItems
             ? `<div style="width:${examinationDiagnosisColumnWidth}px;height:100%;overflow:hidden;">
                 <div style="font-size:11.5px;font-weight:400;line-height:1.2;margin-bottom:2px;">Provisional Diagnosis</div>
-                <div style="height:calc(100% - 16px);overflow:hidden;">
+                <div style="height:calc(100% - ${sectionTitleHeightPx}px);overflow:hidden;">
                   ${diagnosisColumnHtml}
                 </div>
               </div>`
@@ -823,12 +844,7 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
               text-align:left;
             "
           >
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:2px;width:100%;height:100%;">
-              ${signatureLeftHtml}
-              <div style="min-width:0;max-width:32%;overflow:hidden;">
-                ${signatureNameHtml}
-              </div>
-            </div>
+            ${signatureContentHtml}
           </div>
           <div style="display:none;">${tool.language}</div>
         </div>`.trim();
