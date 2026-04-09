@@ -98,12 +98,7 @@ const formatInvestigationDate = (dateInput?: string): string => {
     const dayWithOrdinal = getOrdinal(parsedDate.getDate());
     const month = parsedDate.toLocaleString('en-US', { month: 'long' });
     const year = parsedDate.toLocaleString('en-US', { year: '2-digit' });
-    const time = parsedDate.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    });
-    return `${dayWithOrdinal} ${month} ${year}, ${time}`;
+    return `${dayWithOrdinal} ${month} ${year}`;
 };
 
 const computeBulletLayout = (
@@ -422,12 +417,27 @@ export const getRghsBodyHtmlFromTool = (tool: Tool, docProfile?: DoctorProfile):
             .join(' | ');
     };
 
+    const getMedicationDisplayName = (medication: NonNullable<Tool['medications']>[number]): string => {
+        const brandName = getValue(medication?.name).trim();
+        const genericName = getValue(medication?.generic_name).trim();
+
+        if (brandName && genericName) {
+            return `<strong>${brandName}</strong> (${genericName})`;
+        }
+
+        if (brandName) {
+            return `<strong>${brandName}</strong>`;
+        }
+
+        return genericName;
+    };
+
     const medicationItems =
         tool?.medications?.flatMap((medication) => {
             if (medication?.isTapering) {
                 return [];
             }
-            const medicineName = getValue(medication?.name || medication?.generic_name);
+            const medicineName = getMedicationDisplayName(medication);
             const items = [formatMedicationLine(medication, medicineName)];
             const taperingDose = medication?.tapering_dose || [];
             taperingDose.forEach((taperDose) => {
