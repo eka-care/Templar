@@ -156,6 +156,8 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         'font-size: 0.5rem; font-weight: 500; color: rgba(0,0,0,0.6); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
     const itemValueRow1 =
         'font-size: 0.625rem; color: black; font-weight: 600; letter-spacing: 0.0125rem; margin: 0;';
+    const tokenItemValueRow1 =
+        'font-size: 0.94rem; color: black; font-weight: 700; letter-spacing: 0.0125rem; margin: 0; line-height: 1';
 
     const valueStyle = 'font-size: 0.5rem; font-weight: 700; color: #000000; margin: 0;';
     const dividerStyle =
@@ -201,7 +203,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
                 flex: ${isFluidWidthItem ? '1 1 0%' : '0 1 auto'};
             ">
                 <p style="${itemKeyRow1}">${item.label}</p>
-                <p style="${itemValueRow1}">${item.value}</p>
+                <p style="${item.label === 'TOKEN' ? tokenItemValueRow1 : itemValueRow1}">${item.value}</p>
             </div>`);
         });
 
