@@ -46,57 +46,66 @@ export const computeBulletLayout = (
     let selectedFontSize = maxFontSize;
     let selectedLineHeight = Math.round(selectedFontSize * 1.25);
 
-    for (let font = maxFontSize; font >= minFontSize; font--) {
-        const candidateLineHeight = Math.round(font * 1.25);
-        const itemsPerCol = Math.max(1, Math.floor(usableHeight / candidateLineHeight));
-        const colCount = Math.max(1, Math.ceil(items.length / itemsPerCol));
+    const tryFit = (font: number, colCount: number): string[][] | null => {
+        const lineHeight = Math.round(font * 1.25);
+        const maxLinesPerColumn = Math.max(1, Math.floor(usableHeight / lineHeight));
         const totalGap = (colCount - 1) * columnGap;
+        const colWidth = Math.floor((usableWidth - totalGap) / colCount);
+        if (colWidth <= 16) return null;
 
-        let requiredTextWidth = 0;
-        for (let col = 0; col < colCount; col++) {
-            const start = col * itemsPerCol;
-            const end = Math.min(start + itemsPerCol, items.length);
-            const colItems = items.slice(start, end);
-            const maxInColumn = colItems.reduce((max, item) => Math.max(max, getTextWidth(item, font)), 0);
-            requiredTextWidth += maxInColumn + 16;
+        const textAreaWidth = Math.max(colWidth - 20, 1);
+        const columns: string[][] = Array.from({ length: colCount }, () => []);
+        const usedLines: number[] = Array.from({ length: colCount }, () => 0);
+        let colIndex = 0;
+
+        for (const item of items) {
+            const plainText = stripHtml(item);
+            const requiredLines = Math.max(1, Math.ceil(getTextWidth(plainText, font) / textAreaWidth));
+
+            while (
+                colIndex < colCount - 1 &&
+                usedLines[colIndex] > 0 &&
+                usedLines[colIndex] + requiredLines > maxLinesPerColumn
+            ) {
+                colIndex++;
+            }
+
+            if (usedLines[colIndex] + requiredLines > maxLinesPerColumn && columns[colIndex].length > 0) {
+                return null;
+            }
+
+            columns[colIndex].push(item);
+            usedLines[colIndex] += requiredLines;
         }
 
-        if (requiredTextWidth + totalGap <= usableWidth) {
-            selectedFontSize = font;
-            selectedLineHeight = candidateLineHeight;
-            break;
+        return columns.filter((col) => col.length > 0);
+    };
+
+    const maxColumnsByWidth = Math.max(1, Math.floor((usableWidth + columnGap) / (150 + columnGap)));
+    const maxColumns = Math.min(Math.max(maxColumnsByWidth, 1), Math.max(items.length, 1), 3);
+
+    for (let colCount = 1; colCount <= maxColumns; colCount++) {
+        for (let font = maxFontSize; font >= minFontSize; font--) {
+            const fittedColumns = tryFit(font, colCount);
+            if (fittedColumns) {
+                selectedFontSize = font;
+                selectedLineHeight = Math.round(font * 1.25);
+                return {
+                    fontSize: selectedFontSize,
+                    lineHeight: selectedLineHeight,
+                    fittedColumns,
+                };
+            }
         }
 
-        if (font === minFontSize) {
-            selectedFontSize = minFontSize;
-            selectedLineHeight = Math.round(minFontSize * 1.25);
-        }
-    }
-
-    const itemsPerColumn = Math.max(1, Math.floor(usableHeight / selectedLineHeight));
-    const allColumns: string[][] = [];
-    for (let i = 0; i < items.length; i += itemsPerColumn) {
-        allColumns.push(items.slice(i, i + itemsPerColumn));
-    }
-
-    const fittedColumns: string[][] = [];
-    let usedWidth = 0;
-    for (let i = 0; i < allColumns.length; i++) {
-        const maxTextInColumn = allColumns[i].reduce(
-            (max, item) => Math.max(max, getTextWidth(item, selectedFontSize)),
-            0,
-        );
-        const columnWidth = maxTextInColumn + 16;
-        const nextWidth = usedWidth + (fittedColumns.length > 0 ? columnGap : 0) + columnWidth;
-        if (nextWidth > usableWidth) break;
-        fittedColumns.push(allColumns[i]);
-        usedWidth = nextWidth;
+        selectedFontSize = minFontSize;
+        selectedLineHeight = Math.round(minFontSize * 1.25);
     }
 
     return {
         fontSize: selectedFontSize,
         lineHeight: selectedLineHeight,
-        fittedColumns,
+        fittedColumns: [items],
     };
 };
 
@@ -109,16 +118,19 @@ export const renderBulletColumns = (
 ): string => {
     const layout = computeBulletLayout(items, width, height, columnGap);
     const columns = layout.fittedColumns.length > 0 ? layout.fittedColumns : [items];
+    const safeColumnHeight = Math.max(1, Math.floor(height / layout.lineHeight) * layout.lineHeight);
 
-    return columns
+    const columnsHtml = columns
         .map((columnItems, colIndex) => {
             const itemsHtml = columnItems
                 .map(
                     (item) =>
-                        `<li style="${listItemStyle};list-style:none;line-height:${layout.lineHeight}px;padding-left:0;font-size:${layout.fontSize}px;display:flex;align-items:flex-start;gap:4px;"><span style="line-height:${layout.lineHeight}px;">&bull;</span><span>${item}</span></li>`,
+                        `<li style="${listItemStyle};list-style:none;line-height:${layout.lineHeight}px;padding-left:0;font-size:${layout.fontSize}px;display:flex;align-items:flex-start;gap:12px;"><span style="flex-shrink:0;line-height:${layout.lineHeight}px;padding-right:4px;">&bull;</span><span style="flex:1;min-width:0;">${item}</span></li>`,
                 )
                 .join('');
-            return `<ul data-col="${colIndex}" style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;">${itemsHtml}</ul>`;
+            return `<ul data-col="${colIndex}" style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;flex:1;min-width:0;max-height:${safeColumnHeight}px;overflow:hidden;">${itemsHtml}</ul>`;
         })
         .join('');
+
+    return `<div style="display:flex;gap:${columnGap}px;align-items:flex-start;height:100%;overflow:hidden;">${columnsHtml}</div>`;
 };
