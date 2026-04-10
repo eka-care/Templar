@@ -16,7 +16,7 @@ export const getVitalsHtml = (tool: Tool): string => {
     const totalGaps = vitalsExtraGapPx * Math.max(vitalsCount - 1, 0);
     const usableVitalsHeight = Math.max(formPositions.vitals.height - totalGaps, 1);
     const vitalsLineSlot = usableVitalsHeight / Math.max(vitalsCount, 1);
-    const vitalsFontSize = 11.5;
+    const vitalsFontSize = 11;
 
     return vitalsDummyItems
         .map(

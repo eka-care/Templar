@@ -38,8 +38,8 @@ export const computeBulletLayout = (
     maxHeight: number,
     columnGap = 18,
 ): BulletLayoutResult => {
-    const maxFontSize = 11.5;
-    const minFontSize = 8.5;
+    const maxFontSize = 11;
+    const minFontSize = 8;
     const usableHeight = Math.max(0, maxHeight);
     const usableWidth = Math.max(0, maxWidth);
 
@@ -115,7 +115,7 @@ export const renderBulletColumns = (
             const itemsHtml = columnItems
                 .map(
                     (item) =>
-                        `<li style="${listItemStyle};line-height:${layout.lineHeight}px;padding-left:2px;font-size:${layout.fontSize}px;">${item}</li>`,
+                        `<li style="${listItemStyle};list-style:none;line-height:${layout.lineHeight}px;padding-left:0;font-size:${layout.fontSize}px;display:flex;align-items:flex-start;gap:4px;"><span style="line-height:${layout.lineHeight}px;">&bull;</span><span>${item}</span></li>`,
                 )
                 .join('');
             return `<ul data-col="${colIndex}" style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;">${itemsHtml}</ul>`;

@@ -42,7 +42,9 @@ const formatMedicationLine = (
     const instruction = getValue(medication?.instruction);
     const quantity = getValue('quantity' in medication ? medication?.quantity?.custom : '');
 
-    return [medicineName, dose, applyOn, frequency, timing, duration, startTo, instruction, quantity]
+    const medicineNameHtml = medicineName ? `<b>${medicineName}</b>` : '';
+
+    return [medicineNameHtml, dose, applyOn, frequency, timing, duration, startTo, instruction, quantity]
         .filter((part) => part && part.trim() !== '')
         .join(' | ');
 };
@@ -53,7 +55,12 @@ export const getMedicationColumnsHtml = (tool: Tool): string => {
             if (medication?.isTapering) {
                 return [];
             }
-            const medicineName = getValue(medication?.name || medication?.generic_name);
+            const brandName = getValue(medication?.name);
+            const genericName = getValue(medication?.generic_name);
+            const medicineName =
+                brandName && genericName && brandName !== genericName
+                    ? `${brandName} (${genericName})`
+                    : getValue(brandName || genericName);
             const items = [formatMedicationLine(medication, medicineName)];
             const taperingDose = medication?.tapering_dose || [];
             taperingDose.forEach((taperDose) => {
@@ -67,6 +74,6 @@ export const getMedicationColumnsHtml = (tool: Tool): string => {
         uniqueMedicationItems,
         formPositions.medications.width,
         formPositions.medications.height,
-        'display:-webkit-box;list-style-type:disc;list-style-position:inside;white-space:normal;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical',
+        'display:list-item;list-style-type:disc;list-style-position:inside;white-space:normal',
     );
 };
