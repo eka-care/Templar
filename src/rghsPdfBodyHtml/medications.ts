@@ -75,5 +75,7 @@ export const getMedicationColumnsHtml = (tool: Tool): string => {
         formPositions.medications.width,
         formPositions.medications.height,
         'display:list-item;list-style-type:disc;list-style-position:inside;white-space:normal',
+        18,
+        1,
     );
 };

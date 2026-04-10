@@ -37,14 +37,13 @@ export const computeBulletLayout = (
     maxWidth: number,
     maxHeight: number,
     columnGap = 18,
+    /** When set (e.g. 1 for medications), never use more than this many bullet columns. */
+    maxColumnCount?: number,
 ): BulletLayoutResult => {
     const maxFontSize = 11;
     const minFontSize = 8;
     const usableHeight = Math.max(0, maxHeight);
     const usableWidth = Math.max(0, maxWidth);
-
-    let selectedFontSize = maxFontSize;
-    let selectedLineHeight = Math.round(selectedFontSize * 1.25);
 
     const tryFit = (font: number, colCount: number): string[][] | null => {
         const lineHeight = Math.round(font * 1.25);
@@ -82,32 +81,43 @@ export const computeBulletLayout = (
     };
 
     const maxColumnsByWidth = Math.max(1, Math.floor((usableWidth + columnGap) / (150 + columnGap)));
-    const maxColumns = Math.min(Math.max(maxColumnsByWidth, 1), Math.max(items.length, 1), 3);
+    let maxColumns = Math.min(Math.max(maxColumnsByWidth, 1), Math.max(items.length, 1), 3);
+    if (maxColumnCount !== undefined) {
+        maxColumns = Math.min(maxColumns, Math.max(1, maxColumnCount));
+    }
 
-    for (let colCount = 1; colCount <= maxColumns; colCount++) {
-        for (let font = maxFontSize; font >= minFontSize; font--) {
+    // Prefer the largest font first; only then shrink. Within a font size, prefer *fewer* columns
+    // (wider text, less wrapping). Extra columns are only used when a single column cannot fit at
+    // that font within the height budget. (Font must stay outer: otherwise we'd shrink font for
+    // 1 col before trying 2 cols at 11px.)
+    for (let font = maxFontSize; font >= minFontSize; font--) {
+        for (let colCount = 1; colCount <= maxColumns; colCount++) {
             const fittedColumns = tryFit(font, colCount);
             if (fittedColumns) {
-                selectedFontSize = font;
-                selectedLineHeight = Math.round(font * 1.25);
                 return {
-                    fontSize: selectedFontSize,
-                    lineHeight: selectedLineHeight,
+                    fontSize: font,
+                    lineHeight: Math.round(font * 1.25),
                     fittedColumns,
                 };
             }
         }
-
-        selectedFontSize = minFontSize;
-        selectedLineHeight = Math.round(minFontSize * 1.25);
     }
 
     return {
-        fontSize: selectedFontSize,
-        lineHeight: selectedLineHeight,
+        fontSize: minFontSize,
+        lineHeight: Math.round(minFontSize * 1.25),
         fittedColumns: [items],
     };
 };
+
+/** Styles for the text cell only (line-clamp etc.). List row uses padding + absolute bullet — not flex — so PDF engines don’t stack bullet above text. */
+const sanitizeListItemStyleForTextSpan = (listItemStyle: string): string =>
+    listItemStyle
+        .replace(/display\s*:\s*list-item/gi, 'display:block')
+        .replace(/list-style-type\s*:\s*[^;]+;?/gi, '')
+        .replace(/list-style-position\s*:\s*[^;]+;?/gi, '')
+        .replace(/;\s*;/g, ';')
+        .trim();
 
 export const renderBulletColumns = (
     items: string[],
@@ -115,20 +125,23 @@ export const renderBulletColumns = (
     height: number,
     listItemStyle: string,
     columnGap = 18,
+    maxColumnCount?: number,
 ): string => {
-    const layout = computeBulletLayout(items, width, height, columnGap);
+    const layout = computeBulletLayout(items, width, height, columnGap, maxColumnCount);
     const columns = layout.fittedColumns.length > 0 ? layout.fittedColumns : [items];
     const safeColumnHeight = Math.max(1, Math.floor(height / layout.lineHeight) * layout.lineHeight);
+    const textSpanStyle = sanitizeListItemStyleForTextSpan(listItemStyle);
+    const bulletGutterPx = 14;
 
     const columnsHtml = columns
         .map((columnItems, colIndex) => {
             const itemsHtml = columnItems
                 .map(
                     (item) =>
-                        `<li style="${listItemStyle};list-style:none;line-height:${layout.lineHeight}px;padding-left:0;font-size:${layout.fontSize}px;display:flex;align-items:flex-start;gap:12px;"><span style="flex-shrink:0;line-height:${layout.lineHeight}px;padding-right:4px;">&bull;</span><span style="flex:1;min-width:0;">${item}</span></li>`,
+                        `<li style="list-style:none;margin:0;padding:0 0 0 ${bulletGutterPx}px;position:relative;display:block;font-size:${layout.fontSize}px;line-height:${layout.lineHeight}px;text-align:left;"><span style="position:absolute;left:0;top:0;width:${bulletGutterPx - 2}px;line-height:${layout.lineHeight}px;text-align:center;">&bull;</span><span style="display:block;overflow-wrap:break-word;word-break:break-word;text-align:left;${textSpanStyle}">${item}</span></li>`,
                 )
                 .join('');
-            return `<ul data-col="${colIndex}" style="margin:0;padding-left:0;list-style-type:disc;list-style-position:inside;text-align:left;flex:1;min-width:0;max-height:${safeColumnHeight}px;overflow:hidden;">${itemsHtml}</ul>`;
+            return `<ul data-col="${colIndex}" style="margin:0;padding-left:0;list-style:none;text-align:left;flex:1;min-width:0;max-height:${safeColumnHeight}px;overflow:hidden;">${itemsHtml}</ul>`;
         })
         .join('');
 
