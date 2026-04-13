@@ -19,15 +19,7 @@ const formatMedicationLine = (
     );
     const applyOnValue = getValue(medObj?.area?.name);
     const applyOn = medObj?.soa || applyOnValue ? applyOnValue : '';
-    const frequency = getValue(
-        medication?.frequency?.custom ||
-            medication?.frequency?.type ||
-            (medication?.frequency?.onceEvery
-                ? `${medication?.frequency?.onceEvery?.value || ''} ${
-                      medication?.frequency?.onceEvery?.unit || ''
-                  }`.trim()
-                : ''),
-    );
+    const frequency = getValue(medication?.frequency?.custom);
     const timing = getValue(medication?.timing);
     const duration = getValue(
         medication?.duration?.value
