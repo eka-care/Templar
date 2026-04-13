@@ -314,7 +314,7 @@ export interface RenderPdfConfig extends TemplateConfig {
     docid: string;
     clinicId: string;
     type: 'PRINT' | 'SEND';
-    template_id?: string;
+    template_style?: string;
 }
 
 export type TemplateV2 = RenderPdfConfig;

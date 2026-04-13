@@ -877,7 +877,7 @@ export interface TemplateConfig {
     show_qr_in_footer?: boolean;
     __v2?: boolean;
     hide_rx_date_in_ipd_rx?: boolean;
-    template_id?: string;
+    template_style?: string;
 }
 
 export type MedicationTableWidth = { [key: string]: number | undefined };
