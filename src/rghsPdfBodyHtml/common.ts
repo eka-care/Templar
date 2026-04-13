@@ -24,12 +24,7 @@ export const formatInvestigationDate = (dateInput?: string): string => {
     const dayWithOrdinal = getOrdinal(parsedDate.getDate());
     const month = parsedDate.toLocaleString('en-US', { month: 'long' });
     const year = parsedDate.toLocaleString('en-US', { year: '2-digit' });
-    const time = parsedDate.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    });
-    return `${dayWithOrdinal} ${month} ${year}, ${time}`;
+    return `${dayWithOrdinal} ${month} ${year}`;
 };
 
 export const computeBulletLayout = (
