@@ -70,10 +70,10 @@ export const getAppointmentDetails = ({
 
         appointmentStatus
             ? {
-                  label: 'STATUS',
-                  value: appointmentStatus,
-                  valueStyle: defaultValueStyle,
-              }
+                label: 'STATUS',
+                value: appointmentStatus,
+                valueStyle: defaultValueStyle,
+            }
             : null,
         token ? { label: 'TOKEN', value: token, valueStyle: tokenValueStyle } : null,
     ].filter(Boolean) as { label: string; value: string; valueStyle: string }[];
@@ -261,14 +261,14 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const servicesPills =
         services.length > 0
             ? services
-                  .map(
-                      (s) =>
-                          `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; min-height: 0.875rem;">
+                .map(
+                    (s) =>
+                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; min-height: 0.875rem;">
                 <span style="font-size: 0.5rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
                 <span style="font-size: 0.5rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
             </div>`,
-                  )
-                  .join('')
+                )
+                .join('')
             : '';
 
     // --- Tags & Labels section ---
@@ -308,32 +308,30 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
             ${sectionDivider}
 
             <!-- Section 2: Additional Details -->
-            ${
-                additionalDetailsOfPatient.length > 0
-                    ? `
+            ${additionalDetailsOfPatient.length > 0
+            ? `
             <div style="display: flex; flex-direction: column; gap: 0.375rem;">
                 <p style="${sectionTitleStyle}">ADDITIONAL DETAILS</p>
                 ${buildThreeColRows(additionalDetailsOfPatient)}
             </div>
             ${sectionDivider}`
-                    : ''
-            }
+            : ''
+        }
 
             <!-- Section 3: Tags & Labels -->
             ${tagsSection}
 
             <!-- Section 4: Services -->
-            ${
-                services.length > 0
-                    ? `<div style="display: flex; gap: 0.375rem; align-items: flex-start;">
+            ${services.length > 0
+            ? `<div style="display: flex; gap: 0.375rem; align-items: flex-start;">
                 <p style="${sectionTitleStyle}; line-height: 0.875rem;">SERVICES: </p>
                 <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
                     ${servicesPills}
                 </div>
             </div>
             ${metadataSection ? sectionDivider : ''}`
-                    : ''
-            }
+            : ''
+        }
 
             <!-- Section 5: Partner & System Metadata -->
             ${metadataSection}
@@ -355,13 +353,13 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
         <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 0.5rem; left: 0; right: 0;">
             <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
                 ${footerParts
-                    .map(
-                        (item, index, arr) => `
+            .map(
+                (item, index, arr) => `
                         <span>${item}</span>
                         ${index !== arr.length - 1 ? `<span style="color: #cccccc;">|</span>` : ''}
                     `,
-                    )
-                    .join('')}
+            )
+            .join('')}
             </div>
         </footer>`;
 };
@@ -377,11 +375,11 @@ export const renderTags = (tags: string[]): string => {
         <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">TAGS: </span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${tags
-                .map(
-                    (t) =>
-                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
-                )
-                .join('')}
+            .map(
+                (t) =>
+                    `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
+            )
+            .join('')}
         </div>
     </div>`;
 };
@@ -392,11 +390,11 @@ export const renderLabels = (labels: string[]): string => {
         <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">LABELS: </span>
         <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
             ${labels
-                .map(
-                    (l) =>
-                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
-                )
-                .join('')}
+            .map(
+                (l) =>
+                    `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
+            )
+            .join('')}
         </div>
     </div>`;
 };
