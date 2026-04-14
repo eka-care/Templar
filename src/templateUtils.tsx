@@ -11403,6 +11403,10 @@ export const getEyeExaminationHtml = (
 
     if (!ordered.length) return;
 
+    const hasRE = ordered.some((r) => Boolean((r?.re?.custom || r?.re?.value || '').trim()));
+    const hasLE = ordered.some((r) => Boolean((r?.le?.custom || r?.le?.value || '').trim()));
+    if (!hasRE && !hasLE) return;
+
     return (
         <div className="mb-4 text-darwin-neutral-1000">
             <p
@@ -11424,26 +11428,30 @@ export const getEyeExaminationHtml = (
                         >
                             Parts
                         </th>
-                        <th
-                            className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
-                            style={{
-                                borderColor: borderColor,
-                                backgroundColor: titleBgColor,
-                                width: '35%',
-                            }}
-                        >
-                            Left Eye
-                        </th>
-                        <th
-                            className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
-                            style={{
-                                borderColor: borderColor,
-                                backgroundColor: titleBgColor,
-                                width: '35%',
-                            }}
-                        >
-                            Right Eye
-                        </th>
+                        {hasRE ? (
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
+                                style={{
+                                    borderColor: borderColor,
+                                    backgroundColor: titleBgColor,
+                                    width: hasLE ? '35%' : '70%',
+                                }}
+                            >
+                                Right Eye
+                            </th>
+                        ) : null}
+                        {hasLE ? (
+                            <th
+                                className="border medication-table-border-color medication-title-color bold text-center p-4 uppercase"
+                                style={{
+                                    borderColor: borderColor,
+                                    backgroundColor: titleBgColor,
+                                    width: hasRE ? '35%' : '70%',
+                                }}
+                            >
+                                Left Eye
+                            </th>
+                        ) : null}
                     </tr>
                 </thead>
                 <tbody>
@@ -11453,20 +11461,24 @@ export const getEyeExaminationHtml = (
                                 style={{ borderColor: borderColor }}
                                 className="border p-4 text-center align-middle"
                             >
-                                {r.part?.value || '-'}
+                                {r.part?.value || ''}
                             </td>
-                            <td
-                                style={{ borderColor: borderColor }}
-                                className="border p-4 text-center align-middle"
-                            >
-                                {r.le?.custom || r.le?.value || '-'}
-                            </td>
-                            <td
-                                style={{ borderColor: borderColor }}
-                                className="border p-4 text-center align-middle"
-                            >
-                                {r.re?.custom || r.re?.value || '-'}
-                            </td>
+                            {hasRE ? (
+                                <td
+                                    style={{ borderColor: borderColor }}
+                                    className="border p-4 text-center align-middle"
+                                >
+                                    {(r?.re?.custom || r?.re?.value || '').trim()}
+                                </td>
+                            ) : null}
+                            {hasLE ? (
+                                <td
+                                    style={{ borderColor: borderColor }}
+                                    className="border p-4 text-center align-middle"
+                                >
+                                    {(r?.le?.custom || r?.le?.value || '').trim()}
+                                </td>
+                            ) : null}
                         </tr>
                     ))}
                 </tbody>

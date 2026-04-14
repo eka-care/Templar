@@ -29,19 +29,19 @@ export interface RenderPdfPrescription {
     translate?: {
         flag: boolean;
         lang:
-            | 'en'
-            | 'hi'
-            | 'gu'
-            | 'te'
-            | 'mr'
-            | 'kn'
-            | 'pa'
-            | 'bn'
-            | 'ta'
-            | 'ml'
-            | 'as'
-            | 'or'
-            | 'ml';
+        | 'en'
+        | 'hi'
+        | 'gu'
+        | 'te'
+        | 'mr'
+        | 'kn'
+        | 'pa'
+        | 'bn'
+        | 'ta'
+        | 'ml'
+        | 'as'
+        | 'or'
+        | 'ml';
         advices?: boolean;
         medications?: boolean;
         injections?: boolean;
@@ -60,11 +60,11 @@ export enum CARE_TYPE {
 
 export interface GrowthChartData {
     chartType:
-        | 'weight-for-age'
-        | 'height-for-age'
-        | 'ofc-for-age'
-        | 'bmi-for-age'
-        | 'weight-for-height';
+    | 'weight-for-age'
+    | 'height-for-age'
+    | 'ofc-for-age'
+    | 'bmi-for-age'
+    | 'weight-for-height';
     chartConfig: {
         data: {
             labels?: number[];
@@ -144,11 +144,11 @@ export interface GrowthChartData {
                     anchor?: string;
                     align?: string | ((context: any) => string);
                     font?:
-                        | ((context: any) => { size?: number; weight?: string; color?: string })
-                        | {
-                              size?: number;
-                              weight?: string;
-                          };
+                    | ((context: any) => { size?: number; weight?: string; color?: string })
+                    | {
+                        size?: number;
+                        weight?: string;
+                    };
                     formatter?: (value: any, context: any) => string;
                 };
                 legend?: {
@@ -184,11 +184,11 @@ interface FieldsEntity {
     type: 'string' | 'number' | 'select' | 'multi_select';
     key: string;
     value?:
-        | number
-        | string
-        | string[]
-        | { key: string; label: string }
-        | Array<{ key: string; label: string }>;
+    | number
+    | string
+    | string[]
+    | { key: string; label: string }
+    | Array<{ key: string; label: string }>;
 }
 
 export interface Patient {
@@ -213,17 +213,17 @@ interface Age {
 }
 interface Medical {
     commonAllergies?:
-        | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
-        | null;
+    | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
+    | null;
     chronicAilment?:
-        | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
-        | null;
+    | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
+    | null;
     medicationAllergies?:
-        | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
-        | null;
+    | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
+    | null;
     surgeries?:
-        | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
-        | null;
+    | CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity[]
+    | null;
 }
 interface CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntityOrSurgeriesEntity {
     name: string;
@@ -725,10 +725,10 @@ export interface TemplateConfig {
     patient_form_data_format?: 'pipe-seperated-without-key' | '';
     show_pt_img?: boolean;
     medication_table_format?:
-        | 'quantity-column'
-        | 'quantity-column-without-border'
-        | 'quantity-remarks-column-without-border'
-        | '';
+    | 'quantity-column'
+    | 'quantity-column-without-border'
+    | 'quantity-remarks-column-without-border'
+    | '';
     medication_name_in_capital?: boolean;
     show_not_valid_for_medical_legal_purpose_message?: boolean;
     show_eka_logo?: boolean;
@@ -838,11 +838,11 @@ export interface TemplateConfig {
     procedures_notes_color?: string;
     procedures_properties_color?: string;
     injections_table_format?:
-        | 'quantity-column'
-        | 'quantity-column-without-border'
-        | 'quantity-remarks-column-without-border'
-        | 'table'
-        | '';
+    | 'quantity-column'
+    | 'quantity-column-without-border'
+    | 'quantity-remarks-column-without-border'
+    | 'table'
+    | '';
     injections_name_in_capital?: boolean;
     injections_heading_hide?: boolean;
     injections_table_heading_text?: string;
@@ -877,6 +877,7 @@ export interface TemplateConfig {
     show_qr_in_footer?: boolean;
     __v2?: boolean;
     hide_rx_date_in_ipd_rx?: boolean;
+    template_style?: string;
 }
 
 export type MedicationTableWidth = { [key: string]: number | undefined };

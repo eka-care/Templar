@@ -74,12 +74,14 @@ export const getBodyForIpdBilling = ({
     type,
     services = [],
     receipts = [],
+    totalPaid,
     config,
 }: {
     item: Data;
     type: IpdPdfType;
     services?: Service[];
     receipts?: Receipt[];
+    totalPaid?: number;
     config: ReceiptPdfConfig;
 }): string => {
     const { patient } = item;
@@ -193,6 +195,9 @@ export const getBodyForIpdBilling = ({
         const totalMrp = services.reduce((acc, s) => acc + (s.mrp || 0), 0);
         const totalAmount = services.reduce((acc, s) => acc + (s.amount || 0), 0);
         const lineItemDiscount = totalMrp - totalAmount;
+        const totalPayment = totalPaid || 0;
+        const amountDifference = totalAmount - totalPayment;
+        const isAmountDue = amountDifference > 0;
 
         pricingBox = `
         <div style="
@@ -214,10 +219,18 @@ export const getBodyForIpdBilling = ({
                 <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total Amount:</p>
                 <p style="font-size:0.8125rem; margin:0;">&#8377;${formattedNumber(totalAmount)}</p>
             </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total Paid:</p>
+                <p style="font-size:0.8125rem; margin:0;">&#8377;${formattedNumber(totalPayment)}</p>
+            </div>
             <div style="border-top:1px solid #e4e5ed; margin:10px 0;"></div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Amount to be paid:</p>
-                <p style="font-size:0.8125rem; font-weight:700; margin:0;">&#8377;${formattedNumber(totalAmount)}</p>
+                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">
+                    ${isAmountDue ? 'Amount Due:' : 'Amount Overpaid:'}
+                </p>
+                <p style="font-size:0.8125rem; font-weight:700; color:${isAmountDue ? '#e75858' : '#2da56a'}; margin:0;">
+                    &#8377;${formattedNumber(Math.abs(amountDifference))}
+                </p>
             </div>
         </div>`;
     } else {
@@ -328,6 +341,7 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
         type,
         services = [],
         receipts = [],
+        totalPaid,
     } = input;
 
     const config = buildConfig(apiConfig);
@@ -369,6 +383,7 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
         type,
         services,
         receipts,
+        totalPaid,
         config,
     });
 
