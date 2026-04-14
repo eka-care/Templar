@@ -898,9 +898,7 @@ export const getCustomFooterHtml = (
                                                 }}
                                             >
                                                 <img
-                                                    src={
-                                                        docProfile?.profile?.professional?.signature
-                                                    }
+                                                src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
                                                     alt="Doctor Signature"
                                                     style={{
                                                         position: 'absolute',
@@ -1910,9 +1908,9 @@ export const getFooterHtml = (
                                     boxSizing: 'border-box',
                                 }}
                             >
-                                {docProfile?.profile?.professional?.signature && (
+                                {renderPdfConfig?.show_signature && docProfile?.profile?.professional?.signature && (
                                     <img
-                                        src={docProfile?.profile?.professional?.signature}
+                                        src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
                                         alt="Doctor Signature"
                                         style={{
                                             position: 'absolute',
@@ -1940,9 +1938,11 @@ export const getFooterHtml = (
                                 {docProfile?.profile?.personal?.name?.f || ''}{' '}
                                 {docProfile?.profile?.personal?.name?.l || ''}
                             </p>
-                            <span className="whitespace-preline text-right">
-                                {docProfile?.profile?.professional?.signature_text || ''}
-                            </span>
+                            {renderPdfConfig?.show_signature_text && (
+                                <span className="whitespace-preline text-right">
+                                    {docProfile?.profile?.professional?.signature_text || ''}
+                                </span>
+                            )}
                         </div>
                     </div>
 
