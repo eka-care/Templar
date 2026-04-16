@@ -11342,7 +11342,7 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
             <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
             <span style={{ color: keyColor }}>{advised === true ? 'Yes' : 'No'}</span>
             {(notesPresent || proceduresPresent) && (
-                <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
+                <span className="bold text-darwin-accent-symptoms-blue-800">,</span>
             )}
             {notesPresent && <span style={{ color: keyColor }}>{ipdAdmission?.notes}</span>}
             {proceduresPresent && (
