@@ -898,7 +898,11 @@ export const getCustomFooterHtml = (
                                                 }}
                                             >
                                                 <img
-                                                src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
+                                                    src={
+                                                        docProfile?.profile?.professional
+                                                            ?.signature +
+                                                        `?t=${new Date().getTime()}`
+                                                    }
                                                     alt="Doctor Signature"
                                                     style={{
                                                         position: 'absolute',
@@ -1908,25 +1912,29 @@ export const getFooterHtml = (
                                     boxSizing: 'border-box',
                                 }}
                             >
-                                {renderPdfConfig?.show_signature && docProfile?.profile?.professional?.signature && (
-                                    <img
-                                        src={docProfile?.profile?.professional?.signature + `?t=${new Date().getTime()}`}
-                                        alt="Doctor Signature"
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            margin: 'auto',
-                                            maxWidth: '100%',
-                                            maxHeight: '100%',
-                                            width: 'auto',
-                                            height: 'auto',
-                                            display: 'block',
-                                        }}
-                                    />
-                                )}
+                                {renderPdfConfig?.show_signature &&
+                                    docProfile?.profile?.professional?.signature && (
+                                        <img
+                                            src={
+                                                docProfile?.profile?.professional?.signature +
+                                                `?t=${new Date().getTime()}`
+                                            }
+                                            alt="Doctor Signature"
+                                            style={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                right: 0,
+                                                bottom: 0,
+                                                margin: 'auto',
+                                                maxWidth: '100%',
+                                                maxHeight: '100%',
+                                                width: 'auto',
+                                                height: 'auto',
+                                                display: 'block',
+                                            }}
+                                        />
+                                    )}
                             </div>
                             <p
                                 className="bold"
@@ -7258,7 +7266,8 @@ export const getOphthalmologyHtml = (
                   .map((c) => c.id)
             : type === 'opContactLens' &&
               Array.isArray(config?.render_pdf_body_config?.contactLensTableConfig)
-            ? (config?.render_pdf_body_config?.contactLensTableConfig as GeniePadElementsSettingItem[])
+            ? (config?.render_pdf_body_config
+                  ?.contactLensTableConfig as GeniePadElementsSettingItem[])
                   .filter((c) => c.isShown)
                   .map((c) => c.id)
             : normalizedCols.map((col) => col.key);
@@ -11302,26 +11311,46 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
     const headingColor = config?.render_pdf_config?.admission_advised_heading_color;
     const keyColor = config?.render_pdf_config?.admission_advised_name_color;
     const propertiesColor = config?.render_pdf_config?.admission_advised_properties_color;
+
+    const admissionPrintConfig = config?.render_pdf_body_config?.admissionToIPDPrintConfig;
+    const entityEnabled = admissionPrintConfig?.entity ?? true;
+    const printOnlyWhenAdvised = admissionPrintConfig?.printOnlyWhenAdvised ?? false;
+
+    if (!entityEnabled) {
+        return;
+    }
+
+    const advised = ipdAdmission?.advised;
+    // UX rules:
+    // - If printOnlyWhenAdvised is enabled, print only when advised = Yes.
+    // - Else (default): print for Yes/No.
+    // - If advised is unset: return.
+    if (printOnlyWhenAdvised) {
+        if (advised !== true) return;
+    } else {
+        if (advised !== true && advised !== false) return;
+    }
+
     return (
-        ipdAdmission?.advised && (
-            <div className="my-8 space-x-5">
-                <span
-                    className="bold uppercase text-darwin-accent-symptoms-blue-800"
-                    style={{ color: headingColor }}
-                >
-                    Admission advised
-                </span>
-                {(notesPresent || proceduresPresent) && (
-                    <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
-                )}
-                {notesPresent && <span style={{ color: keyColor }}>{ipdAdmission.notes}</span>}
-                {proceduresPresent && (
-                    <span style={{ color: propertiesColor }}>{`(Procedures: ${uniq(
-                        procedures?.map((i) => i.name),
-                    ).join(', ')})`}</span>
-                )}
-            </div>
-        )
+        <div className="my-8 space-x-5">
+            <span
+                className="bold uppercase text-darwin-accent-symptoms-blue-800"
+                style={{ color: headingColor }}
+            >
+                Admission advised
+            </span>
+            <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
+            <span style={{ color: keyColor }}>{advised === true ? 'Yes' : 'No'}</span>
+            {(notesPresent || proceduresPresent) && (
+                <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
+            )}
+            {notesPresent && <span style={{ color: keyColor }}>{ipdAdmission?.notes}</span>}
+            {proceduresPresent && (
+                <span style={{ color: propertiesColor }}>{`(Procedures: ${uniq(
+                    procedures?.map((i) => i.name),
+                ).join(', ')})`}</span>
+            )}
+        </div>
     );
 };
 
