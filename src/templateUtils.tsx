@@ -11306,7 +11306,9 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
     const ipdAdmission = data.tool?.ipdAdmission;
     const procedures = data.tool?.procedures;
     const includeProcedures = ipdAdmission?.include_procedures;
-    const notesPresent = ipdAdmission?.notes && ipdAdmission.notes.trim().length > 0;
+    const notesHtml = ipdAdmission?.notes_html?.trim() || '';
+    const notesText = ipdAdmission?.notes?.trim() || '';
+    const notesPresent = Boolean(notesHtml || notesText);
     const proceduresPresent = includeProcedures && procedures && procedures.length > 0;
     const headingColor = config?.render_pdf_config?.admission_advised_heading_color;
     const keyColor = config?.render_pdf_config?.admission_advised_name_color;
@@ -11344,7 +11346,15 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
             {(notesPresent || proceduresPresent) && (
                 <span className="bold text-darwin-accent-symptoms-blue-800">,</span>
             )}
-            {notesPresent && <span style={{ color: keyColor }}>{ipdAdmission?.notes}</span>}
+            {notesPresent &&
+                (notesHtml ? (
+                    <span
+                        style={{ color: keyColor }}
+                        dangerouslySetInnerHTML={{ __html: notesHtml }}
+                    />
+                ) : (
+                    <span style={{ color: keyColor }}>{notesText}</span>
+                ))}
             {proceduresPresent && (
                 <span style={{ color: propertiesColor }}>{`(Procedures: ${uniq(
                     procedures?.map((i) => i.name),

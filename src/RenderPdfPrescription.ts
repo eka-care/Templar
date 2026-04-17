@@ -331,6 +331,7 @@ export interface IpdAdmission {
     advised?: boolean;
     include_procedures?: boolean;
     notes?: string;
+    notes_html?: string;
 }
 
 export interface Tool {
