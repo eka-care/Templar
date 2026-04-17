@@ -11345,6 +11345,11 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
             <span style={{ color: keyColor }}>{advised === true ? 'Yes' : 'No'}</span>
             {(notesPresent || proceduresPresent) && (
                 <span className="bold text-darwin-accent-symptoms-blue-800">,</span>
+            )}{' '}
+            {proceduresPresent && (
+                <span style={{ color: propertiesColor }}>{`(Procedures: ${uniq(
+                    procedures?.map((i) => i.name),
+                ).join(', ')})`}</span>
             )}
             {notesPresent &&
                 (notesHtml ? (
@@ -11355,11 +11360,6 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
                 ) : (
                     <span style={{ color: keyColor }}>{notesText}</span>
                 ))}
-            {proceduresPresent && (
-                <span style={{ color: propertiesColor }}>{`(Procedures: ${uniq(
-                    procedures?.map((i) => i.name),
-                ).join(', ')})`}</span>
-            )}
         </div>
     );
 };
