@@ -331,6 +331,7 @@ export interface IpdAdmission {
     advised?: boolean;
     include_procedures?: boolean;
     notes?: string;
+    notes_html?: string;
 }
 
 export interface Tool {
@@ -680,6 +681,10 @@ export interface TemplateV2 {
         section_name_config?: SectionNameConfig;
         injections_config?: GeniePadElementsSettingItem[];
         printNoMedicalHistory?: boolean;
+        admissionToIPDPrintConfig?: {
+            entity?: boolean;
+            printOnlyWhenAdvised?: boolean;
+        };
         pmtTableConfig?: GeniePadElementsSettingItem[];
         kReadingTableConfig?: GeniePadElementsSettingItem[];
         eyeExamTableConfig?: GeniePadElementsSettingItem[];
