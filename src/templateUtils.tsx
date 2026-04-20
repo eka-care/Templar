@@ -11339,11 +11339,11 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
                 className="bold uppercase text-darwin-accent-symptoms-blue-800"
                 style={{ color: headingColor }}
             >
-                Admission advised
+                Admission
             </span>
             <span className="bold text-darwin-accent-symptoms-blue-800">:</span>
-            <span style={{ color: keyColor }}>{advised === true ? 'Yes' : 'No'}</span>
-            {(notesPresent || proceduresPresent) && (
+            <span style={{ color: keyColor }}>{advised === true ? 'Advised' : 'Not Required'}</span>
+            {proceduresPresent && (
                 <span className="bold text-darwin-accent-symptoms-blue-800">,</span>
             )}{' '}
             {proceduresPresent && (
