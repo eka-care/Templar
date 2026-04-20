@@ -41,6 +41,19 @@ export const padElements = (
     switch (elementId) {
         case 'symptoms':
             return getSymptomsHtml(data, config, sectionNameConfig?.[elementId]);
+        case 'dietChart':
+            if (!(data?.tool?.apps?.dietChart?.id && data.tool.apps?.dietChart.data?.content)) {
+                return <></>;
+            }
+            return (
+                <>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: data.tool.apps.dietChart.data.content || '',
+                        }}
+                    ></div>
+                </>
+            );
         case 'sym-dia':
             return (
                 <>
