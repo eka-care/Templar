@@ -794,39 +794,42 @@ export const getCustomFooterHtml = (
             {rxLocalConfig?.footer_border && (
                 <div className="border-b border-darwin-neutral-500"></div>
             )}
-            <div className="flex flex-row">
-                <div style={{ flexShrink: 0, paddingTop: '1cm' }}>
-                    {show_qr_in_footer && <img className="p-4" src={qrUrl} alt="QR code" />}
-                </div>
-                <div
-                    style={{
-                        marginTop: footer_top_margin,
-                        paddingTop: '1cm',
-                        // marginBottom: footer_bottom_margin,
-                        marginLeft: footer_left_margin,
-                        marginRight: footer_right_margin,
-                        border:
-                            rxLocalConfig?.footer_border &&
-                            (show_page_number ||
-                                show_prescription_id ||
-                                show_signature ||
-                                show_name_in_signature ||
-                                show_signature_text ||
-                                show_approval_details ||
-                                footer_img)
-                                ? '1px solid black'
-                                : '',
-                        flex: 1,
-                        height:
-                            footer_height?.trim() && !isNaN(parseFloat(footer_height))
-                                ? parseFloat(footer_height) + 1.3 + 'cm'
-                                : footer_height || 'auto',
-                    }}
-                    id={FOOTER_CONTAINER}
-                    className="flex flex-col cursor-pointer"
-                >
+            <div
+                style={{
+                    marginTop: footer_top_margin,
+                    paddingTop: '1cm',
+                    // marginBottom: footer_bottom_margin,
+                    marginLeft: footer_left_margin,
+                    marginRight: footer_right_margin,
+                    border:
+                        rxLocalConfig?.footer_border &&
+                        (show_page_number ||
+                            show_prescription_id ||
+                            show_signature ||
+                            show_name_in_signature ||
+                            show_signature_text ||
+                            show_approval_details ||
+                            footer_img)
+                            ? '1px solid black'
+                            : '',
+                    flex: 1,
+                    height:
+                        footer_height?.trim() && !isNaN(parseFloat(footer_height))
+                            ? parseFloat(footer_height) + 1.3 + 'cm'
+                            : footer_height || 'auto',
+                }}
+                id={FOOTER_CONTAINER}
+                className="flex flex-col cursor-pointer"
+            >
+                <div className="flex flex-row">
                     {isHideFooterDetails ? null : (
                         <>
+                            <div style={{ flexShrink: 0 }}>
+                                {show_qr_in_footer && (
+                                    <img className="p-4" src={qrUrl} alt="QR code" />
+                                )}
+                            </div>
+                            <div style={{ flex: 1 }}>
                             <div className="text-11 flex justify-between items-end">
                                 <div className="text-left">
                                     {show_not_valid_for_medical_legal_purpose_message && (
@@ -961,13 +964,12 @@ export const getCustomFooterHtml = (
                                     </span>
                                 </div>
                             ) : null}
+                            </div>
                         </>
                     )}
-
-                    {isHideFooterImage
-                        ? null
-                        : footer_img && <img src={footer_img} width={'100%'} />}
                 </div>
+
+                {isHideFooterImage ? null : footer_img && <img src={footer_img} width={'100%'} />}
             </div>
             {rxLocalConfig?.footer_border && (
                 <div className="border-b border-darwin-neutral-500"></div>
