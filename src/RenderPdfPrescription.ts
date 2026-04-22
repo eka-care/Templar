@@ -406,10 +406,10 @@ export interface Tool {
             name: string;
             unit_dislay_name: string;
             value: string;
-            interpretation: [Object];
+            interpretation: Interpretation;
             date: string;
             remark: string;
-            unit: [Object];
+            unit: Unit;
             all_units: Unit[];
             dateInString: string;
             toshow: string;
@@ -648,7 +648,7 @@ interface Followup {
     appointmentId: string;
 }
 
-interface LabVitals {
+export interface LabVitals {
     id: string;
     name: string;
     unit_dislay_name: string;
