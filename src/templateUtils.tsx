@@ -11355,12 +11355,16 @@ export const getIpdAdmissionHtml = (data: RenderPdfPrescription, config: Templat
             )}
             {notesPresent &&
                 (notesHtml ? (
-                    <span
+                    <div
+                        className="tiny-mce"
                         style={{ color: keyColor }}
                         dangerouslySetInnerHTML={{ __html: notesHtml }}
                     />
                 ) : (
-                    <span style={{ color: keyColor }}>{notesText}</span>
+                    <span style={{ color: keyColor }}>
+                        {', '}
+                        {notesText}
+                    </span>
                 ))}
         </div>
     );
