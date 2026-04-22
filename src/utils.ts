@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { OpIop, OpKReading, OpPMT, OpSpec, OpVision, PX_OP_KEYS } from './types';
+import { LabVitals } from './RenderPdfPrescription';
 
 export const getColumns = (
     pxKey: PX_OP_KEYS,
@@ -185,3 +186,8 @@ export const buildFollowUpLabel = (date?: string, type?: string) => {
             .format('Do MMMM YY, h:mm A') || ''
     );
 };
+
+export const getLabVitalDisplayName = (
+    labVital?: LabVitals | null,
+): string =>
+    labVital?.unit_dislay_name || labVital?.name || '';

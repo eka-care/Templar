@@ -31,7 +31,7 @@ import {
     CARE_TYPE,
     EyeExaminationRow,
 } from './RenderPdfPrescription';
-import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel } from './utils';
+import { getColumns, rxKeyToHeadingMap, buildFollowUpLabel, getLabVitalDisplayName } from './utils';
 
 import { padElements } from './padElementConfig';
 import { formatDateInTimeZone } from './dateutils';
@@ -5923,7 +5923,8 @@ export const getInvestigativeReadingsHtml = (
         const allNamesSet = new Set<string>();
         labVitals?.forEach((lv) => {
             lv?.arr?.forEach((item: any) => {
-                if (item.name) allNamesSet.add(item.name);
+                const displayName = getLabVitalDisplayName(item);
+                if (displayName) allNamesSet.add(displayName);
             });
         });
         const allNames = Array.from(allNamesSet);
@@ -5935,8 +5936,9 @@ export const getInvestigativeReadingsHtml = (
         });
         labVitals?.forEach((lv) => {
             lv?.arr?.forEach((item: any) => {
-                if (item?.name) {
-                    nameDateMap[item.name][lv.dt] = item;
+                const displayName = getLabVitalDisplayName(item);
+                if (displayName) {
+                    nameDateMap[displayName][lv.dt] = item;
                 }
             });
         });
@@ -6107,7 +6109,10 @@ export const getInvestigativeReadingsHtml = (
                     </thead>
                     <tbody>
                         {labVitals?.map((labVital, idx) => (
-                            <tr className="text-11" key={`${labVital?.name}-${idx}`}>
+                            <tr
+                                className="text-11"
+                                key={`${getLabVitalDisplayName(labVital)}-${idx}`}
+                            >
                                 <td
                                     style={{ width: serialWidth }}
                                     className="p-4 border medication-table-border-color text-center"
@@ -6125,7 +6130,7 @@ export const getInvestigativeReadingsHtml = (
                                                 : 'bold'
                                         }`}
                                     >
-                                        {labVital?.name || ''}
+                                        {getLabVitalDisplayName(labVital)}
                                     </span>
                                 </td>
                                 <td
@@ -6200,7 +6205,9 @@ export const getInvestigativeReadingsHtml = (
                                                 color: propertiesColor,
                                             }}
                                         >
-                                            {labValue.name && <span>{labValue.name} - </span>}
+                                            {getLabVitalDisplayName(labValue) && (
+                                                <span>{getLabVitalDisplayName(labValue)} - </span>
+                                            )}
                                             <span>
                                                 {labValue.toshownodate || ''}{' '}
                                                 {i !== (labVital.arr || []).length - 1 &&
@@ -6238,7 +6245,7 @@ export const getInvestigativeReadingsHtml = (
                     {labVitals?.map((labVital) => {
                         return (
                             <li className="">
-                                {labVital?.name && (
+                                {getLabVitalDisplayName(labVital) && (
                                     <span
                                         className={`uppercase ${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -6249,7 +6256,7 @@ export const getInvestigativeReadingsHtml = (
                                             color: nameColor,
                                         }}
                                     >
-                                        {labVital?.name || ''} :{' '}
+                                        {getLabVitalDisplayName(labVital)} :{' '}
                                     </span>
                                 )}
                                 <span
@@ -6268,7 +6275,7 @@ export const getInvestigativeReadingsHtml = (
                     {labVitals?.map((labVital, i) => {
                         return (
                             <span>
-                                {labVital?.name && (
+                                {getLabVitalDisplayName(labVital) && (
                                     <span
                                         className={`uppercase ${
                                             config?.render_pdf_config?.lab_vitals_name_in_unbold
@@ -6279,7 +6286,7 @@ export const getInvestigativeReadingsHtml = (
                                             color: nameColor,
                                         }}
                                     >
-                                        {labVital?.name || ''} :{' '}
+                                        {getLabVitalDisplayName(labVital)} :{' '}
                                     </span>
                                 )}
                                 <span
