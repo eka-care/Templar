@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.OWNER }}/${{ matrix.repo }}
-          token: ${{ vars.ARGOCD_GITHUB_TOKEN  }}
+          token: ${{ secrets.ARGOCD_GITHUB_TOKEN  }}
           fetch-depth: 0
           submodules: true
 
@@ -77,7 +77,7 @@ jobs:
         if: steps.maybe_change.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ vars.ARGOCD_GITHUB_TOKEN }}
+          token: ${{ secrets.ARGOCD_GITHUB_TOKEN }}
           commit-message: "chore(submodule): bump templar to ${{ env.NEW_SHA }}"
           title: "Bump templar submodule to ${{ env.NEW_SHA }} (src/Templar)"
           body: |
