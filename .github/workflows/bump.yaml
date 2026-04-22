@@ -3,7 +3,7 @@ name: Bump superprojects on main updates
 on:
   # Run whenever main moves (direct push or merged PR)
   push:
-    branches: [ main ]
+    branches: [ temp-bumps ]
 
   # Also run on PR close (for backward compatibility)
   pull_request:
