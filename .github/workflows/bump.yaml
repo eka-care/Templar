@@ -30,6 +30,19 @@ jobs:
             base: main
 
     steps:
+      - name: Check token presence
+        run: |
+          if [ -z "${{ secrets.SUPERPROJECT_PAT }}" ]; then
+            echo "PAT missing ❌"
+            exit 1
+          else
+            echo "PAT present ✅"
+          fi
+
+      - name: Test repo access
+        run: |
+          git ls-remote https://x-access-token:${{ secrets.SUPERPROJECT_PAT }}@github.com/${{ github.repository_owner }}/stetho.git || echo "Access failed ❌"
+
       - name: Debug info
         run: |
           echo "Event: ${{ github.event_name }}"
