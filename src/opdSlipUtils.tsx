@@ -189,7 +189,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     ].filter(Boolean);
 
     const fixedColsSection = fixedCols.length
-        ? `<div style="${dividerStyle}"></div><div style="display: flex; align-items: flex-start; gap: 0.45rem; align-self: flex-start;">${fixedCols.join(`<div style="${dividerStyle}"></div>`)}</div>`
+        ? `<div style="display: flex; align-items: flex-start; gap: 0.45rem; align-self: flex-start;"><div style="${dividerStyle}"></div>${fixedCols.join(`<div style="${dividerStyle}"></div>`)}</div>`
         : '';
 
     const buildThreeColRows = (items: { label: string; value: string }[]): string => {
