@@ -28,6 +28,7 @@ export interface OpdSlipBodyData {
     date?: string;
     patient_mobile?: string;
     doctor_name?: string;
+    clinicName?: string;
     token?: string;
     services: OpdSlipService[];
     payment_status?: string;
@@ -121,7 +122,6 @@ export const getadditionalDetailsOfPatient = (
 };
 
 const fixedWidthItems = ['GENDER', 'AGE', 'TOKEN'];
-const fluidItemsWidthInRow1 = ['NAME', 'DOCTOR']; // pt name and doc name to take flex: 1 rest plan on min and max w
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const {
@@ -129,6 +129,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         gender,
         time,
         doctor_name,
+        clinicName,
         token,
         services,
         payment_status,
@@ -165,15 +166,6 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     const sectionDivider =
         '<div style="width: 100%; height: 0.0625rem; background: rgba(0,0,0,0.1); border-radius: 6.25rem;"></div>';
 
-    // --- Row builders for Section 1 ---
-    const patientRow1Items = [
-        name ? { label: 'NAME', value: name } : null,
-        doctor_name ? { label: 'DOCTOR', value: doctor_name } : null,
-        time ? { label: 'DATE & TIME', value: time } : null,
-        payment_status ? { label: 'PAYMENT STATUS', value: payment_status } : null,
-        token ? { label: 'TOKEN', value: token } : null,
-    ].filter(Boolean) as { label: string; value: string }[];
-
     const patientRow2Items = [
         age ? { label: 'AGE', value: age } : null,
         gender ? { label: 'GENDER', value: gender } : null,
@@ -181,54 +173,24 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         uhid ? { label: 'TOKEN', value: uhid } : null,
     ].filter(Boolean) as { label: string; value: string }[];
 
-    const buildRow = (items: { label: string; value: string }[]): string => {
-        const cells: string[] = [];
+    const row2Html = patientRow2Items.length
+        ? `<div style="display: flex; align-items: center; gap: 0.5rem; height: 0.5625rem;">${patientRow2Items.map((item, i) => `${i > 0 ? `<div style="${dividerStyle}"></div>` : ''}<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${fixedWidthItems.includes(item.label) ? '1rem' : '4rem'}; max-width: 5rem"><p style="${valueStyle}">${item.value}</p></div>`).join('')}</div>`
+        : '';
 
-        items.forEach((item, i) => {
-            if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
+    const fluidCols = [
+        name ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">NAME</p><p style="${itemValueRow1}">${name}</p></div>${row2Html}</div>` : null,
+        doctor_name ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DOCTOR</p><p style="${itemValueRow1}">${doctor_name}</p></div>${clinicName ? `<div style="display: flex; align-items: center; height: 0.5625rem;"><p style="${valueStyle}">${clinicName}</p></div>` : ''}</div>` : null,
+    ].filter(Boolean);
 
-            const minWidth = '4.688rem';
-            const maxWidth = '13rem';
-            const isFluidWidthItem = fluidItemsWidthInRow1.includes(item.label);
+    const fixedCols = [
+        time ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DATE &amp; TIME</p><p style="${itemValueRow1}">${time}</p></div>` : null,
+        payment_status ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">PAYMENT STATUS</p><p style="${itemValueRow1}">${payment_status}</p></div>` : null,
+        token ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">TOKEN</p><p style="${tokenItemValueRow1}">${token}</p></div>` : null,
+    ].filter(Boolean);
 
-            cells.push(`
-            <div style="
-                display: flex;
-                flex-direction: column;
-                gap: 0.35rem;
-    
-                min-width: ${isFluidWidthItem ? '0' : minWidth};
-                max-width: ${isFluidWidthItem ? 'none' : maxWidth};
-    
-                flex: ${isFluidWidthItem ? '1 1 0%' : '0 1 auto'};
-            ">
-                <p style="${itemKeyRow1}">${item.label}</p>
-                <p style="${item.label === 'TOKEN' ? tokenItemValueRow1 : itemValueRow1}">${item.value}</p>
-            </div>`);
-        });
-
-        return `<div style="
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            height: 1.5625rem;
-        ">${cells.join('')}</div>`;
-    };
-
-    const buildRowSmaller = (items: { label: string; value: string }[]): string => {
-        const cells: string[] = [];
-        items.forEach((item, i) => {
-            if (i > 0) cells.push(`<div style="${dividerStyle}"></div>`);
-            const minWidth = fixedWidthItems.includes(item.label) ? '1rem' : '4rem';
-            cells.push(`<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${minWidth}; max-width: 5rem">
-                <p style="${valueStyle}">${item.value}</p>
-            </div>`);
-        });
-
-        return `<div style="display: flex; align-items: center; gap: 0.5rem; height: 0.5625rem;">${cells.join(
-            '',
-        )}</div>`;
-    };
+    const fixedColsSection = fixedCols.length
+        ? `<div style="display: flex; align-items: flex-start; gap: 0.45rem; align-self: flex-start;"><div style="${dividerStyle}"></div>${fixedCols.join(`<div style="${dividerStyle}"></div>`)}</div>`
+        : '';
 
     const buildThreeColRows = (items: { label: string; value: string }[]): string => {
         return `
@@ -300,9 +262,9 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
             <!-- Section 1: Patient & Appointment Details -->
             <div style="display: flex; flex-direction: column; gap: 0.375rem;">
                 <p style="${sectionTitleStyle}">PATIENT &amp; APPOINTMENT DETAILS</p>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    ${buildRow(patientRow1Items)}
-                    ${buildRowSmaller(patientRow2Items)}
+                <div style="display: flex; align-items: flex-start; gap: 0.45rem;">
+                    ${fluidCols.join(`<div style="${dividerStyle}"></div>`)}
+                    ${fixedColsSection}
                 </div>
             </div>
             ${sectionDivider}
