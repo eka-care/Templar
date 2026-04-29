@@ -76,6 +76,7 @@ export const getBodyForIpdBilling = ({
     receipts = [],
     totalPaid,
     config,
+    doctorNameFromProfile,
 }: {
     item: Data;
     type: IpdPdfType;
@@ -83,6 +84,7 @@ export const getBodyForIpdBilling = ({
     receipts?: Receipt[];
     totalPaid?: number;
     config: ReceiptPdfConfig;
+    doctorNameFromProfile?: string;
 }): string => {
     const { patient } = item;
     const { profile, formData } = patient;
@@ -122,7 +124,7 @@ export const getBodyForIpdBilling = ({
     const dischargeDate = item.dischargeDate
         ? moment(item.dischargeDate).format('DD-MM-YYYY HH:mm')
         : '';
-    const doctorName = item.doc?.name ? `Dr. ${item.doc.name}` : '';
+    const doctorName = doctorNameFromProfile || '';
     const departmentName = item.department?.name || '';
     const ratePlanName = item.rateplan?.name || '';
 
@@ -385,6 +387,7 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
         receipts,
         totalPaid,
         config,
+        doctorNameFromProfile: doctorName,
     });
 
     await renderIpdBillingPdf(headHtml, headerHtml, contentHtml, footerHtml, config);
