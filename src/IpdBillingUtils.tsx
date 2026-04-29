@@ -349,7 +349,7 @@ export const generateIpdBillingPdf = async (input: GenerateIpdBillingPdfInput): 
     const config = buildConfig(apiConfig);
 
     const doctorName = [
-        'Dr.',
+        docProfile.profile.personal.s || 'Dr.',
         docProfile.profile.personal.name.f,
         docProfile.profile.personal.name.l,
     ]

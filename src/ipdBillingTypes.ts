@@ -154,7 +154,7 @@ export interface DocProfileClinic {
 /** Subset of doctor profile used for IPD billing PDF header. */
 export interface DocProfileResponse {
     profile: {
-        personal: { name: { f: string; l: string } };
+        personal: { s?: string; name: { f: string; l: string } };
         professional: {
             header_text?: string;
             clinics?: DocProfileClinic[];
