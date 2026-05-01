@@ -664,7 +664,6 @@ export const getHeadHtml = (
             display: flex;
             align-items:flex-start !important; }
 
-
             ${
                 configs?.pageBreakTableTr
                     ? `
