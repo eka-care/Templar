@@ -664,12 +664,15 @@ export const getHeadHtml = (
             display: flex;
             align-items:flex-start !important; }
 
-
-            ${configs?.pageBreakTableTr ? `
+            ${
+                configs?.pageBreakTableTr
+                    ? `
                 table tr {
                     page-break-inside: ${configs.pageBreakTableTr};
                 }
-            ` : ''}
+            `
+                    : ''
+            }
         </style>`;
 };
 
@@ -1358,14 +1361,16 @@ export const getRepitivePtDetails = (
                             flex: '1 1 auto',
                         }}
                     >
-                        <span
-                            className="text-13 bold"
-                            style={{
-                                color: patientNameColor,
-                            }}
-                        >
-                            {d?.patient?.profile?.personal?.name || ''},{' '}
-                        </span>
+                        {d?.patient?.profile?.personal?.name && (
+                            <span
+                                className="text-13 bold"
+                                style={{
+                                    color: patientNameColor,
+                                }}
+                            >
+                                {d?.patient?.profile?.personal?.name || ''},{' '}
+                            </span>
+                        )}
                         {patientDetails.map((detail, i) => {
                             return (
                                 <span style={{ fontSize: '0.68rem' }}>
@@ -6927,14 +6932,16 @@ export const getPatientDetailsHtml = (
                     : undefined
             }
         >
-            <span
-                className="text-13 bold"
-                style={{
-                    color: patientNameColor,
-                }}
-            >
-                {d?.patient?.profile?.personal?.name || ''},{' '}
-            </span>
+            {d?.patient?.profile?.personal?.name && (
+                <span
+                    className="text-13 bold"
+                    style={{
+                        color: patientNameColor,
+                    }}
+                >
+                    {d?.patient?.profile?.personal?.name || ''},{' '}
+                </span>
+            )}
             {patientDetails.map((detail) => {
                 return <span>{detail || ''}, </span>;
             })}
