@@ -87,6 +87,7 @@ export const getHeadHtml = (
     sizeType: 'extra-large' | 'compact' | 'spacious' | 'normal',
     showPageBorder?: boolean,
     fontsUrl: string = '',
+    configs?: { pageBreakTableTr?: 'auto' | 'always' | 'avoid' },
 ): string => {
     return `
     
@@ -662,6 +663,13 @@ export const getHeadHtml = (
            .pagedjs_margin.pagedjs_margin-bottom-center{
             display: flex;
             align-items:flex-start !important; }
+
+
+            ${configs?.pageBreakTableTr ? `
+                table tr {
+                    page-break-inside: ${configs.pageBreakTableTr};
+                }
+            ` : ''}
         </style>`;
 };
 
