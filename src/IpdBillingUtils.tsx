@@ -194,11 +194,11 @@ export const getBodyForIpdBilling = ({
             )
             .join('');
 
-        const totalMrp = services.reduce((acc, s) => acc + (s.mrp || 0), 0);
-        const totalAmount = services.reduce((acc, s) => acc + (s.amount || 0), 0);
-        const lineItemDiscount = totalMrp - totalAmount;
+        const totalAmount = services.reduce((acc, s) => acc + (s.mrp || 0) * (s.qty || 0), 0);
+        const grandTotal = services.reduce((acc, s) => acc + (s.amount || 0), 0);
+        const totalDiscount = totalAmount - grandTotal;
         const totalPayment = totalPaid || 0;
-        const amountDifference = totalAmount - totalPayment;
+        const amountDifference = grandTotal - totalPayment;
         const isAmountDue = amountDifference > 0;
 
         pricingBox = `
@@ -208,18 +208,17 @@ export const getBodyForIpdBilling = ({
             padding: 12px 20px;
             margin-top: 1rem;
         ">
-            ${lineItemDiscount > 0 ? `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total MRP:</p>
-                <p style="font-size:0.8125rem; margin:0;">&#8377;${formattedNumber(totalMrp)}</p>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Line Item Discount:</p>
-                <p style="font-size:0.8125rem; color:#2da56a; margin:0;">&#8377;${formattedNumber(lineItemDiscount)}</p>
-            </div>` : ''}
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total Amount:</p>
                 <p style="font-size:0.8125rem; margin:0;">&#8377;${formattedNumber(totalAmount)}</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total Discount:</p>
+                <p style="font-size:0.8125rem; color:#2da56a; margin:0;">&#8377;${formattedNumber(totalDiscount)}</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Grand Total:</p>
+                <p style="font-size:0.8125rem; margin:0;">&#8377;${formattedNumber(grandTotal)}</p>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <p style="text-transform:uppercase; font-size:0.6875rem; font-weight:700; margin:0;">Total Paid:</p>
