@@ -22,7 +22,7 @@ export type TPdfObject = {
     amount_due: number;
     receipt_type: receipt_type;
     ref_trx_id?: string;
-    ageInM?: number;
+    age?: string;
     gender?: string;
     payment_status: string;
     bill_created_at?: string;
@@ -627,15 +627,14 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
 };
 
 export function getPatientIntroForReceipt(data: TPdfObject): string {
-    const { name, gender, ageInM, mobile, uhid, config } = data;
+    const { name, gender, age, mobile, uhid, config } = data;
     const { flags } = config;
     const { print_uhid } = flags;
 
-    const ageInYears = ageInM ? Math.floor(ageInM / 12) : undefined;
     return [
         name,
         gender,
-        ageInYears ? `${ageInYears} Year${ageInYears > 1 ? 's' : ''}` : undefined,
+        age ?? undefined,
         mobile,
         print_uhid && uhid ? uhid : undefined,
     ]
