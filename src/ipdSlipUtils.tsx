@@ -15,6 +15,7 @@ export interface IpdSlipBodyData {
     uhid?: string;
     ipid?: string;
     ipd_id?: string;
+    category_name?: string;
     ward_bed?: string;
     rate_plan?: string;
     relationship_with_patient?: string;
@@ -43,6 +44,7 @@ export const getBodyForIpdSlip = (data: IpdSlipBodyData): string => {
         uhid,
         ipid,
         ipd_id,
+        category_name,
         ward_bed,
         rate_plan,
         relationship_with_patient,
@@ -65,65 +67,64 @@ export const getBodyForIpdSlip = (data: IpdSlipBodyData): string => {
         'width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;';
     const sectionDivider =
         '<div style="width: 100%; height: 0.0625rem; background: rgba(0,0,0,0.1); border-radius: 6.25rem;"></div>';
-    const compactValueStyle = 'font-size: 0.5rem; font-weight: 700; color: #000000; margin: 0;';
     const detailLabelStyle = 'font-size: 0.4375rem; color: rgba(0,0,0,0.6); line-height: 1;';
     const detailValueStyle = 'font-size: 0.5rem; font-weight: 600; color: #000000; line-height: 1;';
-    const detailPairs = [
-        { label: 'IPD ID', value: ipd_id || ipid || '' },
-        { label: 'Ward/Bed', value: ward_bed || '' },
-        { label: 'Rate Plan', value: rate_plan || '' },
-    ].filter((i) => Boolean(i.value));
-
     const patientMeta = [
         age ? `${age} Y` : '',
         sex || '',
         phone_number || '',
-        [uhid, ipid].filter(Boolean).join(' | '),
+        uhid || '',
     ]
         .filter(Boolean)
         .join(' | ');
 
-    const fluidCols = [
-        name
-            ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">NAME</p><p style="${itemValueRow1}">${name}</p></div></div>`
-            : null,
-        doctor_name
-            ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DOCTOR</p><p style="${itemValueRow1}">${doctor_name}</p></div>${clinicName ? `<div style="display: flex; align-items: center; height: 0.5625rem;"><p style="${valueStyle}">${clinicName}</p></div>` : ''}</div>`
-            : null,
-        department_name
-            ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DEPARTMENT</p><p style="${itemValueRow1}">${department_name}</p></div>`
-            : null,
-    ].filter(Boolean);
+    const detailBlock = (label: string, valueHtml: string): string => `
+        <div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem;">
+            <p style="${itemKeyRow1}">${label}</p>
+            ${valueHtml}
+        </div>
+    `;
 
-    const fixedCols = [
-        admission_date_time
-            ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DATE OF ADMISSION</p><p style="${itemValueRow1}">${admission_date_time}</p></div>`
-            : null,
-    ].filter(Boolean);
+    const row1Items = [
+        detailBlock(
+            'PATIENT DETAILS',
+            `<div style="display:flex; flex-direction:column; gap:0.35rem;">
+                <p style="${itemValueRow1}">${name || '-'}</p>
+                ${patientMeta ? `<p style="${valueStyle}">${patientMeta}</p>` : ''}
+            </div>`,
+        ),
+        detailBlock(
+            'DOCTOR DETAILS',
+            `<div style="display:flex; flex-direction:column; gap:0.35rem;">
+                <p style="${itemValueRow1}">${doctor_name || '-'}</p>
+                ${clinicName ? `<p style="${valueStyle}">${clinicName}</p>` : ''}
+            </div>`,
+        ),
+        detailBlock(
+            'ADMISSION DATE/TIME',
+            `<p style="${itemValueRow1}">${admission_date_time || '-'}</p>`,
+        ),
+        detailBlock('DEPARTMENT', `<p style="${itemValueRow1}">${department_name || '-'}</p>`),
+    ];
 
-    const fixedColsSection = fixedCols.length
-        ? `<div style="display: flex; align-items: flex-start; gap: 0.45rem; align-self: flex-start;"><div style="${dividerStyle}"></div>${fixedCols.join(`<div style="${dividerStyle}"></div>`)}</div>`
-        : '';
+    const row2Items = [
+        detailBlock('IPID', `<p style="${itemValueRow1}">${ipd_id || ipid || '-'}</p>`),
+        detailBlock('CATEGORY', `<p style="${itemValueRow1}">${category_name || '-'}</p>`),
+        detailBlock('WARD / BED', `<p style="${itemValueRow1}">${ward_bed || '-'}</p>`),
+        detailBlock('RATE PLAN', `<p style="${itemValueRow1}">${rate_plan || '-'}</p>`),
+    ];
 
     return `<main id="ipd-slip-body" style="padding: 0.75rem 1rem 1.5rem 1rem; background: #ffffff; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
         <div style="display: flex; flex-direction: column; gap: 0.625rem;">
             <div style="display: flex; flex-direction: column; gap: 0.375rem;">
                 <p style="${sectionTitleStyle}">PATIENT &amp; ADMISSION DETAILS</p>
                 <div style="display: flex; align-items: flex-start; gap: 0.45rem;">
-                    ${fluidCols.join(`<div style="${dividerStyle}"></div>`)}
-                    ${fixedColsSection}
+                    ${row1Items.join(`<div style="${dividerStyle}"></div>`)}
                 </div>
-                ${patientMeta ? `<div style="display: flex; align-items: center; min-height: 0.5625rem;"><p style="${compactValueStyle}">${patientMeta}</p></div>` : ''}
-                ${detailPairs.length
-                    ? `<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    ${detailPairs
-                        .map(
-                            (item) =>
-                                `<div style="display:flex; gap:0.3rem; align-items: baseline;"><span style="${detailLabelStyle}">${item.label}:</span><span style="${detailValueStyle}">${item.value}</span></div>`,
-                        )
-                        .join('')}
-                </div>`
-                    : ''}
+            </div>
+            ${sectionDivider}
+            <div style="display: flex; align-items: flex-start; gap: 0.45rem;">
+                ${row2Items.join(`<div style="${dividerStyle}"></div>`)}
             </div>
             ${sectionDivider}
             ${(relationship_with_patient || attendee_details)
