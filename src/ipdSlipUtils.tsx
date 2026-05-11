@@ -69,12 +69,7 @@ export const getBodyForIpdSlip = (data: IpdSlipBodyData): string => {
         '<div style="width: 100%; height: 0.0625rem; background: rgba(0,0,0,0.1); border-radius: 6.25rem;"></div>';
     const detailLabelStyle = 'font-size: 0.4375rem; color: rgba(0,0,0,0.6); line-height: 1;';
     const detailValueStyle = 'font-size: 0.5rem; font-weight: 600; color: #000000; line-height: 1;';
-    const patientMeta = [
-        age ? `${age} Y` : '',
-        sex || '',
-        phone_number || '',
-        uhid || '',
-    ]
+    const patientMeta = [age || '', sex || '', phone_number || '', uhid || '']
         .filter(Boolean)
         .join(' | ');
 
@@ -94,7 +89,7 @@ export const getBodyForIpdSlip = (data: IpdSlipBodyData): string => {
             </div>`,
         ),
         detailBlock(
-            'DOCTOR DETAILS',
+            'Admitted Under',
             `<div style="display:flex; flex-direction:column; gap:0.35rem;">
                 <p style="${itemValueRow1}">${doctor_name || '-'}</p>
                 ${clinicName ? `<p style="${valueStyle}">${clinicName}</p>` : ''}
@@ -127,15 +122,25 @@ export const getBodyForIpdSlip = (data: IpdSlipBodyData): string => {
                 ${row2Items.join(`<div style="${dividerStyle}"></div>`)}
             </div>
             ${sectionDivider}
-            ${(relationship_with_patient || attendee_details)
-                ? `<div style="display: flex; flex-direction: column; gap: 0.375rem;">
+            ${
+                relationship_with_patient || attendee_details
+                    ? `<div style="display: flex; flex-direction: column; gap: 0.375rem;">
                 <p style="${sectionTitleStyle}">ADDITIONAL DETAILS</p>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    ${attendee_details ? `<div style="display:flex; gap:0.3rem; align-items: baseline;"><span style="${detailLabelStyle}">Attendee details:</span><span style="${detailValueStyle}">${attendee_details}</span></div>` : ''}
-                    ${relationship_with_patient ? `<div style="display:flex; gap:0.3rem; align-items: baseline;"><span style="${detailLabelStyle}">Relationship with patient:</span><span style="${detailValueStyle}">${relationship_with_patient}</span></div>` : ''}
+                    ${
+                        attendee_details
+                            ? `<div style="display:flex; gap:0.3rem; align-items: baseline;"><span style="${detailLabelStyle}">Attendee details:</span><span style="${detailValueStyle}">${attendee_details}</span></div>`
+                            : ''
+                    }
+                    ${
+                        relationship_with_patient
+                            ? `<div style="display:flex; gap:0.3rem; align-items: baseline;"><span style="${detailLabelStyle}">Relationship with patient:</span><span style="${detailValueStyle}">${relationship_with_patient}</span></div>`
+                            : ''
+                    }
                 </div>
             </div>`
-                : ''}
+                    : ''
+            }
         </div>
     </main>`;
 };
@@ -167,4 +172,3 @@ export const getHeadCssForIpdSlip = (pageSize: TPageSize): string => {
     const rootFontSize = pageSize === 'A5' ? '11px' : '16px';
     return `<style>html { font-size: ${rootFontSize}; }</style>`;
 };
-
