@@ -179,7 +179,7 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
 
     const fluidCols = [
         name ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">NAME</p><p style="${itemValueRow1}">${name}</p></div>${row2Html}</div>` : null,
-        doctor_name ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DOCTOR</p><p style="${itemValueRow1}">${doctor_name}</p></div>${clinicName ? `<div style="display: flex; align-items: center; height: 0.5625rem;"><p style="${valueStyle}">${clinicName}</p></div>` : ''}</div>` : null,
+        (doctor_name || clinicName) ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">${doctor_name ? 'DOCTOR' : 'CLINIC'}</p><p style="${itemValueRow1}">${doctor_name || clinicName}</p></div>${doctor_name ? `<div style="display: flex; align-items: center; height: 0.5625rem;"><p style="${valueStyle}">${clinicName}</p></div>` : ''}</div>` : null,
     ].filter(Boolean);
 
     const fixedCols = [
