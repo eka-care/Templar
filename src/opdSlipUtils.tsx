@@ -312,7 +312,7 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
     ].filter(Boolean) as string[];
 
     return `
-        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 0.5rem; left: 0; right: 0;">
+        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; width: 100%; position: relative; top: 1rem;">
             <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
                 ${footerParts
             .map(
