@@ -174,7 +174,11 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
     ].filter(Boolean) as { label: string; value: string }[];
 
     const row2Html = patientRow2Items.length
-        ? `<div style="display: flex; align-items: center; gap: 0.5rem; height: 0.5625rem; flex-wrap: wrap; height: fit-content">${patientRow2Items.map((item, i) => `${i > 0 ? `<div style="${dividerStyle}"></div>` : ''}<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${fixedWidthItems.includes(item.label) ? '1rem' : '4rem'}; max-width: 5rem"><p style="${valueStyle}">${item.value}</p></div>`).join('')}</div>`
+        ? `<div style="display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; height: fit-content; overflow: hidden">${patientRow2Items.map((item, i) => {
+            const itemDiv = `<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${fixedWidthItems.includes(item.label) ? '1rem' : '4rem'}; max-width: 7rem"><p style="${valueStyle}">${item.value}</p></div>`;
+            if (i === 0) return itemDiv;
+            return `<div style="display: flex; align-items: center; gap: 0.5rem; margin-left: -0.547rem"><div style="${dividerStyle}"></div>${itemDiv}</div>`;
+        }).join('')}</div>`
         : '';
 
     const fluidCols = [
