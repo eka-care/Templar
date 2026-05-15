@@ -7918,6 +7918,72 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
     );
 };
 
+const PROCEDURE_DATE_PROPERTY_GROUP_ID = 'pg-404040404';
+
+type ProcedureForRender = NonNullable<RenderPdfPrescription['tool']['procedures']>[number];
+
+function procedureDateDisplayForRender(procedure: ProcedureForRender): string {
+    const raw =
+        procedure.properties?.[PROCEDURE_DATE_PROPERTY_GROUP_ID]?.selection?.[0]?.value?.trim() ||
+        procedure.date?.trim() ||
+        '';
+    if (!raw) {
+        return '-';
+    }
+    const m = moment(raw);
+    return m.isValid() ? m.format('Do MMM YY') : raw;
+}
+
+function procedureOtherDetailsPartsForRender(
+    procedure: ProcedureForRender,
+): { name: string; value: string }[] {
+    const parts: { name: string; value: string }[] = [];
+    const props = procedure.properties;
+    if (props) {
+        for (const id in props) {
+            if (id === PROCEDURE_DATE_PROPERTY_GROUP_ID) {
+                continue;
+            }
+            const prop = props[id];
+            const value = getSelectionText(prop?.selection);
+            if (!value) {
+                continue;
+            }
+            parts.push({ name: (prop?.name || '').trim() || 'Detail', value });
+        }
+    }
+    if (!parts.length && procedure.notes?.trim()) {
+        parts.push({ name: 'Notes', value: procedure.notes.trim() });
+    }
+    return parts;
+}
+
+function procedureOtherDetailsTextForRender(procedure: ProcedureForRender): string {
+    const parts = procedureOtherDetailsPartsForRender(procedure);
+    if (!parts.length) {
+        return '-';
+    }
+    return parts.map((p) => `${p.name}: ${p.value}`).join(' | ');
+}
+
+function procedureOtherDetailsCellForRender(procedure: ProcedureForRender): JSX.Element {
+    const parts = procedureOtherDetailsPartsForRender(procedure);
+    if (!parts.length) {
+        return <>-</>;
+    }
+    return (
+        <>
+            {parts.map((part, index) => (
+                <Fragment key={`${part.name}-${index}`}>
+                    {index > 0 && ' | '}
+                    <strong>{part.name}: </strong>
+                    {part.value}
+                </Fragment>
+            ))}
+        </>
+    );
+}
+
 export const getProceduresHtml = (d: RenderPdfPrescription): JSX.Element | undefined => {
     const procedures = d.tool?.procedures;
 
@@ -7953,30 +8019,27 @@ export const getProceduresHtml = (d: RenderPdfPrescription): JSX.Element | undef
                             className="border medication-table-border-color medication-title-color bold text-center p-4"
                             style={{ width: '47.5%' }}
                         >
-                            Notes
+                            Other details
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {procedures.map((i, index) => {
-                        const { name, notes, date } = i;
-                        return (
-                            <tr className="text-11">
-                                <td className="p-4 border medication-table-border-color text-center">
-                                    {index + 1}
-                                </td>
-                                <td className="p-4 border medication-table-border-color">
-                                    {name || '-'}
-                                </td>
-                                <td className="p-4 border medication-table-border-color text-center">
-                                    {date ? moment(date).format('Do MMM YY') : '-'}
-                                </td>
-                                <td className="p-4 border medication-table-border-color text-center">
-                                    {notes || '-'}
-                                </td>
-                            </tr>
-                        );
-                    })}
+                    {procedures.map((i, index) => (
+                        <tr key={i.id || index} className="text-11">
+                            <td className="p-4 border medication-table-border-color text-center">
+                                {index + 1}
+                            </td>
+                            <td className="p-4 border medication-table-border-color">
+                                {i.name || '-'}
+                            </td>
+                            <td className="p-4 border medication-table-border-color text-center">
+                                {procedureDateDisplayForRender(i)}
+                            </td>
+                            <td className="p-4 border medication-table-border-color text-left">
+                                {procedureOtherDetailsCellForRender(i)}
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
@@ -8012,30 +8075,38 @@ export const getProceduresHtmls = (
 
             {isBullets ? (
                 <ul className="ml-36">
-                    {procedures.map((procedure) => (
-                        <li className="">
-                            <span
-                                className={`uppercase ${
-                                    config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                                }`}
-                                style={{ color: nameColor }}
-                            >
-                                {procedure?.name || ''}
-                            </span>
-                            {procedure?.notes ? (
-                                <span style={{ color: propertiesColor }}>
-                                    {' '}
-                                    (Notes : {procedure.notes})
+                    {procedures.map((procedure) => {
+                        const otherText = procedureOtherDetailsTextForRender(procedure);
+                        const dateText = procedureDateDisplayForRender(procedure);
+                        const hasOtherDetails = otherText !== '-';
+                        const hasDate = dateText !== '-';
+                        return (
+                            <li key={procedure.id} className="">
+                                <span
+                                    className={`uppercase ${
+                                        config?.render_pdf_config?.procedures_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    }`}
+                                    style={{ color: nameColor }}
+                                >
+                                    {procedure?.name || ''}
                                 </span>
-                            ) : (
-                                <></>
-                            )}
-                            <span style={{ color: propertiesColor }}>
-                                {procedure?.date ? ' - ' : ''}
-                                {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
-                            </span>
-                        </li>
-                    ))}
+                                {hasOtherDetails ? (
+                                    <span style={{ color: propertiesColor }}>
+                                        {' '}
+                                        (Other details : {otherText})
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
+                                <span style={{ color: propertiesColor }}>
+                                    {hasDate ? ' - ' : ''}
+                                    {hasDate ? dateText : ''}
+                                </span>
+                            </li>
+                        );
+                    })}
                 </ul>
             ) : isTabular ? (
                 <table
@@ -8064,13 +8135,13 @@ export const getProceduresHtmls = (
                                 className="border medication-table-border-color medication-title-color bold text-center p-4"
                                 style={{ width: '49%' }}
                             >
-                                Notes
+                                Other details
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {procedures.map((procedure, index) => (
-                            <tr className="text-11">
+                            <tr key={procedure.id || index} className="text-11">
                                 <td className="p-4 border medication-table-border-color text-center">
                                     {index + 1}
                                 </td>
@@ -8078,12 +8149,10 @@ export const getProceduresHtmls = (
                                     {procedure?.name || '-'}
                                 </td>
                                 <td className="p-4 border medication-table-border-color text-center">
-                                    {procedure?.date
-                                        ? moment(procedure.date).format('Do MMM YY')
-                                        : '-'}
+                                    {procedureDateDisplayForRender(procedure)}
                                 </td>
-                                <td className="p-4 border medication-table-border-color text-center">
-                                    {procedure?.notes || '-'}
+                                <td className="p-4 border medication-table-border-color text-left">
+                                    {procedureOtherDetailsCellForRender(procedure)}
                                 </td>
                             </tr>
                         ))}
@@ -8091,35 +8160,43 @@ export const getProceduresHtmls = (
                 </table>
             ) : (
                 <span>
-                    {procedures.map((procedure, i) => (
-                        <span>
-                            <span
-                                className={`uppercase ${
-                                    config?.render_pdf_config?.procedures_in_unbold ? '' : 'bold'
-                                }`}
-                                style={{ color: nameColor }}
-                            >
-                                {procedure?.name || ''}
-                            </span>
-                            {procedure?.notes ? (
+                    {procedures.map((procedure, i) => {
+                        const otherText = procedureOtherDetailsTextForRender(procedure);
+                        const dateText = procedureDateDisplayForRender(procedure);
+                        const hasOtherDetails = otherText !== '-';
+                        const hasDate = dateText !== '-';
+                        return (
+                            <span key={procedure.id || i}>
+                                <span
+                                    className={`uppercase ${
+                                        config?.render_pdf_config?.procedures_in_unbold
+                                            ? ''
+                                            : 'bold'
+                                    }`}
+                                    style={{ color: nameColor }}
+                                >
+                                    {procedure?.name || ''}
+                                </span>
+                                {hasOtherDetails ? (
+                                    <span style={{ color: propertiesColor }}>
+                                        {' '}
+                                        (Other details : {otherText})
+                                    </span>
+                                ) : (
+                                    <></>
+                                )}
                                 <span style={{ color: propertiesColor }}>
-                                    {' '}
-                                    (Notes : {procedure.notes})
+                                    {hasDate ? ' - ' : ''}
+                                    {hasDate ? dateText : ''}
                                 </span>
-                            ) : (
-                                <></>
-                            )}
-                            <span style={{ color: propertiesColor }}>
-                                {procedure?.date ? ' - ' : ''}
-                                {procedure?.date ? moment(procedure.date).format('Do MMM YY') : ''}
+                                {i !== procedures.length - 1 && (
+                                    <span className="bold">
+                                        {getRxSeperator(rxElementKeySeperator)}
+                                    </span>
+                                )}
                             </span>
-                            {i !== procedures.length - 1 && (
-                                <span className="bold">
-                                    {getRxSeperator(rxElementKeySeperator)}
-                                </span>
-                            )}
-                        </span>
-                    ))}
+                        );
+                    })}
                 </span>
             )}
         </div>

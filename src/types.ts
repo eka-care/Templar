@@ -510,11 +510,19 @@ export interface DentalProcedure {
     index?: number;
 }
 
+export type ProcedurePropertiesMap = {
+    [k: string]: {
+        name: string;
+        selection?: { id: string; value: string; unit?: string }[];
+    };
+};
+
 export interface Procedure {
     id: string;
     name: string;
     date?: string;
     notes?: string;
+    properties?: ProcedurePropertiesMap;
 }
 
 export interface masssagedAppointmentMetaDataObject {
