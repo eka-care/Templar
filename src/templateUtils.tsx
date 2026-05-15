@@ -5811,6 +5811,47 @@ export const getPmhHtml = (
     );
 };
 
+// Same id as prescription pad `NOTES_PROPERTY_GROUP_ID` — local so Templar does not fail for rafale.
+const NOTES_PROPERTY_GROUP_ID = 'pg-5243973452';
+
+type MedicalHistoryExaminations = NonNullable<
+    RenderPdfPrescription['tool']['medicalHistory']
+>['examinations'];
+
+type Examination = NonNullable<MedicalHistoryExaminations>[number];
+
+const getSelectionText = (
+    selection?: ReadonlyArray<{ value?: string; unit?: string } | null> | null,
+) =>
+    (selection || [])
+        .map((s) => [s?.value, s?.unit].filter(Boolean).join(' '))
+        .filter(Boolean)
+        .join(', ');
+
+// Resolve examination note for PDF: prefer structured `properties`, then legacy `notes`.
+function examinationFindingsNoteTextForRender(examination: Examination): string {
+    return (
+        examination.properties?.[NOTES_PROPERTY_GROUP_ID]?.selection?.[0]?.value?.trim() ||
+        examination.notes?.trim() ||
+        ''
+    );
+}
+
+// Local join of examination property groups for PDF (no import from main app).
+function examinationFindingsPropertiesDisplayForRender(examination: Examination): string {
+    const segments = Object.values(examination.properties || {})
+        .map((prop) => {
+            const value = getSelectionText(prop?.selection);
+
+            if (!value) return '';
+
+            return prop?.name?.trim() ? `${prop.name}: ${value}` : value;
+        })
+        .filter(Boolean);
+
+    return segments.join(' | ') || examinationFindingsNoteTextForRender(examination);
+}
+
 export const getExaminationFindingsHtml = (
     d: RenderPdfPrescription,
     config: TemplateV2,
@@ -5841,6 +5882,9 @@ export const getExaminationFindingsHtml = (
             {isBullets ? (
                 <ul className="ml-36">
                     {examintionFindings?.map((examination) => {
+                        const displayText = examinationFindingsPropertiesDisplayForRender(
+                            examination,
+                        );
                         return (
                             <li className="">
                                 <span
@@ -5861,7 +5905,7 @@ export const getExaminationFindingsHtml = (
                                         color: propertiesColor,
                                     }}
                                 >
-                                    {examination?.notes ? `(${examination?.notes})` : ''}
+                                    {displayText ? `(${displayText})` : ''}
                                 </span>
                             </li>
                         );
@@ -5870,6 +5914,9 @@ export const getExaminationFindingsHtml = (
             ) : (
                 <span className="ml-8">
                     {examintionFindings?.map((examination, i: number) => {
+                        const displayText = examinationFindingsPropertiesDisplayForRender(
+                            examination,
+                        );
                         return (
                             <span>
                                 <span
@@ -5890,7 +5937,7 @@ export const getExaminationFindingsHtml = (
                                         color: propertiesColor,
                                     }}
                                 >
-                                    {examination?.notes ? ` (${examination?.notes})` : ''}
+                                    {displayText ? ` (${displayText})` : ''}
                                 </span>{' '}
                                 {i !== (examintionFindings || [])?.length - 1 && (
                                     <span className="bold">

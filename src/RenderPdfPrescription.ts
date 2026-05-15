@@ -230,10 +230,12 @@ interface CommonAllergiesEntityOrChronicAilmentEntityOrMedicationAllergiesEntity
     id: string;
 }
 
+//why is this repeating same for Vitals  ??
 interface ExaminationsEntity {
     id: string;
     name: string;
     notes?: string;
+    properties?: ToolsPropertyObject;
 }
 
 interface VitalsEntity {
@@ -265,6 +267,7 @@ interface ExaminationsEntity {
     id: string;
     name: string;
     notes?: string;
+    properties?: ToolsPropertyObject;
 }
 interface VitalsEntity {
     id: string;
