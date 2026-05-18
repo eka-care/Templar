@@ -1,4 +1,5 @@
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { getHeaderForReceipt, ReceiptPdfConfig, TPageSize } from './ReceiptUtils';
 
 export interface FormDataKeyLabel {
@@ -250,7 +251,11 @@ export const printMetaDataOfPartnerSystem = (data: Record<string, string>): JSX.
     );
 };
 
-export const getBodyForOpdSlip = (data: OpdSlipBodyData): JSX.Element => {
+export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
+    return renderToStaticMarkup(getBodyJsx(data));
+};
+
+const getBodyJsx = (data: OpdSlipBodyData): JSX.Element => {
     const {
         name,
         gender,
@@ -446,7 +451,11 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): JSX.Element => {
     );
 };
 
-export const getFooterForOpdSlip = (data: OpdSlipFooterData): JSX.Element => {
+export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
+    return renderToStaticMarkup(getFooterJsx(data));
+};
+
+const getFooterJsx = (data: OpdSlipFooterData): JSX.Element => {
     const { created_by, created_at } = data;
 
     const footerParts = [
@@ -494,7 +503,7 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): JSX.Element => {
     );
 };
 
-export const getHeadCssForOpdSlip = (pageSize: TPageSize): JSX.Element => {
+export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
     const rootFontSize = pageSize === 'A5' ? '11px' : '16px';
-    return <style>{`html { font-size: ${rootFontSize}; }`}</style>;
+    return renderToStaticMarkup(<style>{`html { font-size: ${rootFontSize}; }`}</style>);
 };
