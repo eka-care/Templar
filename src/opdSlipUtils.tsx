@@ -1,3 +1,5 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { getHeaderForReceipt, ReceiptPdfConfig, TPageSize } from './ReceiptUtils';
 
 export interface FormDataKeyLabel {
@@ -50,6 +52,66 @@ export interface OpdSlipFooterData {
     created_at?: string;
 }
 
+// --- Shared style objects ---
+const sectionTitleStyle: React.CSSProperties = {
+    fontSize: '0.438rem',
+    fontWeight: 500,
+    color: 'rgba(0,0,0,0.5)',
+    letterSpacing: '0.03125rem',
+    textTransform: 'uppercase',
+    margin: 0,
+    lineHeight: 'normal',
+};
+
+const itemKeyRow1Style: React.CSSProperties = {
+    fontSize: '0.5rem',
+    fontWeight: 500,
+    color: 'rgba(0,0,0,0.6)',
+    letterSpacing: '0.03125rem',
+    textTransform: 'uppercase',
+    margin: 0,
+    lineHeight: 'normal',
+};
+
+const itemValueRow1Style: React.CSSProperties = {
+    fontSize: '0.625rem',
+    color: 'black',
+    fontWeight: 600,
+    letterSpacing: '0.0125rem',
+    margin: 0,
+};
+
+const tokenItemValueRow1Style: React.CSSProperties = {
+    fontSize: '0.94rem',
+    color: 'black',
+    fontWeight: 700,
+    letterSpacing: '0.0125rem',
+    margin: 0,
+    lineHeight: 1,
+};
+
+const valueStyle: React.CSSProperties = {
+    fontSize: '0.5rem',
+    fontWeight: 700,
+    color: '#000000',
+    margin: 0,
+};
+
+const dividerStyle: React.CSSProperties = {
+    width: '0.047rem',
+    background: 'rgba(0,0,0,0.1)',
+    alignSelf: 'stretch',
+    borderRadius: '6.25rem',
+    flexShrink: 0,
+};
+
+const Divider = () => <div style={dividerStyle} />;
+
+const SectionDivider = () => (
+    <div style={{ width: '100%', height: '0.0625rem', background: 'rgba(0,0,0,0.1)', borderRadius: '6.25rem' }} />
+);
+
+const fixedWidthItems = ['GENDER', 'AGE', 'TOKEN'];
 export const getHeaderForOpdSlip = (data: OpdSlipHeaderData): string => {
     return getHeaderForReceipt(data);
 };
@@ -68,7 +130,6 @@ export const getAppointmentDetails = ({
     return [
         time ? { label: 'DATE & TIME', value: time, valueStyle: defaultValueStyle } : null,
         doctor_name ? { label: 'DOCTOR', value: doctor_name, valueStyle: defaultValueStyle } : null,
-
         appointmentStatus
             ? {
                 label: 'STATUS',
@@ -121,9 +182,80 @@ export const getadditionalDetailsOfPatient = (
         .filter(Boolean) as { label: string; value: string }[];
 };
 
-const fixedWidthItems = ['GENDER', 'AGE', 'TOKEN'];
+export const renderTags = (tags: string[]): JSX.Element | null => {
+    if (!tags.length) return null;
+    return (
+        <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: '0.875rem' }}>
+            <span style={{ fontSize: '0.438rem', color: 'rgba(0,0,0,0.5)', width: '1.875rem', flexShrink: 0, lineHeight: '0.875rem' }}>
+                TAGS:{' '}
+            </span>
+            <div style={{ display: 'flex', flex: 1, gap: '0.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                {tags.map((t, i) => (
+                    <div
+                        key={i}
+                        style={{ background: 'rgba(0,0,0,0.05)', borderRadius: '0.125rem', padding: '0.188rem 0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
+                    >
+                        <span style={{ fontSize: '0.5rem', color: 'rgba(0,0,0,0.5)', whiteSpace: 'nowrap' }}>{t}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export const renderLabels = (labels: string[]): JSX.Element | null => {
+    if (!labels.length) return null;
+    return (
+        <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: '0.875rem' }}>
+            <span style={{ fontSize: '0.438rem', color: 'rgba(0,0,0,0.5)', width: '1.875rem', flexShrink: 0, lineHeight: '0.875rem' }}>
+                LABELS:{' '}
+            </span>
+            <div style={{ display: 'flex', flex: 1, gap: '0.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                {labels.map((l, i) => (
+                    <div
+                        key={i}
+                        style={{ background: 'rgba(0,0,0,0.05)', borderRadius: '0.125rem', padding: '0.188rem 0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
+                    >
+                        <span style={{ fontSize: '0.5rem', color: 'rgba(0,0,0,0.5)', whiteSpace: 'nowrap' }}>{l}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export const printMetaDataOfPartnerSystem = (data: Record<string, string>): JSX.Element | null => {
+    const entries = Object.entries(data);
+    if (!entries.length) return null;
+
+    return (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem 1rem' }}>
+            {entries.map(([k, v], index) => (
+                <div
+                    key={index}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        ...(index < entries.length - 1
+                            ? { borderRight: '0.047rem solid rgba(0,0,0,0.1)', paddingRight: '0.5rem' }
+                            : {}),
+                    }}
+                >
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', maxWidth: '10.625rem' }}>
+                        <span style={{ fontSize: '0.4375rem', color: 'rgba(0,0,0,0.5)' }}>{k}:</span>
+                        <span style={{ fontSize: '0.5rem', fontWeight: 500, color: '#000000', whiteSpace: 'nowrap' }}>{v}</span>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
+    return renderToStaticMarkup(getBodyJsx(data));
+};
+
+const getBodyJsx = (data: OpdSlipBodyData): JSX.Element => {
     const {
         name,
         gender,
@@ -148,24 +280,6 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         ...(apt_custom_attributes ?? []),
     ];
 
-    const sectionTitleStyle =
-        'font-size: 0.438rem; font-weight: 500; color: rgba(0,0,0,0.5); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
-    // const labelStyle =
-    //     'font-size: 0.375rem; color: rgba(0,0,0,0.5); letter-spacing: 0.0125rem; margin: 0;';
-
-    const itemKeyRow1 =
-        'font-size: 0.5rem; font-weight: 500; color: rgba(0,0,0,0.6); letter-spacing: 0.03125rem; text-transform: uppercase; margin: 0; line-height: normal;';
-    const itemValueRow1 =
-        'font-size: 0.625rem; color: black; font-weight: 600; letter-spacing: 0.0125rem; margin: 0;';
-    const tokenItemValueRow1 =
-        'font-size: 0.94rem; color: black; font-weight: 700; letter-spacing: 0.0125rem; margin: 0; line-height: 1';
-
-    const valueStyle = 'font-size: 0.5rem; font-weight: 700; color: #000000; margin: 0;';
-    const dividerStyle =
-        'width: 0.047rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem; flex-shrink: 0;';
-    const sectionDivider =
-        '<div style="width: 100%; height: 0.0625rem; background: rgba(0,0,0,0.1); border-radius: 6.25rem;"></div>';
-
     const patientRow2Items = [
         age ? { label: 'AGE', value: age } : null,
         gender ? { label: 'GENDER', value: gender } : null,
@@ -173,140 +287,175 @@ export const getBodyForOpdSlip = (data: OpdSlipBodyData): string => {
         uhid ? { label: 'TOKEN', value: uhid } : null,
     ].filter(Boolean) as { label: string; value: string }[];
 
-    const row2Html = patientRow2Items.length
-        ? `<div style="display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; height: fit-content; overflow: hidden">${patientRow2Items.map((item, i) => {
-            const itemDiv = `<div style="display: flex; flex-direction: column; gap: 0.25rem; min-width: ${fixedWidthItems.includes(item.label) ? '1rem' : '4rem'}; max-width: 7rem"><p style="${valueStyle}">${item.value}</p></div>`;
-            if (i === 0) return itemDiv;
-            return `<div style="display: flex; align-items: center; gap: 0.5rem; margin-left: -0.547rem"><div style="${dividerStyle}"></div>${itemDiv}</div>`;
-        }).join('')}</div>`
-        : '';
+    const hasFixedCols = !!(time || payment_status || token);
+    const hasMetadata = !!(partnerMetadata && Object.keys(partnerMetadata).length > 0);
+    const hasTagsOrLabels = !!(tags?.length || labels?.length);
 
-    const fluidCols = [
-        name ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">NAME</p><p style="${itemValueRow1}">${name}</p></div>${row2Html}</div>` : null,
-        (doctor_name || clinicName) ? `<div style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1rem;"><div style="display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">${doctor_name ? 'DOCTOR' : 'CLINIC'}</p><p style="${itemValueRow1}">${doctor_name || clinicName}</p></div>${doctor_name ? `<div style="display: flex; align-items: center; height: 0.5625rem;"><p style="${valueStyle}">${clinicName}</p></div>` : ''}</div>` : null,
-    ].filter(Boolean);
+    return (
+        <main
+            id="opd-slip-body"
+            style={{
+                padding: '0.75rem 1rem 1.5rem 1rem',
+                background: '#ffffff',
+                fontFamily: "'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif",
+            }}
+        >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
 
-    const fixedCols = [
-        time ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">DATE &amp; TIME</p><p style="${itemValueRow1}">${time}</p></div>` : null,
-        payment_status ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">PAYMENT STATUS</p><p style="${itemValueRow1}">${payment_status}</p></div>` : null,
-        token ? `<div style="min-width: 4.688rem; max-width: 13rem; display: flex; flex-direction: column; gap: 0.35rem;"><p style="${itemKeyRow1}">TOKEN</p><p style="${tokenItemValueRow1}">${token}</p></div>` : null,
-    ].filter(Boolean);
+                {/* Section 1: Patient & Appointment Details */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                    <p style={sectionTitleStyle}>PATIENT &amp; APPOINTMENT DETAILS</p>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem' }}>
 
-    const fixedColsSection = fixedCols.length
-        ? `<div style="display: flex; align-items: flex-start; gap: 0.45rem; align-self: flex-start;"><div style="${dividerStyle}"></div>${fixedCols.join(`<div style="${dividerStyle}"></div>`)}</div>`
-        : '';
-
-    const buildThreeColRows = (items: { label: string; value: string }[]): string => {
-        return `
-        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
-            ${items
-                .map(
-                    (item, index) => `
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            
-                            ${index > 0 ? `<div style="${dividerStyle}"></div>` : ''}
-
-                            <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
-                                <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">
-                                    ${item.label}:
-                                </span>
-                                <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">
-                                    ${item.value}
-                                </span>
+                        {/* Fluid col: Name */}
+                        {name && (
+                            <div style={{ flex: '1 1 0%', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                    <p style={itemKeyRow1Style}>NAME</p>
+                                    <p style={itemValueRow1Style}>{name}</p>
+                                </div>
+                                {patientRow2Items.length > 0 && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', flexWrap: 'wrap', height: 'fit-content', overflow: 'hidden' }}>
+                                        {patientRow2Items.map((item, i) => {
+                                            const cell = (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', minWidth: fixedWidthItems.includes(item.label) ? '1rem' : '4rem', maxWidth: '7rem' }}>
+                                                    <p style={valueStyle}>{item.value}</p>
+                                                </div>
+                                            );
+                                            if (i === 0) return <React.Fragment key={i}>{cell}</React.Fragment>;
+                                            return (
+                                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: '-0.547rem' }}>
+                                                    <Divider />
+                                                    {cell}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
+                        )}
 
+                        {/* Divider between fluid cols */}
+                        {name && (doctor_name || clinicName) && <Divider />}
+
+                        {/* Fluid col: Doctor/Clinic */}
+                        {(doctor_name || clinicName) && (
+                            <div style={{ flex: '1 1 0%', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                    <p style={itemKeyRow1Style}>{doctor_name ? 'DOCTOR' : 'CLINIC'}</p>
+                                    <p style={itemValueRow1Style}>{doctor_name || clinicName}</p>
+                                </div>
+                                {doctor_name && (
+                                    <div style={{ display: 'flex', alignItems: 'center', height: '0.5625rem' }}>
+                                        <p style={valueStyle}>{clinicName}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Fixed cols section — leading Divider separates fluid from fixed */}
+                        {hasFixedCols && (
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', alignSelf: 'flex-start' }}>
+                                <Divider />
+                                {time && (
+                                    <div style={{ minWidth: '4.688rem', maxWidth: '13rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                        <p style={itemKeyRow1Style}>DATE &amp; TIME</p>
+                                        <p style={itemValueRow1Style}>{time}</p>
+                                    </div>
+                                )}
+                                {time && payment_status && <Divider />}
+                                {payment_status && (
+                                    <div style={{ minWidth: '4.688rem', maxWidth: '13rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                        <p style={itemKeyRow1Style}>PAYMENT STATUS</p>
+                                        <p style={itemValueRow1Style}>{payment_status}</p>
+                                    </div>
+                                )}
+                                {!!(time || payment_status) && !!token && <Divider />}
+                                {token && (
+                                    <div style={{ minWidth: '4.688rem', maxWidth: '13rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                        <p style={itemKeyRow1Style}>TOKEN</p>
+                                        <p style={tokenItemValueRow1Style}>{token}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <SectionDivider />
+
+                {/* Section 2: Additional Details */}
+                {additionalDetailsOfPatient.length > 0 && (
+                    <>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                            <p style={sectionTitleStyle}>ADDITIONAL DETAILS</p>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem 1rem' }}>
+                                {additionalDetailsOfPatient.map((item, index) => (
+                                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        {index > 0 && <Divider />}
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', maxWidth: '10.625rem' }}>
+                                            <span style={{ fontSize: '0.375rem', color: 'rgba(0,0,0,0.5)' }}>{item.label}:</span>
+                                            <span style={{ fontSize: '0.4375rem', fontWeight: 500, color: '#000000', whiteSpace: 'nowrap' }}>{item.value}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    `,
-                )
-                .join('')}
-        </div>
-    `;
-    };
+                        <SectionDivider />
+                    </>
+                )}
 
-    // --- Services pills ---
-    const servicesPills =
-        services.length > 0
-            ? services
-                .map(
-                    (s) =>
-                        `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0 0.625rem; display: flex; align-items: center; justify-content: center; gap: 0.125rem; min-height: 0.875rem;">
-                <span style="font-size: 0.5rem; color: rgba(0,0,0,0.5);">${s.service_name}</span>
-                <span style="font-size: 0.5rem; color: #000000; padding-top: 0.063rem;">₹${s.price}</span>
-            </div>`,
-                )
-                .join('')
-            : '';
+                {/* Section 3: Tags & Labels */}
+                {hasTagsOrLabels && (
+                    <>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                {tags?.length ? renderTags(tags) : null}
+                                {labels?.length ? renderLabels(labels) : null}
+                            </div>
+                        </div>
+                        <SectionDivider />
+                    </>
+                )}
 
-    // --- Tags & Labels section ---
-    const tagsSection =
-        tags?.length || labels?.length
-            ? `
-        <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                ${tags?.length ? renderTags(tags) : ''}
-                ${labels?.length ? renderLabels(labels) : ''}
+                {/* Section 4: Services */}
+                {services.length > 0 && (
+                    <>
+                        <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'flex-start' }}>
+                            <p style={{ ...sectionTitleStyle, lineHeight: '0.875rem' }}>SERVICES: </p>
+                            <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                {services.map((s, i) => (
+                                    <div
+                                        key={i}
+                                        style={{ background: 'rgba(0,0,0,0.05)', borderRadius: '0.125rem', padding: '0 0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.125rem', minHeight: '0.875rem' }}
+                                    >
+                                        <span style={{ fontSize: '0.5rem', color: 'rgba(0,0,0,0.5)' }}>{s.service_name}</span>
+                                        <span style={{ fontSize: '0.5rem', color: '#000000', paddingTop: '0.063rem' }}>₹{s.price}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        {hasMetadata && <SectionDivider />}
+                    </>
+                )}
+
+                {/* Section 5: Partner & System Metadata */}
+                {hasMetadata && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                        <p style={sectionTitleStyle}>PARTNER &amp; SYSTEM METADATA</p>
+                        {printMetaDataOfPartnerSystem(partnerMetadata!)}
+                    </div>
+                )}
+
             </div>
-        </div>
-        ${sectionDivider}`
-            : '';
-
-    // --- Partner Metadata section ---
-    const metadataSection =
-        partnerMetadata && Object.keys(partnerMetadata).length
-            ? `
-        <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-            <p style="${sectionTitleStyle}">PARTNER &amp; SYSTEM METADATA</p>
-            ${printMetaDataOfPartnerSystem(partnerMetadata)}
-        </div>`
-            : '';
-
-    return `<main id="opd-slip-body" style="padding: 0.75rem 1rem 1.5rem 1rem; background: #ffffff; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;">
-        <div style="display: flex; flex-direction: column; gap: 0.625rem;">
-
-            <!-- Section 1: Patient & Appointment Details -->
-            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <p style="${sectionTitleStyle}">PATIENT &amp; APPOINTMENT DETAILS</p>
-                <div style="display: flex; align-items: flex-start; gap: 0.45rem;">
-                    ${fluidCols.join(`<div style="${dividerStyle}"></div>`)}
-                    ${fixedColsSection}
-                </div>
-            </div>
-            ${sectionDivider}
-
-            <!-- Section 2: Additional Details -->
-            ${additionalDetailsOfPatient.length > 0
-            ? `
-            <div style="display: flex; flex-direction: column; gap: 0.375rem;">
-                <p style="${sectionTitleStyle}">ADDITIONAL DETAILS</p>
-                ${buildThreeColRows(additionalDetailsOfPatient)}
-            </div>
-            ${sectionDivider}`
-            : ''
-        }
-
-            <!-- Section 3: Tags & Labels -->
-            ${tagsSection}
-
-            <!-- Section 4: Services -->
-            ${services.length > 0
-            ? `<div style="display: flex; gap: 0.375rem; align-items: flex-start;">
-                <p style="${sectionTitleStyle}; line-height: 0.875rem;">SERVICES: </p>
-                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
-                    ${servicesPills}
-                </div>
-            </div>
-            ${metadataSection ? sectionDivider : ''}`
-            : ''
-        }
-
-            <!-- Section 5: Partner & System Metadata -->
-            ${metadataSection}
-
-        </div>
-    </main>`;
+        </main>
+    );
 };
 
 export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
+    return renderToStaticMarkup(getFooterJsx(data));
+};
+
+const getFooterJsx = (data: OpdSlipFooterData): JSX.Element => {
     const { created_by, created_at } = data;
 
     const footerParts = [
@@ -315,102 +464,46 @@ export const getFooterForOpdSlip = (data: OpdSlipFooterData): string => {
         created_at ? `Created at: ${created_at}` : undefined,
     ].filter(Boolean) as string[];
 
-    return `
-        <footer id="opd-slip-footer" style="text-align: center; padding: 0.8rem 2rem 0; font-size: 0.5rem; color: black; border-top: 1.6px solid #e8e8e8; background: #ffffff; letter-spacing: 0.03em; position: fixed; bottom: 0.5rem; left: 0; right: 0;">
-            <div style="margin: 0; line-height: 1.6; font-weight: 400; display: flex; justify-content: center; align-items: center; gap: 1.3rem;">
-                ${footerParts
-            .map(
-                (item, index, arr) => `
-                        <span>${item}</span>
-                        ${index !== arr.length - 1 ? `<span style="color: #cccccc;">|</span>` : ''}
-                    `,
-            )
-            .join('')}
+    return (
+        <footer
+            id="opd-slip-footer"
+            style={{
+                textAlign: 'center',
+                padding: '0.8rem 2rem 0',
+                fontSize: '0.5rem',
+                color: 'black',
+                borderTop: '1.6px solid #e8e8e8',
+                background: '#ffffff',
+                letterSpacing: '0.03em',
+                position: 'fixed',
+                bottom: '0.5rem',
+                left: 0,
+                right: 0,
+            }}
+        >
+            <div
+                style={{
+                    margin: 0,
+                    lineHeight: 1.6,
+                    fontWeight: 400,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '1.3rem',
+                }}
+            >
+                {footerParts.map((item, index, arr) => (
+                    <React.Fragment key={index}>
+                        <span>{item}</span>
+                        {index !== arr.length - 1 && <span style={{ color: '#cccccc' }}>|</span>}
+                    </React.Fragment>
+                ))}
             </div>
-        </footer>`;
+        </footer>
+    );
 };
 
 export const getHeadCssForOpdSlip = (pageSize: TPageSize): string => {
     const rootFontSize = pageSize === 'A5' ? '11px' : '16px';
-    return `<style>html { font-size: ${rootFontSize}; }</style>`;
-};
-
-export const renderTags = (tags: string[]): string => {
-    if (!tags.length) return '';
-    return `<div style="display: flex; align-items: flex-start; min-height: 0.875rem;">
-        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">TAGS: </span>
-        <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
-            ${tags
-            .map(
-                (t) =>
-                    `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${t}</span></div>`,
-            )
-            .join('')}
-        </div>
-    </div>`;
-};
-
-export const renderLabels = (labels: string[]): string => {
-    if (!labels.length) return '';
-    return `<div style="display: flex; align-items: flex-start; min-height: 0.875rem;">
-        <span style="font-size: 0.438rem; color: rgba(0,0,0,0.5); width: 1.875rem; flex-shrink: 0; line-height: 0.875rem;">LABELS: </span>
-        <div style="display: flex; flex: 1; gap: 0.25rem; flex-wrap: wrap; align-items: center;">
-            ${labels
-            .map(
-                (l) =>
-                    `<div style="background: rgba(0,0,0,0.05); border-radius: 0.125rem; padding: 0.188rem 0.625rem; display: flex; align-items: center; justify-content: center; height: 100%;"><span style="font-size: 0.5rem; color: rgba(0,0,0,0.5); white-space: nowrap;">${l}</span></div>`,
-            )
-            .join('')}
-        </div>
-    </div>`;
-};
-
-export const printMetaDataOfPartnerSystem = (data: Record<string, string>): string => {
-    const entries = Object.entries(data);
-    if (!entries.length) return '';
-
-    return `<div style="display: flex; flex-wrap: wrap; gap: 0.75rem 1rem;">
-        ${entries
-            .map(
-                ([k, v], index) => `
-                <div style="display: flex; align-items: center; ${index < entries.length - 1 ? 'border-right: 0.047rem solid rgba(0,0,0,0.1); padding-right: 0.5rem;' : ''}">
-                    <div style="display: flex; gap: 0.5rem; align-items: center; max-width: 10.625rem;">
-                        <span style="font-size: 0.4375rem; color: rgba(0,0,0,0.5);">${k}:</span>
-                        <span style="font-size: 0.5rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
-                    </div>
-                </div>`,
-            )
-            .join('')}
-    </div>`;
-
-    // --- old logic (3-per-row with manual chunking) ---
-    // const rows: string[][] = [];
-    // for (let i = 0; i < entries.length; i += 3) {
-    //     rows.push(
-    //         entries.slice(i, i + 3).map(
-    //             ([k, v]) =>
-    //                 `<div style="display: flex; gap: 0.5rem; align-items: center; flex: 1;">
-    //             <span style="font-size: 0.375rem; color: rgba(0,0,0,0.5);">${k}:</span>
-    //             <span style="font-size: 0.4375rem; font-weight: 500; color: #000000; white-space: nowrap;">${v}</span>
-    //         </div>`,
-    //         ),
-    //     );
-    // }
-
-    // return rows
-    //     .map((cols) => {
-    //         const cells: string[] = [];
-    //         cols.forEach((col, i) => {
-    //             if (i > 0) {
-    //                 cells.push(
-    //                     `<div style="width: 0.0625rem; background: rgba(0,0,0,0.1); align-self: stretch; border-radius: 6.25rem;"></div>`,
-    //                 );
-    //             }
-    //             cells.push(col);
-    //         });
-    //         return `<div style="display: flex; align-items: center; min-height: 0.875rem; gap: 1rem;">${cells.join(
-    //             '',
-    //         )}</div>`;
-    //     })
-    //     .join('');
+    return renderToStaticMarkup(<style>{`html { font-size: ${rootFontSize}; }`}</style>);
 };
