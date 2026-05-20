@@ -500,7 +500,7 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
   </table>
   ${
       flags?.print_clinic_gst_in && data.gst_in
-          ? `<div style="margin-top:1rem;border-top:1px solid #e5e5e5;padding-top:0.75rem;font-size:0.75rem;">
+          ? `<div style="margin-top:1rem;font-size:0.75rem;">
               <strong>GSTIN:</strong> ${data.gst_in}
              </div>`
           : ''
@@ -632,7 +632,7 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
       </table>
       ${
           flags?.print_clinic_gst_in && data?.gst_in
-              ? `<div style="margin-top:1rem;border-top:1px solid #e5e5e5;padding-top:0.75rem;font-size:0.75rem;">
+              ? `<div style="margin-top:1rem;font-size:0.75rem;">
                   <strong>GSTIN:</strong> ${data.gst_in}
                  </div>`
               : ''
