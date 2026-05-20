@@ -30,6 +30,7 @@ export type TPdfObject = {
     totalDiscountOnEntireBill: number;
     billCreatedBy?: string;
     receiptRemarks?: string;
+    gst_in?: string | null;
 };
 export type TPageSize = 'A4' | 'A5';
 export enum DateAndTimeConfigForReceipt {
@@ -65,6 +66,7 @@ export interface ReceiptPdfConfig {
         bill_created_at: boolean;
         date_and_time: DateAndTimeConfigForReceipt;
         print_bill_created_by: false;
+        print_clinic_gst_in?: boolean;
     };
     header_image_url?: string;
     footer_image_url?: string;
@@ -496,7 +498,13 @@ export const getBodyForReceipt = ({ data }: { data: TPdfObject }): string => {
         }
     </tbody>
   </table>
- 
+  ${
+      flags?.print_clinic_gst_in && data.gst_in
+          ? `<div style="margin-top:1rem;border-top:1px solid #e5e5e5;padding-top:0.75rem;font-size:0.75rem;">
+              <strong>GSTIN:</strong> ${data.gst_in}
+             </div>`
+          : ''
+  }
 </div>
     `;
 };
@@ -622,6 +630,13 @@ export const getBodyForPaymentNoteForReceipt = ({ data }: { data: TPdfObject }):
           }
         </tbody>
       </table>
+      ${
+          flags?.print_clinic_gst_in && data?.gst_in
+              ? `<div style="margin-top:1rem;border-top:1px solid #e5e5e5;padding-top:0.75rem;font-size:0.75rem;">
+                  <strong>GSTIN:</strong> ${data.gst_in}
+                 </div>`
+              : ''
+      }
     </div>
   `;
 };
