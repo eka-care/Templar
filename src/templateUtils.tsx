@@ -7918,13 +7918,13 @@ export const getInjectionsLineHtml = (data: RenderPdfPrescription): JSX.Element 
     );
 };
 
-const PROCEDURE_DATE_PROPERTY_GROUP_ID = 'pg-404040404';
+const DATE_PROPERTY_GROUP_ID = 'pg-31705165';
 
 type ProcedureForRender = NonNullable<RenderPdfPrescription['tool']['procedures']>[number];
 
 function procedureDateDisplayForRender(procedure: ProcedureForRender): string {
     const raw =
-        procedure.properties?.[PROCEDURE_DATE_PROPERTY_GROUP_ID]?.selection?.[0]?.value?.trim() ||
+        procedure.properties?.[DATE_PROPERTY_GROUP_ID]?.selection?.[0]?.value?.trim() ||
         procedure.date?.trim() ||
         '';
     if (!raw) {
@@ -7941,7 +7941,7 @@ function procedureOtherDetailsPartsForRender(
     const props = procedure.properties;
     if (props) {
         for (const id in props) {
-            if (id === PROCEDURE_DATE_PROPERTY_GROUP_ID) {
+            if (id === DATE_PROPERTY_GROUP_ID) {
                 continue;
             }
             const prop = props[id];
